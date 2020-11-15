@@ -1,0 +1,59 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30621.155
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArduinoControllerVridgeTest", "ArduinoControllerVridgeTest\ArduinoControllerVridgeTest.csproj", "{852F3A73-6A3D-4BB7-A18A-B19FE6750CEB}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ControllerTest", "ControllerTest\ControllerTest.vcxproj", "{2B15473D-C194-4CDA-A71B-44895B7F0D1C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ArduinoToVridgeCommunication", "ArduinoToVridgeCommunication\ArduinoToVridgeCommunication.vcxitems", "{54F2E127-4C8F-4671-9350-18143317A47F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JoystickTest", "JoystickTest\JoystickTest.vcxproj", "{C5F80730-F44F-4478-BDAE-6634EFC2CA88}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VRE.Vridge.API.Client", "VRE.Vridge.API.Client\VRE.Vridge.API.Client.csproj", "{7EC1BFCE-2819-447C-9560-FC43957527EB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{852F3A73-6A3D-4BB7-A18A-B19FE6750CEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{852F3A73-6A3D-4BB7-A18A-B19FE6750CEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{852F3A73-6A3D-4BB7-A18A-B19FE6750CEB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{852F3A73-6A3D-4BB7-A18A-B19FE6750CEB}.Debug|x86.Build.0 = Debug|Any CPU
+		{852F3A73-6A3D-4BB7-A18A-B19FE6750CEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{852F3A73-6A3D-4BB7-A18A-B19FE6750CEB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{852F3A73-6A3D-4BB7-A18A-B19FE6750CEB}.Release|x86.ActiveCfg = Release|Any CPU
+		{852F3A73-6A3D-4BB7-A18A-B19FE6750CEB}.Release|x86.Build.0 = Release|Any CPU
+		{2B15473D-C194-4CDA-A71B-44895B7F0D1C}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{2B15473D-C194-4CDA-A71B-44895B7F0D1C}.Debug|x86.ActiveCfg = Debug|Win32
+		{2B15473D-C194-4CDA-A71B-44895B7F0D1C}.Debug|x86.Build.0 = Debug|Win32
+		{2B15473D-C194-4CDA-A71B-44895B7F0D1C}.Release|Any CPU.ActiveCfg = Release|Win32
+		{2B15473D-C194-4CDA-A71B-44895B7F0D1C}.Release|x86.ActiveCfg = Release|Win32
+		{2B15473D-C194-4CDA-A71B-44895B7F0D1C}.Release|x86.Build.0 = Release|Win32
+		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Debug|x86.ActiveCfg = Debug|Win32
+		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Debug|x86.Build.0 = Debug|Win32
+		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Release|Any CPU.ActiveCfg = Release|Win32
+		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Release|x86.ActiveCfg = Release|Win32
+		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Release|x86.Build.0 = Release|Win32
+		{7EC1BFCE-2819-447C-9560-FC43957527EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EC1BFCE-2819-447C-9560-FC43957527EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EC1BFCE-2819-447C-9560-FC43957527EB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7EC1BFCE-2819-447C-9560-FC43957527EB}.Debug|x86.Build.0 = Debug|Any CPU
+		{7EC1BFCE-2819-447C-9560-FC43957527EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EC1BFCE-2819-447C-9560-FC43957527EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7EC1BFCE-2819-447C-9560-FC43957527EB}.Release|x86.ActiveCfg = Release|Any CPU
+		{7EC1BFCE-2819-447C-9560-FC43957527EB}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {14A5E090-9F8E-4045-A3CB-B6A6ABB606BF}
+	EndGlobalSection
+EndGlobal
