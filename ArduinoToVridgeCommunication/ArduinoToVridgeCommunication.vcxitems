@@ -1,9 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Label="Globals">
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <HasSharedItems>true</HasSharedItems>
     <ItemsProjectGuid>{54f2e127-4c8f-4671-9350-18143317a47f}</ItemsProjectGuid>
+    <ItemsProjectName>ArduinoToPCCommunication</ItemsProjectName>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -15,13 +16,23 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="$(MSBuildThisFileDirectory)readme.txt" />
-	<Text Include="$(MSBuildThisFileDirectory)library.properties" />
-  	<Text Include="$(MSBuildThisFileDirectory)src\ArduinoToVridgeCommunication.h" />
-  </ItemGroup>
- <ItemGroup>
-    <!-- <ClInclude Include="$(MSBuildThisFileDirectory)ArduinoToVridgeCommunication.h" /> -->
+    <Text Include="$(MSBuildThisFileDirectory)library.properties" />
+    <Text Include="$(MSBuildThisFileDirectory)src\ArduinoToVridgeCommunication.h" />
   </ItemGroup>
   <ItemGroup>
+    <!-- <ClInclude Include="$(MSBuildThisFileDirectory)ArduinoToVridgeCommunication.h" /> -->
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\ArduinoToPCTests\ArduinoToPCCommunicationProtocole.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\JoystickTest\BinarySerializer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\JoystickTest\ByteArray.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\JoystickTest\ByteUnions.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\JoystickTest\Definitions.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\JoystickTest\ISerializable.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)IMoniteredValue.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\ArduinoToPCTests\ArduinoToPCCommunicationProtocole.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\JoystickTest\BinarySerializer.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\JoystickTest\ByteArray.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\ArduinoToVridgeCommunication.cpp" />
   </ItemGroup>
-  </Project>
+</Project>

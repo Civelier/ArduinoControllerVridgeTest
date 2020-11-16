@@ -15,31 +15,14 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ControllerTest.ino" />
+    <None Include="ArduinoConnectionTests.ino" />
     <None Include="src\arduino folders read me.txt">
       <Filter>Misc Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\JoystickTest\Axis.h">
+    <ClInclude Include="__vm\.ArduinoConnectionTests.vsarduino.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\JoystickTest\AxisPair.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\JoystickTest\TransmittableAxisPair.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\JoystickTest\Axis.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\JoystickTest\AxisPair.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\JoystickTest\TransmittableAxisPair.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>
