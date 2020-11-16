@@ -5,11 +5,15 @@
 
 #define ATPCCP ArduinoToPCCommunicationProtocole
 
-#include "Arduino.h"
 #include "IMoniteredValue.h"
 #include "ErrorCodes.h"
 
 typedef void(*command_t)(BinarySerializer*);
+
+void Handshake(BinarySerializer* args);
+void Ping(BinarySerializer* args);
+void Activate(BinarySerializer* args);
+void Deactivate(BinarySerializer* args);
 
 class ArduinoToPCCommunicationProtocoleClass
 {

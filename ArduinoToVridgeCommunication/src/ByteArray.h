@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef _BYTEARRAY_h
+#define _BYTEARRAY_h
+
 #ifdef WIN32
 #include "ArduinoEmulation.h"
 #else
@@ -29,3 +32,4 @@ public:
 	~ByteArray();
 };
 
+#endif

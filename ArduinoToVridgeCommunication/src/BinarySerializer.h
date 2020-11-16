@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef _BINARYSERIALIZER_h
+#define _BINARYSERIALIZER_h
+
 #include "ISerializable.h"
 #ifdef WIN32
 #include "ArduinoEmulation.h"
@@ -67,3 +70,4 @@ for (size_t i = 0; i < sizeof(myUnion); i++)\
 	m_array->Append(myUnion.asBytes[i]);\
 }
 
+#endif

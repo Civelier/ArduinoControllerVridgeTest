@@ -68,12 +68,6 @@
     <ClCompile Include="AxisPair.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BinarySerializer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ByteArray.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TransmittableAxisPair.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

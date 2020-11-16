@@ -19,7 +19,7 @@ protected:
 	}
 public:
 	byte ID;
-	virtual bool HasChanged() abstract;
+	virtual bool HasChanged() {}
 	void Send()
 	{
 		m_hasChanged = false;

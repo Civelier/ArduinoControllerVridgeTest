@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef _ISERIALIZABLE_h
+#define _ISERIALIZABLE_h
+
 #ifdef WIN32
 #include "ArduinoEmulation.h"
 #else
@@ -18,3 +21,4 @@ public:
 	virtual void Deserialize(ByteArray* data) { }
 };
 
+#endif

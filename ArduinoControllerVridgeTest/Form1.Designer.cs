@@ -1,6 +1,6 @@
 ﻿namespace ArduinoControllerVridgeTest
 {
-    partial class Form1
+    partial class MainForm
     {
         /// <summary>
         ///  Required designer variable.
@@ -28,13 +28,33 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            this.MainPanel = new System.Windows.Forms.Panel();
+            this.SuspendLayout();
+            // 
+            // MainPanel
+            // 
+            this.MainPanel.Location = new System.Drawing.Point(12, 12);
+            this.MainPanel.Name = "MainPanel";
+            this.MainPanel.Size = new System.Drawing.Size(776, 426);
+            this.MainPanel.TabIndex = 0;
+            // 
+            // MainForm
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Text = "Form1";
+            this.Controls.Add(this.MainPanel);
+            this.Name = "MainForm";
+            this.Opacity = 0.5D;
+            this.Text = "Arduino remotes interface";
+            this.Load += new System.EventHandler(this.Form1_Load);
+            this.ResumeLayout(false);
+
         }
 
         #endregion
+
+        private System.Windows.Forms.Panel MainPanel;
     }
 }
 

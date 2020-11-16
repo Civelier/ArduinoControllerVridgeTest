@@ -7,7 +7,11 @@
 //Command ID : 0
 void Handshake(BinarySerializer* args)
 {
-	SendBytes(2, 0, DEVICE_TYPE);
+	ByteArray* arr = new ByteArray(2);
+	arr->Append((byte)0);
+	arr->Append(DEVICE_TYPE);
+	SendToPC(arr);
+	delete arr;
 }
 
 //Command ID : 1
@@ -40,7 +44,7 @@ void ArduinoToPCCommunicationProtocoleClass::init(uint8_t dataCount)
 {
 	m_dataCapacity = dataCount;
 	m_monitoredValues = (IMoniteredValue**)malloc(dataCount * sizeof(IMoniteredValue*));
-	m_commands = new command_t[]
+	m_commands = new command_t[4]
 	{
 		Handshake,
 		Ping,
@@ -53,8 +57,13 @@ void ArduinoToPCCommunicationProtocoleClass::Run()
 {
 	if (Serial.available())
 	{
-		byte length = Serial.read();
-		byte funcID = Serial.read();
+		digitalWrite(13, 1);
+		delay(200);
+		digitalWrite(13, 0);
+		byte arr[2];
+		Serial.readBytes(arr, 2);
+		byte length = arr[0];
+		byte funcID = arr[1];
 
 		ByteArray* data = new ByteArray(length);
 		for (size_t i = 0; i < length; i++)

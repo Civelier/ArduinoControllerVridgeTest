@@ -3,11 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30621.155
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArduinoControllerInterface", "ArduinoControllerVridgeTest\ArduinoControllerInterface.csproj", "{852F3A73-6A3D-4BB7-A18A-B19FE6750CEB}"
-	ProjectSection(ProjectDependencies) = postProject
-		{7EC1BFCE-2819-447C-9560-FC43957527EB} = {7EC1BFCE-2819-447C-9560-FC43957527EB}
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ArduinoToPCCommunication", "ArduinoToVridgeCommunication\ArduinoToVridgeCommunication.vcxitems", "{54F2E127-4C8F-4671-9350-18143317A47F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JoystickTest", "JoystickTest\JoystickTest.vcxproj", "{C5F80730-F44F-4478-BDAE-6634EFC2CA88}"
@@ -16,12 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VRE.Vridge.API.Client", "VR
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PCToArduinoTests", "ArduinoConnectionTests\ArduinoConnectionTests.vcxproj", "{AAE584A0-0EB1-4D5F-844A-EFA72CFC48C5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PCToArduinoCommunication", "PCToArduinoCommunication\PCToArduinoCommunication.csproj", "{A367E74C-CB02-4034-B8AA-937ECAB42C47}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ArduinoToPCTests", "ArduinoToPCTests\ArduinoToPCTests.vcxproj", "{B0CB0711-A02A-4DBC-979E-A7194848C154}"
-	ProjectSection(ProjectDependencies) = postProject
-		{852F3A73-6A3D-4BB7-A18A-B19FE6750CEB} = {852F3A73-6A3D-4BB7-A18A-B19FE6750CEB}
-	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControllerInterface", "ControllerInterface\ControllerInterface.csproj", "{1138419E-5329-41C1-AC9B-6D657CF7542D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PCToArduinoCommunication", "PCToArduinoCommunication\PCToArduinoCommunication.csproj", "{00A09FA8-FFB3-4E4F-B325-4630B97E94B0}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -38,18 +32,6 @@ Global
 		Tests|x86 = Tests|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{852F3A73-6A3D-4BB7-A18A-B19FE6750CEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{852F3A73-6A3D-4BB7-A18A-B19FE6750CEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{852F3A73-6A3D-4BB7-A18A-B19FE6750CEB}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{852F3A73-6A3D-4BB7-A18A-B19FE6750CEB}.Debug|x86.Build.0 = Debug|Any CPU
-		{852F3A73-6A3D-4BB7-A18A-B19FE6750CEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{852F3A73-6A3D-4BB7-A18A-B19FE6750CEB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{852F3A73-6A3D-4BB7-A18A-B19FE6750CEB}.Release|x86.ActiveCfg = Release|Any CPU
-		{852F3A73-6A3D-4BB7-A18A-B19FE6750CEB}.Release|x86.Build.0 = Release|Any CPU
-		{852F3A73-6A3D-4BB7-A18A-B19FE6750CEB}.Tests|Any CPU.ActiveCfg = Tests|Any CPU
-		{852F3A73-6A3D-4BB7-A18A-B19FE6750CEB}.Tests|Any CPU.Build.0 = Tests|Any CPU
-		{852F3A73-6A3D-4BB7-A18A-B19FE6750CEB}.Tests|x86.ActiveCfg = Tests|Any CPU
-		{852F3A73-6A3D-4BB7-A18A-B19FE6750CEB}.Tests|x86.Build.0 = Tests|Any CPU
 		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Debug|Any CPU.ActiveCfg = Debug|Win32
 		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Debug|x86.ActiveCfg = Debug|Win32
 		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Debug|x86.Build.0 = Debug|Win32
@@ -80,18 +62,6 @@ Global
 		{AAE584A0-0EB1-4D5F-844A-EFA72CFC48C5}.Tests|Any CPU.Build.0 = Debug|Win32
 		{AAE584A0-0EB1-4D5F-844A-EFA72CFC48C5}.Tests|x86.ActiveCfg = Debug|Win32
 		{AAE584A0-0EB1-4D5F-844A-EFA72CFC48C5}.Tests|x86.Build.0 = Debug|Win32
-		{A367E74C-CB02-4034-B8AA-937ECAB42C47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A367E74C-CB02-4034-B8AA-937ECAB42C47}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A367E74C-CB02-4034-B8AA-937ECAB42C47}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{A367E74C-CB02-4034-B8AA-937ECAB42C47}.Debug|x86.Build.0 = Debug|Any CPU
-		{A367E74C-CB02-4034-B8AA-937ECAB42C47}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A367E74C-CB02-4034-B8AA-937ECAB42C47}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A367E74C-CB02-4034-B8AA-937ECAB42C47}.Release|x86.ActiveCfg = Release|Any CPU
-		{A367E74C-CB02-4034-B8AA-937ECAB42C47}.Release|x86.Build.0 = Release|Any CPU
-		{A367E74C-CB02-4034-B8AA-937ECAB42C47}.Tests|Any CPU.ActiveCfg = Release|Any CPU
-		{A367E74C-CB02-4034-B8AA-937ECAB42C47}.Tests|Any CPU.Build.0 = Release|Any CPU
-		{A367E74C-CB02-4034-B8AA-937ECAB42C47}.Tests|x86.ActiveCfg = Release|Any CPU
-		{A367E74C-CB02-4034-B8AA-937ECAB42C47}.Tests|x86.Build.0 = Release|Any CPU
 		{B0CB0711-A02A-4DBC-979E-A7194848C154}.Debug|Any CPU.ActiveCfg = Debug|Win32
 		{B0CB0711-A02A-4DBC-979E-A7194848C154}.Debug|x86.ActiveCfg = Debug|Win32
 		{B0CB0711-A02A-4DBC-979E-A7194848C154}.Debug|x86.Build.0 = Debug|Win32
@@ -102,6 +72,30 @@ Global
 		{B0CB0711-A02A-4DBC-979E-A7194848C154}.Tests|Any CPU.Build.0 = Debug|Win32
 		{B0CB0711-A02A-4DBC-979E-A7194848C154}.Tests|x86.ActiveCfg = Debug|Win32
 		{B0CB0711-A02A-4DBC-979E-A7194848C154}.Tests|x86.Build.0 = Debug|Win32
+		{1138419E-5329-41C1-AC9B-6D657CF7542D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1138419E-5329-41C1-AC9B-6D657CF7542D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1138419E-5329-41C1-AC9B-6D657CF7542D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1138419E-5329-41C1-AC9B-6D657CF7542D}.Debug|x86.Build.0 = Debug|Any CPU
+		{1138419E-5329-41C1-AC9B-6D657CF7542D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1138419E-5329-41C1-AC9B-6D657CF7542D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1138419E-5329-41C1-AC9B-6D657CF7542D}.Release|x86.ActiveCfg = Release|Any CPU
+		{1138419E-5329-41C1-AC9B-6D657CF7542D}.Release|x86.Build.0 = Release|Any CPU
+		{1138419E-5329-41C1-AC9B-6D657CF7542D}.Tests|Any CPU.ActiveCfg = Debug|Any CPU
+		{1138419E-5329-41C1-AC9B-6D657CF7542D}.Tests|Any CPU.Build.0 = Debug|Any CPU
+		{1138419E-5329-41C1-AC9B-6D657CF7542D}.Tests|x86.ActiveCfg = Debug|Any CPU
+		{1138419E-5329-41C1-AC9B-6D657CF7542D}.Tests|x86.Build.0 = Debug|Any CPU
+		{00A09FA8-FFB3-4E4F-B325-4630B97E94B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00A09FA8-FFB3-4E4F-B325-4630B97E94B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00A09FA8-FFB3-4E4F-B325-4630B97E94B0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{00A09FA8-FFB3-4E4F-B325-4630B97E94B0}.Debug|x86.Build.0 = Debug|Any CPU
+		{00A09FA8-FFB3-4E4F-B325-4630B97E94B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00A09FA8-FFB3-4E4F-B325-4630B97E94B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00A09FA8-FFB3-4E4F-B325-4630B97E94B0}.Release|x86.ActiveCfg = Release|Any CPU
+		{00A09FA8-FFB3-4E4F-B325-4630B97E94B0}.Release|x86.Build.0 = Release|Any CPU
+		{00A09FA8-FFB3-4E4F-B325-4630B97E94B0}.Tests|Any CPU.ActiveCfg = Debug|Any CPU
+		{00A09FA8-FFB3-4E4F-B325-4630B97E94B0}.Tests|Any CPU.Build.0 = Debug|Any CPU
+		{00A09FA8-FFB3-4E4F-B325-4630B97E94B0}.Tests|x86.ActiveCfg = Debug|Any CPU
+		{00A09FA8-FFB3-4E4F-B325-4630B97E94B0}.Tests|x86.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

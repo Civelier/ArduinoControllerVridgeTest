@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef _BYTEUNIONS_h
+#define _BYTEUNIONS_h
+
 #ifdef WIN32
 #include "ArduinoEmulation.h"
 #else
@@ -89,3 +92,4 @@ union ByteFloatUnion
 	byte asBytes[4];
 	float asFloat;
 };
+#endif

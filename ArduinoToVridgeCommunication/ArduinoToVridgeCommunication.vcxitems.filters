@@ -14,16 +14,13 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)src\ArduinoToVridgeCommunication.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\JoystickTest\BinarySerializer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)src\ArduinoToPCCommunicationProtocole.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)src\BinarySerializer.cpp">
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\ByteArray.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)src\ByteArray.cpp">
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\BinarySerializer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -35,18 +32,6 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\JoystickTest\ISerializable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\JoystickTest\Definitions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\JoystickTest\ByteUnions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\JoystickTest\ByteArray.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)src\IMoniteredValue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
