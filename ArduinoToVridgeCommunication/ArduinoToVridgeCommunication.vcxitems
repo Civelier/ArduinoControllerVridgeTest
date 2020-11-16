@@ -21,18 +21,18 @@
   </ItemGroup>
   <ItemGroup>
     <!-- <ClInclude Include="$(MSBuildThisFileDirectory)ArduinoToVridgeCommunication.h" /> -->
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\ArduinoToPCTests\ArduinoToPCCommunicationProtocole.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\JoystickTest\BinarySerializer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\JoystickTest\ByteArray.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\JoystickTest\ByteUnions.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\JoystickTest\Definitions.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\JoystickTest\ISerializable.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)IMoniteredValue.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\ArduinoToPCCommunicationProtocole.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\IMoniteredValue.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\ArduinoToPCTests\ArduinoToPCCommunicationProtocole.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\JoystickTest\BinarySerializer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\JoystickTest\ByteArray.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\ArduinoToPCCommunicationProtocole.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\ArduinoToVridgeCommunication.cpp" />
   </ItemGroup>
 </Project>

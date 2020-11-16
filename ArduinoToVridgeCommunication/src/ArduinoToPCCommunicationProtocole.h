@@ -5,17 +5,14 @@
 
 #define ATPCCP ArduinoToPCCommunicationProtocole
 
-#if defined(ARDUINO) && ARDUINO >= 100
-	#include "arduino.h"
-#else
-	#include "WProgram.h"
-#endif
+#include "Arduino.h"
+#include "IMoniteredValue.h"
 
 class ArduinoToPCCommunicationProtocoleClass
 {
 protected:
 	uint8_t m_dataCount;
-
+	IMoniteredValue** m_monitoredValues;
 
 public:
 	void init(uint8_t dataCount);

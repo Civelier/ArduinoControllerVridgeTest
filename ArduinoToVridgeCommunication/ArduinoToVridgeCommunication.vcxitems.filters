@@ -20,7 +20,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)..\JoystickTest\ByteArray.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\ArduinoToPCTests\ArduinoToPCCommunicationProtocole.cpp">
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\ArduinoToPCCommunicationProtocole.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -47,10 +47,10 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\JoystickTest\BinarySerializer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\ArduinoToPCTests\ArduinoToPCCommunicationProtocole.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\IMoniteredValue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)IMoniteredValue.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\ArduinoToPCCommunicationProtocole.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
