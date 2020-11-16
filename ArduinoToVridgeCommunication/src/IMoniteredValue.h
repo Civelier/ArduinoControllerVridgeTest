@@ -6,6 +6,7 @@
 #include "ISerializable.h"
 #include "BinarySerializer.h"
 #include "Definitions.h"
+#include "DeviceInfo.h"
 
 class IMoniteredValue : public virtual ISerializable
 {
@@ -14,7 +15,7 @@ protected:
 
 	IMoniteredValue()
 	{
-		ID = __COUNTER__;
+		ID = __COUNTER__ + 1;
 	}
 public:
 	byte ID;

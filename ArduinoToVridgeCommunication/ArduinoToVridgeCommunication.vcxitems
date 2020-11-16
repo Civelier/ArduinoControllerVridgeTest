@@ -26,6 +26,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)src\ByteArray.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\ByteUnions.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\Definitions.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\DeviceInfo.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\ErrorCodes.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\IMoniteredValue.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\ISerializable.h" />

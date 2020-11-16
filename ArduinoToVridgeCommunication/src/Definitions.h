@@ -21,4 +21,6 @@
 
 #define SendToPC(data) Serial.print((String)(*data))
 
+#define SendBytes(length, ...) Serial.write(new byte[] { __VA_ARGS__ }, length)
+
 #endif

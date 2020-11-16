@@ -13,5 +13,6 @@
 }
 
 #define ERR_OUT_OF_RANGE (byte)0
+#define ERR_INVALID_COMMAND (byte)1
 
 #endif

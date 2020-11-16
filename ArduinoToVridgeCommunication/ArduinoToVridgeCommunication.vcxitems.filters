@@ -71,5 +71,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)src\ErrorCodes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\DeviceInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
