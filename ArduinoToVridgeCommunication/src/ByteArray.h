@@ -24,6 +24,8 @@ public:
 #endif
 	ByteArray* Copy();
 	explicit operator String();
+	operator byte*();
+	void Print();
 	~ByteArray();
 };
 

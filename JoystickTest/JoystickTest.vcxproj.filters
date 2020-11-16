@@ -45,21 +45,6 @@
     <ClInclude Include="AxisPair.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Definitions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BinarySerializer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ByteArray.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ByteUnions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ISerializable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TransmittableAxisPair.h">
       <Filter>Header Files</Filter>
     </ClInclude>

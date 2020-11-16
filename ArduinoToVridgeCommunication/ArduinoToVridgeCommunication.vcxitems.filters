@@ -17,10 +17,13 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)..\JoystickTest\BinarySerializer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\JoystickTest\ByteArray.cpp">
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\ArduinoToPCCommunicationProtocole.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)src\ArduinoToPCCommunicationProtocole.cpp">
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\BinarySerializer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\ByteArray.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -44,13 +47,28 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\JoystickTest\ByteArray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\JoystickTest\BinarySerializer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)src\IMoniteredValue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)src\ArduinoToPCCommunicationProtocole.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\BinarySerializer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\ByteArray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\ByteUnions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\Definitions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\ISerializable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\ErrorCodes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -96,6 +96,17 @@ ByteArray::operator String()
 	return output;
 }
 
+ByteArray::operator byte* ()
+{
+	return Array;
+}
+
+void ByteArray::Print()
+{
+	Serial.write(Array, Length);
+}
+
+
 ByteArray::~ByteArray()
 {
 	free(Array);

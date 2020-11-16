@@ -17,4 +17,8 @@
 
 #define DebugWriteLine(text, lvl) if (lvl <= DEBUG_LEVEL) WriteLine(text)
 
+#define ToByteArray(...) new ByteArray(new byte[] { __VA_ARGS__ })
+
+#define SendToPC(data) Serial.print((String)(*data))
+
 #endif
