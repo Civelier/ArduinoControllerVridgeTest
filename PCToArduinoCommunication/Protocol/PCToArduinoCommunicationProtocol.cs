@@ -21,14 +21,60 @@ namespace PCToArduinoCommunication.Protocol
         public SerialPort Port
         {
             get => _port;
-            set => _port = value;
+            set
+            {
+                _port.DataReceived -= Port_DataReceived;
+                if (_port.IsOpen) _port.Close();
+                _port = value;
+                _port.DataReceived += Port_DataReceived;
+            }
+        }
+        public bool IsConnected
+        {
+            get
+            {
+                if (Port == null || !Port.IsOpen) return false;
+                if (TimeSinceLastReply > TimeSpan.FromMilliseconds(250))
+                {
+                    Ping();
+                }
+                if (TimeSinceLastReply > TimeSpan.FromMilliseconds(750))
+                {
+                    return false;
+                }
+                else return true;
+            }
         }
 
-        public PCToArduinoCommunicationProtocol(SerialPort port)
+        private Ping _ping;
+        public uint LastMilis
+        {
+            get;
+            private set;
+        }
+        private DateTime _lastPing;
+
+        public TimeSpan TimeSinceLastReply => DateTime.Now - _lastPing;
+
+        public PCToArduinoCommunicationProtocol()
+        {
+            _lastPing = DateTime.Now;
+            _ping = new Ping();
+            LastMilis = 0U;
+            _ping.Replied += _ping_Replied;
+        }
+
+        private void _ping_Replied(object sender, PingRepliedEventArgs e)
+        {
+            LastMilis = e.Milliseconds;
+            _lastPing = DateTime.Now;
+        }
+
+        public PCToArduinoCommunicationProtocol(SerialPort port) : this()
         {
             _port = port;
-            _port.DiscardNull = false;
             port.DataReceived += Port_DataReceived;
+            _lastPing = DateTime.Now;
         }
 
         private void Port_DataReceived(object sender, SerialDataReceivedEventArgs e)
@@ -62,6 +108,12 @@ namespace PCToArduinoCommunication.Protocol
                 _incommingMessage.Clear();
                 _incommingMessageSize = 0;
             }
+        }
+
+        public uint Ping()
+        {
+            Send(_ping);
+            return LastMilis;
         }
 
         private void Send(byte[] data)

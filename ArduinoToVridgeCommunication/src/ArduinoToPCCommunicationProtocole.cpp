@@ -8,13 +8,19 @@
 void Handshake(BinarySerializer* args)
 {
 	DebugLED.Flash(DEBUG_HANDSHAKE_RECIEVED);
-	byte arr[3] =
+	byte arr[8] =
 	{
-		3,
+		8,
 		0,
-		DEVICE_TYPE
+		DEVICE_TYPE,
+		ACCESS_CODE1,
+		ACCESS_CODE2,
+		PROTOCOL_VERSION_MAJOR,
+		PROTOCOL_VERSION_MINOR,
+		PROTOCOL_VERSION_PATCH
 	};
-	Serial.write(arr, 3);
+	Serial.write(arr, 8);
+	delete arr;
 }
 
 //Command ID : 1
@@ -32,6 +38,7 @@ void Ping(BinarySerializer* args)
 		u.asBytes[3]
 	};
 	Serial.write(arr, 6);
+	delete arr;
 }
 
 //Command ID : 2
@@ -48,18 +55,34 @@ void Deactivate(BinarySerializer* args)
 	ATPCCP.IsActive = false;
 }
 
+//Command ID : 4
+void GetVersion(BinarySerializer* args)
+{
+	byte arr[5] =
+	{
+		5,
+		0,
+		FIRMWARE_VERSION_MAJOR,
+		FIRMWARE_VERSION_MINOR,
+		FIRMWARE_VERSION_PATCH
+	};
+	Serial.write(arr, 5);
+	delete arr;
+}
+
 ArduinoToPCCommunicationProtocoleClass ArduinoToPCCommunicationProtocole;
 
 void ArduinoToPCCommunicationProtocoleClass::init(uint8_t dataCount)
 {
 	m_dataCapacity = dataCount;
 	m_monitoredValues = (IMoniteredValue**)malloc(dataCount * sizeof(IMoniteredValue*));
-	m_commands = new command_t[4]
+	m_commands = new command_t[5]
 	{
 		Handshake,
 		Ping,
 		Activate,
-		Deactivate
+		Deactivate,
+		GetVersion
 	};
 }
 

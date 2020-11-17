@@ -16,7 +16,7 @@
 // the setup function runs once when you press reset or power the board
 void setup()
 {
-	Serial.begin(9600);
+	Serial.begin(115200);
 	ATPCCP.init(0);
 	DebugLED.init();
 	DebugLED.Flash(DEBUG_ACTIVATED);
@@ -27,5 +27,5 @@ void setup()
 void loop()
 {
 	ATPCCP.Run();
-	delay(1000);
+	//delay(1000);
 }

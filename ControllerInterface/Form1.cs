@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using PCToArduinoCommunication.Protocol.SendCommands;
 using PCToArduinoCommunication.Protocol;
+using PCToArduinoCommunication.Devices;
 
 namespace ControllerInterface
 {
@@ -24,19 +25,22 @@ namespace ControllerInterface
             }
         }
 
-        PCToArduinoCommunicationProtocol RightProtocol;
+        private IEnumerator<bool> _connectService;
+
         public Form1()
         {
             InitializeComponent();
-            RightProtocol = new PCToArduinoCommunicationProtocol(RightController);
             MainThreadDispatcher.Enabled = true;
+            DeviceConnetionService.Instance.Begin(ProtocolInfo.Devices[0], ProtocolInfo.Devices[1]);
+            
+            _connectService = DeviceConnetionService.Instance.Connect();
         }
 
         private void PingButton_Click(object sender, EventArgs e)
         {
             var ping = new Ping();
             ping.Replied += Ping_Replied;
-            RightProtocol.Send(ping);
+            //RightProtocol.Send(ping);
         }
 
         private void Ping_Replied(object sender, PingRepliedEventArgs e)
@@ -50,7 +54,7 @@ namespace ControllerInterface
         {
             var handshake = new Handshake();
             handshake.Replied += Handshake_Replied;
-            RightProtocol.Send(handshake);
+            //RightProtocol.Send(handshake);
         }
 
         private void Handshake_Replied(object sender, HandshakeRepliedEventArgs e)
@@ -83,7 +87,7 @@ namespace ControllerInterface
 
         private void PortList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            RightProtocol.Port.PortName = System.IO.Ports.SerialPort.GetPortNames()[PortList.SelectedIndex];
+            //RightProtocol.Port.PortName = System.IO.Ports.SerialPort.GetPortNames()[PortList.SelectedIndex];
         }
 
         private void MainThreadDispatcher_Tick(object sender, EventArgs e)
@@ -95,6 +99,17 @@ namespace ControllerInterface
                     _mainThreadActionQueue.Dequeue().Invoke();
                 }
             }
+        }
+
+        private void ConnectTimer_Tick(object sender, EventArgs e)
+        {
+            _connectService.MoveNext();
+            if (DeviceConnetionService.Instance.RightControllerPort.IsConnected)
+            {
+                ControllerTypeLabel.Text = "Right";
+                LastMillisLabel.Text = $"{DeviceConnetionService.Instance.RightControllerPort.LastMilis}ms";
+            }
+            else ControllerTypeLabel.Text = "Disconnected";
         }
     }
 }

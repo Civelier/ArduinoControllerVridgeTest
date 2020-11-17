@@ -41,10 +41,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Devices\ArduinoController.cs" />
+    <Compile Include="Devices\DeviceConnetionService.cs" />
+    <Compile Include="Devices\IControllerDevice.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protocol\BinaryDeserializer.cs" />
     <Compile Include="Protocol\BinarySerializer.cs" />
     <Compile Include="Protocol\PCToArduinoCommunicationProtocol.cs" />
+    <Compile Include="Protocol\ProtocolInfo.cs" />
     <Compile Include="Protocol\SendCommands\Handshake.cs" />
     <Compile Include="Protocol\SendCommands\ISendCommand.cs" />
     <Compile Include="Protocol\SendCommands\Ping.cs" />

@@ -43,12 +43,14 @@
             this.MyErrorProvider = new System.Windows.Forms.ErrorProvider(this.components);
             this.LeftController = new System.IO.Ports.SerialPort(this.components);
             this.MainThreadDispatcher = new System.Windows.Forms.Timer(this.components);
+            this.ConnectTimer = new System.Windows.Forms.Timer(this.components);
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MyErrorProvider)).BeginInit();
             this.SuspendLayout();
             // 
             // RightController
             // 
+            this.RightController.BaudRate = 115200;
             this.RightController.PortName = "COM4";
             // 
             // panel1
@@ -161,12 +163,18 @@
             // 
             // LeftController
             // 
+            this.LeftController.BaudRate = 115200;
             this.LeftController.ReadTimeout = 500;
             this.LeftController.WriteTimeout = 500;
             // 
             // MainThreadDispatcher
             // 
             this.MainThreadDispatcher.Tick += new System.EventHandler(this.MainThreadDispatcher_Tick);
+            // 
+            // ConnectTimer
+            // 
+            this.ConnectTimer.Enabled = true;
+            this.ConnectTimer.Tick += new System.EventHandler(this.ConnectTimer_Tick);
             // 
             // Form1
             // 
@@ -199,6 +207,7 @@
         private System.Windows.Forms.ListBox PortList;
         private System.Windows.Forms.Button RefreshButton;
         private System.Windows.Forms.Timer MainThreadDispatcher;
+        private System.Windows.Forms.Timer ConnectTimer;
     }
 }
 
