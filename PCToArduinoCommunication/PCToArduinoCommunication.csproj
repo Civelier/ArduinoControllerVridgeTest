@@ -49,7 +49,7 @@
     <Compile Include="Protocol\BinarySerializer.cs" />
     <Compile Include="Protocol\PCToArduinoCommunicationProtocol.cs" />
     <Compile Include="Protocol\ProtocolInfo.cs" />
-    <Compile Include="Protocol\SendCommands\Handshake.cs" />
+    <Compile Include="Protocol\SendCommands\HandshakeCommand.cs" />
     <Compile Include="Protocol\SendCommands\ISendCommand.cs" />
     <Compile Include="Protocol\SendCommands\Ping.cs" />
   </ItemGroup>

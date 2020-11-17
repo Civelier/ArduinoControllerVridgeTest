@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace PCToArduinoCommunication.Protocol.SendCommands
 {
-    public enum DeviceType
+    public enum DeviceType : byte
     {
         LeftController = 0,
         RightController = 1,
+        TestDevice = 255,
     }
 
     public class HandshakeRepliedEventArgs : EventArgs
@@ -24,7 +25,7 @@ namespace PCToArduinoCommunication.Protocol.SendCommands
         }
     }
 
-    public class Handshake : ISendCommand
+    public class HandshakeCommand : ISendCommand
     {
         private byte _id;
 
@@ -34,7 +35,7 @@ namespace PCToArduinoCommunication.Protocol.SendCommands
 
         public event EventHandler<HandshakeRepliedEventArgs> Replied;
 
-        public Handshake()
+        public HandshakeCommand()
         {
             _id = 0;
         }

@@ -35,8 +35,6 @@ public:
 	void SetX(int x, int xMax);
 	void SetY(float y);
 	void SetY(int y, int yMax);
-
-	
 };
 
 #endif

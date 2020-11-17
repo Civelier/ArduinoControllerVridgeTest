@@ -52,14 +52,14 @@ namespace ControllerInterface
 
         private void HandshakeButton_Click(object sender, EventArgs e)
         {
-            var handshake = new Handshake();
+            var handshake = new HandshakeCommand();
             handshake.Replied += Handshake_Replied;
             //RightProtocol.Send(handshake);
         }
 
         private void Handshake_Replied(object sender, HandshakeRepliedEventArgs e)
         {
-            var h = (Handshake)sender;
+            var h = (HandshakeCommand)sender;
             h.Replied -= Handshake_Replied;
             switch (e.Type)
             {

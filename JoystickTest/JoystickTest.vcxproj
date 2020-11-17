@@ -147,6 +147,7 @@
     <DebuggerFlavor>VisualMicroDebugger</DebuggerFlavor>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="cpp.hint" />
     <None Include="JoystickTest.ino">
       <FileType>CppCode</FileType>
     </None>

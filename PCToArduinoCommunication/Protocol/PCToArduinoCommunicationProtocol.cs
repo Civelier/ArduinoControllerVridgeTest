@@ -127,9 +127,6 @@ namespace PCToArduinoCommunication.Protocol
             var s = command.Send();
             Send(s.Data.ToArray());
             _lastCommandSent = command;
-            if (command.ExpectsResponse)
-            {
-            }
         }
     }
 }

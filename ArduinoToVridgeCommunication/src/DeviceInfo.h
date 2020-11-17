@@ -3,6 +3,7 @@
 #ifndef _DEVICEINFO_h
 #define _DEVICEINFO_h
 
+
 #define LEFT_CONTROLLER 0
 #define RIGHT_CONTROLLER 1
 
@@ -17,6 +18,10 @@
 #define FIRMWARE_VERSION_MINOR 2
 #define FIRMWARE_VERSION_PATCH 0
 
+#ifdef TEST
+#define DEVICE_TYPE 255
+#else
 #define DEVICE_TYPE RIGHT_CONTROLLER
+#endif
 
 #endif

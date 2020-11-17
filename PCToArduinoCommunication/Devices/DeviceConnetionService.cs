@@ -58,7 +58,7 @@ namespace PCToArduinoCommunication.Devices
 
         private IEnumerator<Tuple<HandshakeAttemptResult, IControllerDevice>> TryHandshakeToDevice(Port.SerialPort port)
         {
-            var handshake = new Handshake();
+            var handshake = new HandshakeCommand();
             Stopwatch stopwatch = new Stopwatch();
 
             Send(handshake, port);
@@ -140,41 +140,43 @@ namespace PCToArduinoCommunication.Devices
                         port.PortName = portName;
                         if (!port.IsOpen) port.Open();
 
-                        var tryConnect = TryHandshakeToDevice(port);
-                        bool interrupt = false;
-                        while (!interrupt)
+                        using (var tryConnect = TryHandshakeToDevice(port))
                         {
-                            interrupt = !tryConnect.MoveNext();
-                            switch (tryConnect.Current.Item1)
+                            bool interrupt = false;
+                            while (!interrupt)
                             {
-                                case HandshakeAttemptResult.NoReply:
-                                case HandshakeAttemptResult.RecievingData:
-                                    break;
-                                case HandshakeAttemptResult.TimedOut:
-                                case HandshakeAttemptResult.Failed:
-                                case HandshakeAttemptResult.Sucess:
-                                case HandshakeAttemptResult.InvalidDevice:
-                                    interrupt = true;
-                                    break;
-                                default:
-                                    break;
+                                interrupt = !tryConnect.MoveNext();
+                                switch (tryConnect.Current.Item1)
+                                {
+                                    case HandshakeAttemptResult.NoReply:
+                                    case HandshakeAttemptResult.RecievingData:
+                                        break;
+                                    case HandshakeAttemptResult.TimedOut:
+                                    case HandshakeAttemptResult.Failed:
+                                    case HandshakeAttemptResult.Sucess:
+                                    case HandshakeAttemptResult.InvalidDevice:
+                                        interrupt = true;
+                                        break;
+                                    default:
+                                        break;
+                                }
                             }
-                        }
 
-                        if (tryConnect.Current.Item2 != null)
-                        {
-                            if (tryConnect.Current.Item2.Name == "Left controller")
+                            if (tryConnect.Current.Item2 != null)
                             {
-                                LeftControllerPort.Port = port;
-                                port = new Port.SerialPort("COM1", 115200);
+                                if (tryConnect.Current.Item2.Name == "Left controller")
+                                {
+                                    LeftControllerPort.Port = port;
+                                    port = new Port.SerialPort("COM1", 115200);
+                                }
+                                if (tryConnect.Current.Item2.Name == "Right controller")
+                                {
+                                    RightControllerPort.Port = port;
+                                    port = new Port.SerialPort("COM1", 115200);
+                                }
                             }
-                            if (tryConnect.Current.Item2.Name == "Right controller")
-                            {
-                                RightControllerPort.Port = port;
-                                port = new Port.SerialPort("COM1", 115200);
-                            }
+                            else port.Close();
                         }
-                        else port.Close();
                     }
                 }
                 yield return false;
