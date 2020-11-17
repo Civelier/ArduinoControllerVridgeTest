@@ -31,6 +31,9 @@
             this.components = new System.ComponentModel.Container();
             this.RightController = new System.IO.Ports.SerialPort(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
+            this.RefreshButton = new System.Windows.Forms.Button();
+            this.OpenButton = new System.Windows.Forms.Button();
+            this.PortList = new System.Windows.Forms.ListBox();
             this.ControllerTypeLabel = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.HandshakeButton = new System.Windows.Forms.Button();
@@ -39,9 +42,7 @@
             this.PingButton = new System.Windows.Forms.Button();
             this.MyErrorProvider = new System.Windows.Forms.ErrorProvider(this.components);
             this.LeftController = new System.IO.Ports.SerialPort(this.components);
-            this.PortList = new System.Windows.Forms.ListBox();
-            this.OpenButton = new System.Windows.Forms.Button();
-            this.RefreshButton = new System.Windows.Forms.Button();
+            this.MainThreadDispatcher = new System.Windows.Forms.Timer(this.components);
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MyErrorProvider)).BeginInit();
             this.SuspendLayout();
@@ -66,6 +67,35 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(799, 452);
             this.panel1.TabIndex = 0;
+            // 
+            // RefreshButton
+            // 
+            this.RefreshButton.Location = new System.Drawing.Point(380, 45);
+            this.RefreshButton.Name = "RefreshButton";
+            this.RefreshButton.Size = new System.Drawing.Size(75, 23);
+            this.RefreshButton.TabIndex = 8;
+            this.RefreshButton.Text = "Refresh";
+            this.RefreshButton.UseVisualStyleBackColor = true;
+            this.RefreshButton.Click += new System.EventHandler(this.RefreshButton_Click);
+            // 
+            // OpenButton
+            // 
+            this.OpenButton.Location = new System.Drawing.Point(586, 45);
+            this.OpenButton.Name = "OpenButton";
+            this.OpenButton.Size = new System.Drawing.Size(75, 23);
+            this.OpenButton.TabIndex = 7;
+            this.OpenButton.Text = "Open";
+            this.OpenButton.UseVisualStyleBackColor = true;
+            this.OpenButton.Click += new System.EventHandler(this.OpenButton_Click);
+            // 
+            // PortList
+            // 
+            this.PortList.FormattingEnabled = true;
+            this.PortList.Location = new System.Drawing.Point(461, 50);
+            this.PortList.Name = "PortList";
+            this.PortList.Size = new System.Drawing.Size(119, 17);
+            this.PortList.TabIndex = 6;
+            this.PortList.SelectedIndexChanged += new System.EventHandler(this.PortList_SelectedIndexChanged);
             // 
             // ControllerTypeLabel
             // 
@@ -134,34 +164,9 @@
             this.LeftController.ReadTimeout = 500;
             this.LeftController.WriteTimeout = 500;
             // 
-            // PortList
+            // MainThreadDispatcher
             // 
-            this.PortList.FormattingEnabled = true;
-            this.PortList.Location = new System.Drawing.Point(461, 50);
-            this.PortList.Name = "PortList";
-            this.PortList.Size = new System.Drawing.Size(119, 17);
-            this.PortList.TabIndex = 6;
-            this.PortList.SelectedIndexChanged += new System.EventHandler(this.PortList_SelectedIndexChanged);
-            // 
-            // OpenButton
-            // 
-            this.OpenButton.Location = new System.Drawing.Point(586, 45);
-            this.OpenButton.Name = "OpenButton";
-            this.OpenButton.Size = new System.Drawing.Size(75, 23);
-            this.OpenButton.TabIndex = 7;
-            this.OpenButton.Text = "Open";
-            this.OpenButton.UseVisualStyleBackColor = true;
-            this.OpenButton.Click += new System.EventHandler(this.OpenButton_Click);
-            // 
-            // RefreshButton
-            // 
-            this.RefreshButton.Location = new System.Drawing.Point(380, 45);
-            this.RefreshButton.Name = "RefreshButton";
-            this.RefreshButton.Size = new System.Drawing.Size(75, 23);
-            this.RefreshButton.TabIndex = 8;
-            this.RefreshButton.Text = "Refresh";
-            this.RefreshButton.UseVisualStyleBackColor = true;
-            this.RefreshButton.Click += new System.EventHandler(this.RefreshButton_Click);
+            this.MainThreadDispatcher.Tick += new System.EventHandler(this.MainThreadDispatcher_Tick);
             // 
             // Form1
             // 
@@ -193,6 +198,7 @@
         private System.Windows.Forms.Button OpenButton;
         private System.Windows.Forms.ListBox PortList;
         private System.Windows.Forms.Button RefreshButton;
+        private System.Windows.Forms.Timer MainThreadDispatcher;
     }
 }
 

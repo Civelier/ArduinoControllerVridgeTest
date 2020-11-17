@@ -7,6 +7,8 @@
 
 #include "IMoniteredValue.h"
 #include "ErrorCodes.h"
+#include "DebugCodes.h"
+#include "DebugLED.h"
 
 typedef void(*command_t)(BinarySerializer*);
 

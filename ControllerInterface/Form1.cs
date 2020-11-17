@@ -14,17 +14,36 @@ namespace ControllerInterface
 {
     public partial class Form1 : Form
     {
+        private static Queue<Action> _mainThreadActionQueue = new Queue<Action>();
+
+        public static void QueueActionOnMainThread(Action action)
+        {
+            lock (_mainThreadActionQueue)
+            {
+                _mainThreadActionQueue.Enqueue(action);
+            }
+        }
+
         PCToArduinoCommunicationProtocol RightProtocol;
         public Form1()
         {
             InitializeComponent();
             RightProtocol = new PCToArduinoCommunicationProtocol(RightController);
-            
+            MainThreadDispatcher.Enabled = true;
         }
 
         private void PingButton_Click(object sender, EventArgs e)
         {
+            var ping = new Ping();
+            ping.Replied += Ping_Replied;
+            RightProtocol.Send(ping);
+        }
 
+        private void Ping_Replied(object sender, PingRepliedEventArgs e)
+        {
+            var ping = (Ping)sender;
+            ping.Replied -= Ping_Replied;
+            QueueActionOnMainThread(() => LastMillisLabel.Text = $"{e.Milliseconds}ms");
         }
 
         private void HandshakeButton_Click(object sender, EventArgs e)
@@ -41,10 +60,10 @@ namespace ControllerInterface
             switch (e.Type)
             {
                 case DeviceType.LeftController:
-                    ControllerTypeLabel.Text = "Left";
+                    QueueActionOnMainThread(() => ControllerTypeLabel.Text = "Left");
                     break;
                 case DeviceType.RightController:
-                    ControllerTypeLabel.Text = "Right";
+                    QueueActionOnMainThread(() => ControllerTypeLabel.Text = "Right");
                     break;
                 default:
                     break;
@@ -53,7 +72,7 @@ namespace ControllerInterface
 
         private void OpenButton_Click(object sender, EventArgs e)
         {
-            RightController.Open();
+            if (!RightController.IsOpen) RightController.Open();
         }
 
         private void RefreshButton_Click(object sender, EventArgs e)
@@ -65,6 +84,17 @@ namespace ControllerInterface
         private void PortList_SelectedIndexChanged(object sender, EventArgs e)
         {
             RightProtocol.Port.PortName = System.IO.Ports.SerialPort.GetPortNames()[PortList.SelectedIndex];
+        }
+
+        private void MainThreadDispatcher_Tick(object sender, EventArgs e)
+        {
+            lock (_mainThreadActionQueue)
+            {
+                while (_mainThreadActionQueue.Count > 0)
+                {
+                    _mainThreadActionQueue.Dequeue().Invoke();
+                }
+            }
         }
     }
 }

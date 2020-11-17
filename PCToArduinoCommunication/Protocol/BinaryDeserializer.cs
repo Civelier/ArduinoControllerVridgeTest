@@ -28,63 +28,63 @@ namespace PCToArduinoCommunication.Protocol
             return v;
         }
 
-        public char GetChar(char c)
+        public char GetChar()
         {
             var v = _data[_index];
             _index++;
             return (char)v;
         }
 
-        public short GetShort(short s)
+        public short GetShort()
         {
             var v = BitConverter.ToInt16(_data, _index);
             Increment(2);
             return v;
         }
 
-        public ushort GetUShort(ushort us)
+        public ushort GetUShort()
         {
             var v = BitConverter.ToUInt16(_data, _index);
             Increment(2);
             return v;
         }
 
-        public int GetInt(int i)
+        public int GetInt()
         {
             var v = BitConverter.ToInt32(_data, _index);
             Increment(4);
             return v;
         }
 
-        public uint GetUInt(uint ui)
+        public uint GetUInt()
         {
             var v = BitConverter.ToUInt32(_data, _index);
             Increment(4);
             return v;
         }
 
-        public long GetLong(long l)
+        public long GetLong()
         {
             var v = BitConverter.ToInt64(_data, _index);
             Increment(8);
             return v;
         }
 
-        public ulong GetULong(ulong ul)
+        public ulong GetULong()
         {
             var v = BitConverter.ToUInt64(_data, _index);
             Increment(2);
             return v;
         }
 
-        public float GetFloat(float f)
+        public float GetFloat()
         {
             var v = BitConverter.ToSingle(_data, _index);
             Increment(4);
             return v;
         }
 
-        public double GetDouble(double d)
+        public double GetDouble()
         {
             var v = BitConverter.ToDouble(_data, _index);
             Increment(8);

@@ -3,6 +3,10 @@
 #ifndef _DEFINITIONS_h
 #define _DEFINITIONS_h
 
+#ifndef _DEBUG
+#define _DEBUG 1
+#endif
+
 #ifdef _DEBUG
 #define DEBUG_LEVEL 1
 #else

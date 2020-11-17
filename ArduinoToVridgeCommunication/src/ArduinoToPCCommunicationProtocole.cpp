@@ -7,34 +7,44 @@
 //Command ID : 0
 void Handshake(BinarySerializer* args)
 {
-	ByteArray* arr = new ByteArray(2);
-	arr->Append((byte)0);
-	arr->Append(DEVICE_TYPE);
-	SendToPC(arr);
-	delete arr;
+	DebugLED.Flash(DEBUG_HANDSHAKE_RECIEVED);
+	byte arr[3] =
+	{
+		3,
+		0,
+		DEVICE_TYPE
+	};
+	Serial.write(arr, 3);
 }
 
 //Command ID : 1
 void Ping(BinarySerializer* args)
 {
-	BinarySerializer serializer = BinarySerializer();
-	serializer.AddLongSize();
-	serializer.GenerateArray();
-	serializer.Add(millis());
-	ByteArray* arr = serializer.GetArray();
-	SendToPC(arr);
-	delete arr;
+	DebugLED.Flash(DEBUG_PING_RECIEVED);
+	ULongByteUnion u = { millis() };
+	byte arr[6] = 
+	{
+		6,
+		0,
+		u.asBytes[0],
+		u.asBytes[1],
+		u.asBytes[2],
+		u.asBytes[3]
+	};
+	Serial.write(arr, 6);
 }
 
 //Command ID : 2
 void Activate(BinarySerializer* args)
 {
+	DebugLED.Flash(DEBUG_ACTIVATED);
 	ATPCCP.IsActive = true;
 }
 
 //Command ID : 3
 void Deactivate(BinarySerializer* args)
 {
+	DebugLED.Flash(DEBUG_DEACTIVATED);
 	ATPCCP.IsActive = false;
 }
 
@@ -57,12 +67,10 @@ void ArduinoToPCCommunicationProtocoleClass::Run()
 {
 	if (Serial.available())
 	{
-		digitalWrite(13, 1);
-		delay(200);
-		digitalWrite(13, 0);
+		DebugLED.Flash(DEBUG_MESSAGE_RECIEVED);
 		byte arr[2];
 		Serial.readBytes(arr, 2);
-		byte length = arr[0];
+		byte length = arr[0] - 2;
 		byte funcID = arr[1];
 
 		ByteArray* data = new ByteArray(length);

@@ -15,10 +15,11 @@
 class BinarySerializer
 {
 private:
-	size_t m_size;
 	ByteArray* m_array;
 	bool m_isReading;
 	size_t m_index = 0;
+public:
+	size_t Size;
 private:
 	void GetBytes(byte* arr, size_t length);
 public:

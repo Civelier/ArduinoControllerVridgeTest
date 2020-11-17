@@ -47,6 +47,7 @@
     <Compile Include="Protocol\PCToArduinoCommunicationProtocol.cs" />
     <Compile Include="Protocol\SendCommands\Handshake.cs" />
     <Compile Include="Protocol\SendCommands\ISendCommand.cs" />
+    <Compile Include="Protocol\SendCommands\Ping.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

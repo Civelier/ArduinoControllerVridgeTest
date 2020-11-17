@@ -4,6 +4,8 @@
  Author:	civel
 */
 
+#include "DebugLED.h"
+#include "DebugLED.h"
 #include "Arduino.h"
 #include "ArduinoToPCCommunicationProtocole.h"
 
@@ -16,7 +18,9 @@ void setup()
 {
 	Serial.begin(9600);
 	ATPCCP.init(0);
-	pinMode(13, OUTPUT);
+	DebugLED.init();
+	DebugLED.Flash(DEBUG_ACTIVATED);
+	DebugLED.Flash(DEBUG_DEACTIVATED);
 }
 
 // the loop function runs over and over again until power down or reset

@@ -25,6 +25,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)src\BinarySerializer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\ByteArray.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\ByteUnions.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\DebugCodes.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\DebugLED.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\Definitions.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\DeviceInfo.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\ErrorCodes.h" />
@@ -36,5 +38,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)src\ArduinoToVridgeCommunication.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\BinarySerializer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\ByteArray.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\DebugLED.cpp" />
   </ItemGroup>
 </Project>

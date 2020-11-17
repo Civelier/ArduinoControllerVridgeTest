@@ -11,14 +11,14 @@ void BinarySerializer::GetBytes(byte* arr, size_t length)
 
 BinarySerializer::BinarySerializer()
 {
-	m_size = 0;
+	Size = 0;
 	m_array = nullptr;
 	m_isReading = false;
 }
 
 BinarySerializer::BinarySerializer(ByteArray* arr)
 {
-	m_size = arr->Length;
+	Size = arr->Length;
 	m_array = arr;
 	//m_array->PrintBinary();
 	m_isReading = true;
@@ -52,18 +52,18 @@ void BinarySerializer::AddFLoatSize()
 void BinarySerializer::AddSize(size_t size)
 {
 	if (m_isReading) m_index += size;
-	else m_size += size;
+	else Size += size;
 }
 
 void BinarySerializer::AddSize(ISerializable* serializable)
 {
 	if (m_isReading) m_index += serializable->Size();
-	else m_size += serializable->Size();
+	else Size += serializable->Size();
 }
 
 void BinarySerializer::GenerateArray()
 {
-	m_array = new ByteArray(m_size);
+	m_array = new ByteArray(Size);
 }
 
 void BinarySerializer::Add(char value)
@@ -209,7 +209,7 @@ float BinarySerializer::GetFloat()
 
 String BinarySerializer::GetString()
 {
-	return GetString(m_size - m_index);
+	return GetString(Size - m_index);
 }
 
 String BinarySerializer::GetString(size_t length)

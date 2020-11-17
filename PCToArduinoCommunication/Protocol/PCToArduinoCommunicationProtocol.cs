@@ -15,6 +15,8 @@ namespace PCToArduinoCommunication.Protocol
         private Timer _replyTimer = new Timer(ReplyTimeout);
         private SerialPort _port;
         private ISendCommand _lastCommandSent;
+        private List<byte> _incommingMessage = new List<byte>();
+        private byte _incommingMessageSize;
 
         public SerialPort Port
         {
@@ -25,24 +27,40 @@ namespace PCToArduinoCommunication.Protocol
         public PCToArduinoCommunicationProtocol(SerialPort port)
         {
             _port = port;
+            _port.DiscardNull = false;
             port.DataReceived += Port_DataReceived;
         }
 
         private void Port_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            byte[] buffer = new byte[Port.BytesToRead];
-            Port.Read(buffer, 0, buffer.Length);
-            Port.DiscardInBuffer();
-            var deserializer = new BinaryDeserializer(buffer);
-            var id = deserializer.GetByte();
-            if (id == 0)
+            while (Port.BytesToRead > 0)
             {
-                _lastCommandSent?.OnReply(deserializer);
+                int b = Port.ReadByte();
+                if (b == -1 || _incommingMessageSize != 0 && _incommingMessage.Count >= _incommingMessageSize)
+                {
+                    break;
+                }
+                else
+                {
+                    if (_incommingMessageSize == 0) _incommingMessageSize = (byte)(b - 1);
+                    else _incommingMessage.Add((byte)b);
+                }
             }
-            if (id == 255)
+            if (_incommingMessageSize != 0 && _incommingMessage.Count >= _incommingMessageSize)
             {
-                var errorCode = deserializer.GetByte();
-                Console.WriteLine($"Error encountered : {errorCode}");
+                var deserializer = new BinaryDeserializer(_incommingMessage.ToArray());
+                var id = deserializer.GetByte();
+                if (id == 0)
+                {
+                    _lastCommandSent?.OnReply(deserializer);
+                }
+                if (id == 255)
+                {
+                    var errorCode = deserializer.GetByte();
+                    Console.WriteLine($"Error encountered : {errorCode}");
+                }
+                _incommingMessage.Clear();
+                _incommingMessageSize = 0;
             }
         }
 

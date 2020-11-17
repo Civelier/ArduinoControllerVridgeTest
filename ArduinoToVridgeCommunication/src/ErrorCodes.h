@@ -7,9 +7,10 @@
 
 #define SendError(errorCode)\
 {\
-	ByteArray* _arr = new ByteArray(2);\
+	ByteArray* _arr = new ByteArray(3);\
+	_arr->Append((byte)3);\
 	_arr->Append((byte)255);\
-	_arr->Append((byte)errorCode);\
+	_arr->Append(errorCode);\
 	SendToPC(_arr);\
 	delete _arr;\
 }
