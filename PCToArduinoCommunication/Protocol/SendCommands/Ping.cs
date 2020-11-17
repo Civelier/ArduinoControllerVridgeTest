@@ -32,6 +32,7 @@ namespace PCToArduinoCommunication.Protocol.SendCommands
         {
             var serializer = new BinarySerializer();
             serializer.AppendValue(ID);
+            serializer.InsertSizeinFront();
             return serializer;
         }
     }
