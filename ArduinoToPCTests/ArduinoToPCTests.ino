@@ -5,6 +5,7 @@
 */
 
 #define TEST
+//#define _DEBUG
 
 #include "ArduinoToPCCommunicationProtocole.h"
 
@@ -13,6 +14,8 @@ void setup()
 {
 	Serial.begin(115200);
 	ATPCCP.init(0);
+	DebugLED.init();
+	DebugLED.Flash(0b10110011);
 }
 
 // the loop function runs over and over again until power down or reset

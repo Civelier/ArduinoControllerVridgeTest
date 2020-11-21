@@ -16,8 +16,10 @@ namespace PCToArduinoCommunication.Protocol.SendCommands
     public class HandshakeRepliedEventArgs : EventArgs
     {
         private DeviceType _type;
+        private byte[] _version;
 
         public DeviceType Type => _type;
+        public byte[] ProtocolVersion => _version;
 
         public HandshakeRepliedEventArgs(DeviceType type)
         {

@@ -23,8 +23,6 @@ private:
 	AxisPair m_axies;
 	bool m_lastButtonState;
 public:
-	bool HasChanged;
-
 	JoyStick(uint8_t buttonPin, uint8_t xAxisPin, uint8_t yAxisPin);
 
 	virtual bool HasChanged() override;

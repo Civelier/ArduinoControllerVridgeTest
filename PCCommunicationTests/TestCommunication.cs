@@ -4,26 +4,32 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PCToArduinoCommunication.Protocol;
 using PCToArduinoCommunication.Protocol.SendCommands;
+using FluentAssertions;
 
 namespace PCCommunicationTests
 {
     [TestClass]
     public class TestCommunication
     {
-        SerialPort port;
+        SerialPort port = new SerialPort("COM1", 115200);
         PCToArduinoCommunicationProtocol comm;
         bool hsReplied = false;
         [TestMethod]
-        public void TestOpenPort()
+        public void ATestOpenPort()
         {
             port.PortName = SerialPort.GetPortNames().FirstOrDefault();
             comm = new PCToArduinoCommunicationProtocol(port);
             comm.Port.Open();
+            comm.Port.IsOpen.Should().BeTrue();
+            comm.Port.Close();
         }
 
         [TestMethod]
         public void TestHandshake()
         {
+            port.PortName = SerialPort.GetPortNames().FirstOrDefault();
+            comm = new PCToArduinoCommunicationProtocol(port);
+            comm.Port.Open();
             HandshakeCommand hs = new HandshakeCommand();
             hs.Replied += Hs_Replied;
             comm.Send(hs);
@@ -36,11 +42,12 @@ namespace PCCommunicationTests
                 System.Threading.Thread.Sleep(refresh);
             }
             Assert.Fail("Timed out");
+            comm.Port.Close();
         }
 
         private void Hs_Replied(object sender, HandshakeRepliedEventArgs e)
         {
-            Assert.AreEqual(e.Type, DeviceType.TestDevice);
+            e.Type.Should().Be(DeviceType.TestDevice);
             hsReplied = true;
         }
     }

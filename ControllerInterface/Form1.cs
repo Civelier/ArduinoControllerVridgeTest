@@ -16,6 +16,7 @@ namespace ControllerInterface
     public partial class Form1 : Form
     {
         private static Queue<Action> _mainThreadActionQueue = new Queue<Action>();
+        private DataDecoder _decoder;
 
         public static void QueueActionOnMainThread(Action action)
         {
@@ -31,9 +32,39 @@ namespace ControllerInterface
         {
             InitializeComponent();
             MainThreadDispatcher.Enabled = true;
-            DeviceConnetionService.Instance.Begin(ProtocolInfo.Devices[0], ProtocolInfo.Devices[1]);
+            _decoder = new DataDecoder(RightController);
+            _decoder.DataDecoded += _decoder_DataDecoded;
+            RightController.Open();
+            //DeviceConnetionService.Instance.Begin(ProtocolInfo.Devices[0], ProtocolInfo.Devices[1]);
             
-            _connectService = DeviceConnetionService.Instance.Connect();
+            //_connectService = DeviceConnetionService.Instance.Connect();
+        }
+
+        private void _decoder_DataDecoded(DataDecoder sender, DataDecodedEventArgs args)
+        {
+            string[] s = args.Buffer.Split(';');
+            int[] values = new int[s.Length];
+
+            for (int i = 0; i < values.Length; i++)
+            {
+                values[i] = int.Parse(s[i]);
+            }
+
+            bool b1 = values[0] == 1;
+            bool b2 = values[1] == 1;
+            bool b3 = values[2] == 1;
+            bool b4 = values[3] == 1;
+            int x = values[4];
+            int y = values[5];
+            //_mainThreadActionQueue.Clear();
+            QueueActionOnMainThread(() => {
+                B1Label.Text = b1 ? "True" : "False";
+                B2Label.Text = b2 ? "True" : "False";
+                B3Label.Text = b3 ? "True" : "False";
+                B4Label.Text = b4 ? "True" : "False";
+                XLabel.Text = x.ToString();
+                YLabel.Text = y.ToString();
+            });
         }
 
         private void PingButton_Click(object sender, EventArgs e)
@@ -103,13 +134,13 @@ namespace ControllerInterface
 
         private void ConnectTimer_Tick(object sender, EventArgs e)
         {
-            _connectService.MoveNext();
-            if (DeviceConnetionService.Instance.RightControllerPort.IsConnected)
-            {
-                ControllerTypeLabel.Text = "Right";
-                LastMillisLabel.Text = $"{DeviceConnetionService.Instance.RightControllerPort.LastMilis}ms";
-            }
-            else ControllerTypeLabel.Text = "Disconnected";
+            //_connectService.MoveNext();
+            //if (DeviceConnetionService.Instance.RightControllerPort.IsConnected)
+            //{
+            //    ControllerTypeLabel.Text = "Right";
+            //    LastMillisLabel.Text = $"{DeviceConnetionService.Instance.RightControllerPort.LastMilis}ms";
+            //}
+            //else ControllerTypeLabel.Text = "Disconnected";
         }
     }
 }

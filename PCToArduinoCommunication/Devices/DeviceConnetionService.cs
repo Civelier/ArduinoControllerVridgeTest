@@ -138,7 +138,10 @@ namespace PCToArduinoCommunication.Devices
                         if (!(LeftControllerPort.IsConnected && LeftControllerPort.Port.PortName == portName) &&
                             !(RightControllerPort.IsConnected && RightControllerPort.Port.PortName == portName))
                         port.PortName = portName;
-                        if (!port.IsOpen) port.Open();
+                        if (!port.IsOpen)
+                        {
+                            port.Open();
+                        }
 
                         using (var tryConnect = TryHandshakeToDevice(port))
                         {

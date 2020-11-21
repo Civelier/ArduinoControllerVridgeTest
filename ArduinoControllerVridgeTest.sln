@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PCToArduinoCommunication", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PCCommunicationTests", "PCCommunicationTests\PCCommunicationTests.csproj", "{622950C1-B563-4C90-8E43-7B40A44CDF9B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimpleTransmit", "SimpleTransmit\SimpleTransmit.vcxproj", "{BFC4FF12-B360-48C3-8605-0B156678B8B9}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		ArduinoToVridgeCommunication\ArduinoToVridgeCommunication.vcxitems*{54f2e127-4c8f-4671-9350-18143317a47f}*SharedItemsImports = 9
@@ -110,6 +112,16 @@ Global
 		{622950C1-B563-4C90-8E43-7B40A44CDF9B}.Tests|Any CPU.Build.0 = Debug|Any CPU
 		{622950C1-B563-4C90-8E43-7B40A44CDF9B}.Tests|x86.ActiveCfg = Debug|Any CPU
 		{622950C1-B563-4C90-8E43-7B40A44CDF9B}.Tests|x86.Build.0 = Debug|Any CPU
+		{BFC4FF12-B360-48C3-8605-0B156678B8B9}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{BFC4FF12-B360-48C3-8605-0B156678B8B9}.Debug|x86.ActiveCfg = Debug|Win32
+		{BFC4FF12-B360-48C3-8605-0B156678B8B9}.Debug|x86.Build.0 = Debug|Win32
+		{BFC4FF12-B360-48C3-8605-0B156678B8B9}.Release|Any CPU.ActiveCfg = Release|Win32
+		{BFC4FF12-B360-48C3-8605-0B156678B8B9}.Release|x86.ActiveCfg = Release|Win32
+		{BFC4FF12-B360-48C3-8605-0B156678B8B9}.Release|x86.Build.0 = Release|Win32
+		{BFC4FF12-B360-48C3-8605-0B156678B8B9}.Tests|Any CPU.ActiveCfg = Debug|Win32
+		{BFC4FF12-B360-48C3-8605-0B156678B8B9}.Tests|Any CPU.Build.0 = Debug|Win32
+		{BFC4FF12-B360-48C3-8605-0B156678B8B9}.Tests|x86.ActiveCfg = Debug|Win32
+		{BFC4FF12-B360-48C3-8605-0B156678B8B9}.Tests|x86.Build.0 = Debug|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

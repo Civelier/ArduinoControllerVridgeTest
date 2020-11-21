@@ -7,7 +7,6 @@
 //Command ID : 0
 void Handshake(BinarySerializer* args)
 {
-	DebugLED.Flash(DEBUG_HANDSHAKE_RECIEVED);
 	byte arr[8] =
 	{
 		8,
@@ -20,13 +19,13 @@ void Handshake(BinarySerializer* args)
 		PROTOCOL_VERSION_PATCH
 	};
 	Serial.write(arr, 8);
-	delete arr;
+	while (!Serial.availableForWrite());
+	DebugLED.Flash(DEBUG_HANDSHAKE_RECIEVED);
 }
 
 //Command ID : 1
 void Ping(BinarySerializer* args)
 {
-	DebugLED.Flash(DEBUG_PING_RECIEVED);
 	ULongByteUnion u = { millis() };
 	byte arr[6] = 
 	{
@@ -38,7 +37,7 @@ void Ping(BinarySerializer* args)
 		u.asBytes[3]
 	};
 	Serial.write(arr, 6);
-	delete arr;
+	DebugLED.Flash(DEBUG_PING_RECIEVED);
 }
 
 //Command ID : 2
@@ -67,7 +66,6 @@ void GetVersion(BinarySerializer* args)
 		FIRMWARE_VERSION_PATCH
 	};
 	Serial.write(arr, 5);
-	delete arr;
 }
 
 ArduinoToPCCommunicationProtocoleClass ArduinoToPCCommunicationProtocole;
