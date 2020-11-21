@@ -7,7 +7,7 @@
 #include <Wire.h>
 #include "Arduino.h"
 
-#define BUTTONS_START 2
+#define BUTTONS_START PIND2
 #define X_AXIS_PIN A0
 #define Y_AXIS_PIN A1
 
@@ -20,6 +20,18 @@
 #define MSG_TOTAL_LEN (MSG_START_LEN + MSG_DATA_LEN + MSG_STOP_LEN)
 #define MessageSection(section) section == MSG_START ? 0 : section == MSG_DATA ? MSG_START_LEN : section == MSG_STOP ? MSG_START_LEN + MSG_DATA_LEN : -1
 
+class Data
+{
+public:
+	bool Button1;
+	bool Button2;
+	bool Button3;
+	bool Button4;
+	bool Stick;
+	int XStick;
+	int YStick;
+};
+
 union IntByte
 {
 	byte buffer[4];
@@ -30,7 +42,7 @@ union IntByte
 void setup()
 {
 	Serial.begin(115200);
-	for (size_t i = 0; i < 4; i++)
+	for (size_t i = 0; i < 5; i++)
 	{
 		pinMode(BUTTONS_START + i, INPUT);
 	}
@@ -38,7 +50,7 @@ void setup()
 	pinMode(Y_AXIS_PIN, INPUT);
 }
 
-byte data[MSG_TOTAL_LEN];
+//byte data[MSG_TOTAL_LEN];
 
 union BoolByte
 {
@@ -55,13 +67,24 @@ void ButtonsToByte()
 	}
 }
 
+Data* data = new Data();
+
 void UpdateValues()
 {
-	ButtonsToByte();
+	/*ButtonsToByte();
 	Serial.print(analogRead(X_AXIS_PIN));
 	Serial.print(';');
 	Serial.print(analogRead(Y_AXIS_PIN));
-	Serial.println();
+	Serial.println();*/
+
+	data->Button1 = digitalRead(BUTTONS_START);
+	data->Button2 = digitalRead(BUTTONS_START + 1);
+	data->Button3 = digitalRead(BUTTONS_START + 2);
+	data->Button4 = digitalRead(BUTTONS_START + 3);
+	data->Stick = !digitalRead(BUTTONS_START + 4);
+	data->XStick = analogRead(X_AXIS_PIN);
+	data->YStick = analogRead(Y_AXIS_PIN);
+
 	/*IntByte x = { analogRead(X_AXIS_PIN) };
 	IntByte y = { analogRead(Y_AXIS_PIN) };
 
@@ -74,19 +97,21 @@ void UpdateValues()
 
 void PrintValues()
 {
-	for (size_t i = 0; i < MSG_TOTAL_LEN; i++)
-	{
-		Serial.print(data[i]);
-		Serial.print(" ");
-	}
-	Serial.println();
+	byte* buffer = (byte*)data;
+	Serial.write(buffer, 9);
+	//for (size_t i = 0; i < sizeof(*data); i++)
+	//{
+	//	//Serial.print(buffer[i]);
+	//	//Serial.print(" ");
+	//}
+	//Serial.println();
 }
 
 // the loop function runs over and over again until power down or reset
 void loop()
 {
 	UpdateValues();
-	//PrintValues();
+	PrintValues();
 	//Serial.write(data, 10);
 	delay(10);
 }
