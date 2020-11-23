@@ -16,6 +16,7 @@ namespace ControllerInterface
     public partial class Form1 : Form
     {
         private static Queue<Action> _mainThreadActionQueue = new Queue<Action>();
+        private static Action _singleAction;
         private DataDecoder _decoder;
 
         public static void QueueActionOnMainThread(Action action)
@@ -26,15 +27,22 @@ namespace ControllerInterface
             }
         }
 
+        private static void SetActionOnMainThread(Action action)
+        {
+            lock (_mainThreadActionQueue)
+            {
+                _singleAction = action;
+            }
+        }
+
         private IEnumerator<bool> _connectService;
 
         public Form1()
         {
             InitializeComponent();
-            MainThreadDispatcher.Enabled = true;
-            _decoder = new DataDecoder(RightController);
-            _decoder.DataDecoded += _decoder_DataDecoded;
-            RightController.Open();
+            _decoder = new DataDecoder(ControllerPort);
+            //_decoder.DataDecoded += _decoder_DataDecoded;
+            ControllerPort.Open();
             //DeviceConnetionService.Instance.Begin(ProtocolInfo.Devices[0], ProtocolInfo.Devices[1]);
             
             //_connectService = DeviceConnetionService.Instance.Connect();
@@ -42,28 +50,16 @@ namespace ControllerInterface
 
         private void _decoder_DataDecoded(DataDecoder sender, DataDecodedEventArgs args)
         {
-            string[] s = args.Buffer.Split(';');
-            int[] values = new int[s.Length];
-
-            for (int i = 0; i < values.Length; i++)
-            {
-                values[i] = int.Parse(s[i]);
-            }
-
-            bool b1 = values[0] == 1;
-            bool b2 = values[1] == 1;
-            bool b3 = values[2] == 1;
-            bool b4 = values[3] == 1;
-            int x = values[4];
-            int y = values[5];
+            Data data = args.Data;
+            
             //_mainThreadActionQueue.Clear();
-            QueueActionOnMainThread(() => {
-                B1Label.Text = b1 ? "True" : "False";
-                B2Label.Text = b2 ? "True" : "False";
-                B3Label.Text = b3 ? "True" : "False";
-                B4Label.Text = b4 ? "True" : "False";
-                XLabel.Text = x.ToString();
-                YLabel.Text = y.ToString();
+            SetActionOnMainThread(() => {
+                B1Label.Text = data.Button1 ? "True" : "False";
+                B2Label.Text = data.Button2 ? "True" : "False";
+                B3Label.Text = data.Button3 ? "True" : "False";
+                B4Label.Text = data.Button4 ? "True" : "False";
+                XLabel.Text = data.StickX.ToString();
+                YLabel.Text = data.StickY.ToString();
             });
         }
 
@@ -107,7 +103,7 @@ namespace ControllerInterface
 
         private void OpenButton_Click(object sender, EventArgs e)
         {
-            if (!RightController.IsOpen) RightController.Open();
+            if (!ControllerPort.IsOpen) ControllerPort.Open();
         }
 
         private void RefreshButton_Click(object sender, EventArgs e)
@@ -125,6 +121,8 @@ namespace ControllerInterface
         {
             lock (_mainThreadActionQueue)
             {
+                _singleAction?.Invoke();
+                _singleAction = null;
                 while (_mainThreadActionQueue.Count > 0)
                 {
                     _mainThreadActionQueue.Dequeue().Invoke();
@@ -134,6 +132,16 @@ namespace ControllerInterface
 
         private void ConnectTimer_Tick(object sender, EventArgs e)
         {
+            var data = _decoder.WaitForData();
+            if (data.HasValue)
+            {
+                B1Label.Text = data.Value.Button1 ? "True" : "False";
+                B2Label.Text = data.Value.Button2 ? "True" : "False";
+                B3Label.Text = data.Value.Button3 ? "True" : "False";
+                B4Label.Text = data.Value.Button4 ? "True" : "False";
+                XLabel.Text = data.Value.StickX.ToString();
+                YLabel.Text = data.Value.StickY.ToString();
+            }
             //_connectService.MoveNext();
             //if (DeviceConnetionService.Instance.RightControllerPort.IsConnected)
             //{

@@ -4,8 +4,16 @@
  Author:	civel
 */
 
-#include <Wire.h>
+//#include <MPU6050_9Axis_MotionApps41.h>
+//#include <MPU6050_6Axis_MotionApps20.h>
+//#include <MPU6050.h>
+//#include <helper_3dmath.h>
+//#include <msp430_i2c.h>
+//#include <I2Cdev.h>
+//#include <ArduinoWrapper.h>
+//#include <Wire.h>
 #include "Arduino.h"
+
 
 #define BUTTONS_START PIND2
 #define X_AXIS_PIN A0
@@ -32,11 +40,19 @@ public:
 	int YStick;
 };
 
-union IntByte
+//#define DEBUG
+
+#ifndef DEBUG
+void serialEvent()
 {
-	byte buffer[4];
-	int value;
-};
+	Serial.read();
+	UpdateValues();
+	PrintValues();
+	delay(5);
+	Serial.flush();
+}
+#endif // DEBUG
+
 
 // the setup function runs once when you press reset or power the board
 void setup()
@@ -51,12 +67,6 @@ void setup()
 }
 
 //byte data[MSG_TOTAL_LEN];
-
-union BoolByte
-{
-	bool bits[8];
-	byte value;
-};
 
 void ButtonsToByte()
 {
@@ -110,8 +120,5 @@ void PrintValues()
 // the loop function runs over and over again until power down or reset
 void loop()
 {
-	UpdateValues();
-	PrintValues();
 	//Serial.write(data, 10);
-	delay(10);
 }
