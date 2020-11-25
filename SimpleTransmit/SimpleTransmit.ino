@@ -4,14 +4,11 @@
  Author:	civel
 */
 
-//#include <MPU6050_9Axis_MotionApps41.h>
-//#include <MPU6050_6Axis_MotionApps20.h>
-//#include <MPU6050.h>
-//#include <helper_3dmath.h>
-//#include <msp430_i2c.h>
-//#include <I2Cdev.h>
-//#include <ArduinoWrapper.h>
 //#include <Wire.h>
+
+#include <I2Cdev.h>
+#include <MPU6050.h>
+#include <helper_3dmath.h>
 #include "Arduino.h"
 
 
@@ -40,18 +37,42 @@ public:
 	int YStick;
 };
 
-//#define DEBUG
+#define DEBUG
 
-#ifndef DEBUG
+MPU6050 MPU = MPU6050();
+
 void serialEvent()
 {
-	Serial.read();
-	UpdateValues();
-	PrintValues();
-	delay(5);
-	Serial.flush();
-}
+#ifndef DEBUG
+	int b = Serial.read();
+
+	if (b == 2)
+	{
+		MPU.CalibrateAccel();
+		MPU.CalibrateGyro();
+	}
+	else
+	{
+		UpdateValues();
+		PrintValues();
+		delay(5);
+		Serial.flush();
+	}
+#else
+	String s = Serial.readString();
+	if (s == "Calibrate")
+	{
+		MPU.CalibrateAccel();
+		Serial.println("Accel calibrated");
+		MPU.CalibrateGyro();
+		Serial.println("Gyro calibrated");
+	}
+	if (s == "ReadPos")
+	{
+		Serial.println(MPU.Get)
+	}
 #endif // DEBUG
+}
 
 
 // the setup function runs once when you press reset or power the board
@@ -64,18 +85,12 @@ void setup()
 	}
 	pinMode(X_AXIS_PIN, INPUT);
 	pinMode(Y_AXIS_PIN, INPUT);
+
+	MPU.initialize();
+	MPU.setDMPEnabled(true);
 }
 
 //byte data[MSG_TOTAL_LEN];
-
-void ButtonsToByte()
-{
-	for (size_t i = 0; i < 4; i++)
-	{
-		Serial.print(digitalRead(BUTTONS_START + i));
-		Serial.print(';');
-	}
-}
 
 Data* data = new Data();
 
@@ -86,7 +101,6 @@ void UpdateValues()
 	Serial.print(';');
 	Serial.print(analogRead(Y_AXIS_PIN));
 	Serial.println();*/
-
 	data->Button1 = digitalRead(BUTTONS_START);
 	data->Button2 = digitalRead(BUTTONS_START + 1);
 	data->Button3 = digitalRead(BUTTONS_START + 2);

@@ -21,9 +21,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PCCommunicationTests", "PCC
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimpleTransmit", "SimpleTransmit\SimpleTransmit.vcxproj", "{BFC4FF12-B360-48C3-8605-0B156678B8B9}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MasterArduino", "MasterArduino\MasterArduino.vcxproj", "{FDAC9453-A62F-4969-89DC-2021988BD638}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SlaveArduino", "SlaveArduino\SlaveArduino.vcxproj", "{46BA58EE-8F5C-4167-94B4-6C52D050D35F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "I2CTransfer", "I2CTransfer\I2CTransfer.vcxitems", "{AD5F8BFD-4D97-4C17-9A73-9DDACAA89822}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		ArduinoToVridgeCommunication\ArduinoToVridgeCommunication.vcxitems*{54f2e127-4c8f-4671-9350-18143317a47f}*SharedItemsImports = 9
+		I2CTransfer\I2CTransfer.vcxitems*{ad5f8bfd-4d97-4c17-9a73-9ddacaa89822}*SharedItemsImports = 9
 		ArduinoToVridgeCommunication\ArduinoToVridgeCommunication.vcxitems*{b0cb0711-a02a-4dbc-979e-a7194848c154}*SharedItemsImports = 4
 		ArduinoToVridgeCommunication\ArduinoToVridgeCommunication.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
 	EndGlobalSection
@@ -122,6 +129,26 @@ Global
 		{BFC4FF12-B360-48C3-8605-0B156678B8B9}.Tests|Any CPU.Build.0 = Debug|Win32
 		{BFC4FF12-B360-48C3-8605-0B156678B8B9}.Tests|x86.ActiveCfg = Debug|Win32
 		{BFC4FF12-B360-48C3-8605-0B156678B8B9}.Tests|x86.Build.0 = Debug|Win32
+		{FDAC9453-A62F-4969-89DC-2021988BD638}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{FDAC9453-A62F-4969-89DC-2021988BD638}.Debug|x86.ActiveCfg = Debug|Win32
+		{FDAC9453-A62F-4969-89DC-2021988BD638}.Debug|x86.Build.0 = Debug|Win32
+		{FDAC9453-A62F-4969-89DC-2021988BD638}.Release|Any CPU.ActiveCfg = Release|Win32
+		{FDAC9453-A62F-4969-89DC-2021988BD638}.Release|x86.ActiveCfg = Release|Win32
+		{FDAC9453-A62F-4969-89DC-2021988BD638}.Release|x86.Build.0 = Release|Win32
+		{FDAC9453-A62F-4969-89DC-2021988BD638}.Tests|Any CPU.ActiveCfg = Debug|Win32
+		{FDAC9453-A62F-4969-89DC-2021988BD638}.Tests|Any CPU.Build.0 = Debug|Win32
+		{FDAC9453-A62F-4969-89DC-2021988BD638}.Tests|x86.ActiveCfg = Debug|Win32
+		{FDAC9453-A62F-4969-89DC-2021988BD638}.Tests|x86.Build.0 = Debug|Win32
+		{46BA58EE-8F5C-4167-94B4-6C52D050D35F}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{46BA58EE-8F5C-4167-94B4-6C52D050D35F}.Debug|x86.ActiveCfg = Debug|Win32
+		{46BA58EE-8F5C-4167-94B4-6C52D050D35F}.Debug|x86.Build.0 = Debug|Win32
+		{46BA58EE-8F5C-4167-94B4-6C52D050D35F}.Release|Any CPU.ActiveCfg = Release|Win32
+		{46BA58EE-8F5C-4167-94B4-6C52D050D35F}.Release|x86.ActiveCfg = Release|Win32
+		{46BA58EE-8F5C-4167-94B4-6C52D050D35F}.Release|x86.Build.0 = Release|Win32
+		{46BA58EE-8F5C-4167-94B4-6C52D050D35F}.Tests|Any CPU.ActiveCfg = Debug|Win32
+		{46BA58EE-8F5C-4167-94B4-6C52D050D35F}.Tests|Any CPU.Build.0 = Debug|Win32
+		{46BA58EE-8F5C-4167-94B4-6C52D050D35F}.Tests|x86.ActiveCfg = Debug|Win32
+		{46BA58EE-8F5C-4167-94B4-6C52D050D35F}.Tests|x86.Build.0 = Debug|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
