@@ -29,10 +29,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "I2CTransfer", "I2CTransfer\
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		I2CTransfer\I2CTransfer.vcxitems*{46ba58ee-8f5c-4167-94b4-6c52d050d35f}*SharedItemsImports = 4
 		ArduinoToVridgeCommunication\ArduinoToVridgeCommunication.vcxitems*{54f2e127-4c8f-4671-9350-18143317a47f}*SharedItemsImports = 9
 		I2CTransfer\I2CTransfer.vcxitems*{ad5f8bfd-4d97-4c17-9a73-9ddacaa89822}*SharedItemsImports = 9
 		ArduinoToVridgeCommunication\ArduinoToVridgeCommunication.vcxitems*{b0cb0711-a02a-4dbc-979e-a7194848c154}*SharedItemsImports = 4
 		ArduinoToVridgeCommunication\ArduinoToVridgeCommunication.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
+		I2CTransfer\I2CTransfer.vcxitems*{fdac9453-a62f-4969-89dc-2021988bd638}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -6,22 +6,38 @@ using System.Threading.Tasks;
 
 namespace ControllerInterface
 {
+    [Flags]
+    public enum Buttons : byte
+    {
+        Button1 = 0b10000000,
+        Button2 = 0b01000000,
+        Button3 = 0b00100000,
+        Button4 = 0b00010000,
+        Stick =   0b00001000,
+    }
     public struct Data
     {
+
         private byte[] _buffer;
 
-        public bool Button1 => _buffer[0] == 1;
-        public bool Button2 => _buffer[1] == 1;
-        public bool Button3 => _buffer[2] == 1;
-        public bool Button4 => _buffer[3] == 1;
-        public bool Stick => _buffer[4] == 1;
+        public Buttons Buttons => (Buttons)_buffer[0];
+        public bool Button1 => ButtonEqual(Buttons.Button1);
+        public bool Button2 => ButtonEqual(Buttons.Button2);
+        public bool Button3 => ButtonEqual(Buttons.Button3);
+        public bool Button4 => ButtonEqual(Buttons.Button4);
+        public bool Stick => ButtonEqual(Buttons.Stick);
 
-        public short StickX => BitConverter.ToInt16(_buffer, 5);
-        public short StickY => BitConverter.ToInt16(_buffer, 7);
+        public Int16 StickX => BitConverter.ToInt16(_buffer, 1);
+        public Int16 StickY => BitConverter.ToInt16(_buffer, 3);
 
         public Data(byte[] buffer)
         {
             _buffer = buffer;
+        }
+
+        public bool ButtonEqual(Buttons btn)
+        {
+            return (Buttons & btn) == btn;
         }
     }
 }

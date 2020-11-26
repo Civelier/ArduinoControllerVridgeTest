@@ -114,7 +114,9 @@ namespace ControllerInterface
 
         private void PortList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //RightProtocol.Port.PortName = System.IO.Ports.SerialPort.GetPortNames()[PortList.SelectedIndex];
+            if (ControllerPort.IsOpen) ControllerPort.Close();
+            ControllerPort.PortName = System.IO.Ports.SerialPort.GetPortNames()[PortList.SelectedIndex];
+            if (!ControllerPort.IsOpen) ControllerPort.Open();
         }
 
         private void MainThreadDispatcher_Tick(object sender, EventArgs e)
@@ -130,17 +132,25 @@ namespace ControllerInterface
             }
         }
 
+        private void SetJoyStickPosition(float x, float y)
+        {
+            int pWidth = StickPanel.Width, pHeight = StickPanel.Height, jWidth = StickCross.Width, jHeight = StickCross.Height;
+            StickCross.Location = new Point((int)(pWidth / 2 + pWidth * x - jWidth / 2), (int)(pHeight / 2 + pHeight * y - jHeight / 2));
+        }
+
         private void ConnectTimer_Tick(object sender, EventArgs e)
         {
             var data = _decoder.WaitForData();
             if (data.HasValue)
             {
+                StickLabel.Text = data.Value.Stick ? "True" : "False";
                 B1Label.Text = data.Value.Button1 ? "True" : "False";
                 B2Label.Text = data.Value.Button2 ? "True" : "False";
                 B3Label.Text = data.Value.Button3 ? "True" : "False";
                 B4Label.Text = data.Value.Button4 ? "True" : "False";
                 XLabel.Text = data.Value.StickX.ToString();
                 YLabel.Text = data.Value.StickY.ToString();
+                SetJoyStickPosition(_decoder.RightStick.X, _decoder.RightStick.Y);
             }
             //_connectService.MoveNext();
             //if (DeviceConnetionService.Instance.RightControllerPort.IsConnected)

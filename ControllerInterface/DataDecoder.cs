@@ -31,20 +31,35 @@ namespace ControllerInterface
 
         byte[] _buffer;
 
+        public bool Enabled
+        {
+            get;
+            set;
+        }
+
         int _bufferOffset;
         private int _writePosition;
 
         private bool _isReady;
         public Data LastDecodedData
         {
-            get;
-            private set;
+            get => _lastDecodedData;
+            private set
+            {
+                _lastDecodedData = value;
+                RightStick.SetValues(_lastDecodedData.StickX, _lastDecodedData.StickY);
+            }
         }
+
+        public JoyStick RightStick { get; private set; }
+
+        private Data _lastDecodedData;
 
         public DataDecoder(SerialPort port)
         {
-            _buffer = new byte[9];
+            _buffer = new byte[5];
             _port = port;
+            RightStick = new JoyStick(800, 800);
             _port.DataReceived += _port_DataReceived;
         }
 
@@ -61,9 +76,13 @@ namespace ControllerInterface
         public Data? WaitForData()
         {
             var st = DateTime.Now;
-            SendRequest();
-            while (!_isReady) if ((DateTime.Now - st).TotalMilliseconds > 100) return null;
-            return LastDecodedData;
+            if (!Enabled)
+            {
+                SendRequest();
+            }
+            while ((DateTime.Now - st).TotalMilliseconds <= 100) if (_isReady) return LastDecodedData;
+            Enabled = false;
+            return null;
         }
 
         public bool Allign()
@@ -95,13 +114,14 @@ namespace ControllerInterface
             LastDecodedData = new Data(GetBuffer(_bufferOffset));
             _isReady = true;
             DataDecoded?.Invoke(this, new DataDecodedEventArgs(LastDecodedData));
+            if (Enabled) WaitForData();
         }
 
         public void SendRequest()
         {
             if (!_port.IsOpen) _port.Open();
             _isReady = false;
-            _port.Write(new[] { (byte)0 }, 0, 1);
+            _port.Write(new[] { (byte)1 }, 0, 1);
         }
 
         private void _port_DataReceived(object sender, SerialDataReceivedEventArgs e)

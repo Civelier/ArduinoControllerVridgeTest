@@ -31,6 +31,8 @@
             this.components = new System.ComponentModel.Container();
             this.ControllerPort = new System.IO.Ports.SerialPort(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
+            this.StickPanel = new System.Windows.Forms.Panel();
+            this.StickCross = new System.Windows.Forms.PictureBox();
             this.RawLabel = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.YLabel = new System.Windows.Forms.Label();
@@ -55,17 +57,24 @@
             this.label1 = new System.Windows.Forms.Label();
             this.PingButton = new System.Windows.Forms.Button();
             this.ConnectTimer = new System.Windows.Forms.Timer(this.components);
+            this.label10 = new System.Windows.Forms.Label();
+            this.StickLabel = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
+            this.StickPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.StickCross)).BeginInit();
             this.SuspendLayout();
             // 
             // ControllerPort
             // 
             this.ControllerPort.BaudRate = 115200;
-            this.ControllerPort.PortName = "COM4";
+            this.ControllerPort.PortName = "COM7";
             // 
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.panel1.Controls.Add(this.StickLabel);
+            this.panel1.Controls.Add(this.label10);
+            this.panel1.Controls.Add(this.StickPanel);
             this.panel1.Controls.Add(this.RawLabel);
             this.panel1.Controls.Add(this.label9);
             this.panel1.Controls.Add(this.YLabel);
@@ -93,6 +102,25 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(799, 452);
             this.panel1.TabIndex = 0;
+            // 
+            // StickPanel
+            // 
+            this.StickPanel.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.StickPanel.Controls.Add(this.StickCross);
+            this.StickPanel.Location = new System.Drawing.Point(50, 292);
+            this.StickPanel.Name = "StickPanel";
+            this.StickPanel.Size = new System.Drawing.Size(100, 100);
+            this.StickPanel.TabIndex = 23;
+            // 
+            // StickCross
+            // 
+            this.StickCross.Image = global::ControllerInterface.Properties.Resources.Cross;
+            this.StickCross.Location = new System.Drawing.Point(34, 34);
+            this.StickCross.Name = "StickCross";
+            this.StickCross.Size = new System.Drawing.Size(32, 32);
+            this.StickCross.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.StickCross.TabIndex = 0;
+            this.StickCross.TabStop = false;
             // 
             // RawLabel
             // 
@@ -310,8 +338,26 @@
             // ConnectTimer
             // 
             this.ConnectTimer.Enabled = true;
-            this.ConnectTimer.Interval = 1;
+            this.ConnectTimer.Interval = 10;
             this.ConnectTimer.Tick += new System.EventHandler(this.ConnectTimer_Tick);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(71, 125);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(31, 13);
+            this.label10.TabIndex = 24;
+            this.label10.Text = "Stick";
+            // 
+            // StickLabel
+            // 
+            this.StickLabel.AutoSize = true;
+            this.StickLabel.Location = new System.Drawing.Point(97, 125);
+            this.StickLabel.Name = "StickLabel";
+            this.StickLabel.Size = new System.Drawing.Size(32, 13);
+            this.StickLabel.TabIndex = 25;
+            this.StickLabel.Text = "False";
             // 
             // Form1
             // 
@@ -323,6 +369,9 @@
             this.Text = "Form1";
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            this.StickPanel.ResumeLayout(false);
+            this.StickPanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.StickCross)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -355,6 +404,10 @@
         private System.Windows.Forms.Label B2Label;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label RawLabel;
+        private System.Windows.Forms.Panel StickPanel;
+        private System.Windows.Forms.PictureBox StickCross;
+        private System.Windows.Forms.Label StickLabel;
+        private System.Windows.Forms.Label label10;
     }
 }
 
