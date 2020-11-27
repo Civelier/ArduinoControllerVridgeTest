@@ -55,7 +55,7 @@ void setup()
     Serial.begin(115200);
     Wire.onRequest(requestEvent);
     PrintSizeof(Data);
-    //PrintSizeof(int8_t);
+    PrintSizeof(float);
     //PrintSizeof(int16_t);
     //PrintSizeof(int32_t);
     //PrintSizeof(int64_t);

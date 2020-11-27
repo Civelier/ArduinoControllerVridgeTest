@@ -59,6 +59,7 @@
             this.ConnectTimer = new System.Windows.Forms.Timer(this.components);
             this.label10 = new System.Windows.Forms.Label();
             this.StickLabel = new System.Windows.Forms.Label();
+            this.CalibrateButton = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.StickPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.StickCross)).BeginInit();
@@ -72,6 +73,7 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.panel1.Controls.Add(this.CalibrateButton);
             this.panel1.Controls.Add(this.StickLabel);
             this.panel1.Controls.Add(this.label10);
             this.panel1.Controls.Add(this.StickPanel);
@@ -338,7 +340,7 @@
             // ConnectTimer
             // 
             this.ConnectTimer.Enabled = true;
-            this.ConnectTimer.Interval = 10;
+            this.ConnectTimer.Interval = 1;
             this.ConnectTimer.Tick += new System.EventHandler(this.ConnectTimer_Tick);
             // 
             // label10
@@ -358,6 +360,16 @@
             this.StickLabel.Size = new System.Drawing.Size(32, 13);
             this.StickLabel.TabIndex = 25;
             this.StickLabel.Text = "False";
+            // 
+            // CalibrateButton
+            // 
+            this.CalibrateButton.Location = new System.Drawing.Point(156, 317);
+            this.CalibrateButton.Name = "CalibrateButton";
+            this.CalibrateButton.Size = new System.Drawing.Size(75, 23);
+            this.CalibrateButton.TabIndex = 26;
+            this.CalibrateButton.Text = "Calibrate";
+            this.CalibrateButton.UseVisualStyleBackColor = true;
+            this.CalibrateButton.Click += new System.EventHandler(this.CalibrateButton_Click);
             // 
             // Form1
             // 
@@ -408,6 +420,7 @@
         private System.Windows.Forms.PictureBox StickCross;
         private System.Windows.Forms.Label StickLabel;
         private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Button CalibrateButton;
     }
 }
 

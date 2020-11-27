@@ -4,20 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ControllerInterface
+namespace ControllerInterface.Data
 {
     [Flags]
     public enum Buttons : byte
     {
-        Button1 = 0b10000000,
-        Button2 = 0b01000000,
-        Button3 = 0b00100000,
+        Stick = 0b00000001,
+        Button1 = 0b00000010,
+        Button2 = 0b00000100,
+        Button3 = 0b00001000,
         Button4 = 0b00010000,
-        Stick =   0b00001000,
     }
-    public struct Data
+    public struct ArduinoData
     {
-
+        public static int Size = 5;
         private byte[] _buffer;
 
         public Buttons Buttons => (Buttons)_buffer[0];
@@ -25,12 +25,12 @@ namespace ControllerInterface
         public bool Button2 => ButtonEqual(Buttons.Button2);
         public bool Button3 => ButtonEqual(Buttons.Button3);
         public bool Button4 => ButtonEqual(Buttons.Button4);
-        public bool Stick => ButtonEqual(Buttons.Stick);
+        public bool Stick => !ButtonEqual(Buttons.Stick);
 
-        public Int16 StickX => BitConverter.ToInt16(_buffer, 1);
-        public Int16 StickY => BitConverter.ToInt16(_buffer, 3);
+        public short StickX => BitConverter.ToInt16(_buffer, 1);
+        public short StickY => BitConverter.ToInt16(_buffer, 3);
 
-        public Data(byte[] buffer)
+        public ArduinoData(byte[] buffer)
         {
             _buffer = buffer;
         }

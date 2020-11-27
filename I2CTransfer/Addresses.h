@@ -12,9 +12,13 @@ struct Data
     int16_t y;
 };
 
+
+
+
+
 #define CTRL_ADDRESS_BUTTONS 0
 #define CTRL_ADDRESS_XAXIS 1
-#define CTRL_ADDRESS_YAXIS 5
+#define CTRL_ADDRESS_YAXIS 3
 #define CTRL_BUFFER_SIZE sizeof(Data)
 
 #define MASTER_ADDRESS 10

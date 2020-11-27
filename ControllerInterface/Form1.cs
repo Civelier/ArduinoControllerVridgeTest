@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using PCToArduinoCommunication.Protocol.SendCommands;
 using PCToArduinoCommunication.Protocol;
 using PCToArduinoCommunication.Devices;
+using ControllerInterface.Data;
 
 namespace ControllerInterface
 {
@@ -43,6 +44,7 @@ namespace ControllerInterface
             _decoder = new DataDecoder(ControllerPort);
             //_decoder.DataDecoded += _decoder_DataDecoded;
             ControllerPort.Open();
+            _decoder.IsAutoRefreshEnabled = true;
             //DeviceConnetionService.Instance.Begin(ProtocolInfo.Devices[0], ProtocolInfo.Devices[1]);
             
             //_connectService = DeviceConnetionService.Instance.Connect();
@@ -50,7 +52,7 @@ namespace ControllerInterface
 
         private void _decoder_DataDecoded(DataDecoder sender, DataDecodedEventArgs args)
         {
-            Data data = args.Data;
+            ArduinoData data = args.Data;
             
             //_mainThreadActionQueue.Clear();
             SetActionOnMainThread(() => {
@@ -135,12 +137,13 @@ namespace ControllerInterface
         private void SetJoyStickPosition(float x, float y)
         {
             int pWidth = StickPanel.Width, pHeight = StickPanel.Height, jWidth = StickCross.Width, jHeight = StickCross.Height;
-            StickCross.Location = new Point((int)(pWidth / 2 + pWidth * x - jWidth / 2), (int)(pHeight / 2 + pHeight * y - jHeight / 2));
+            StickCross.Location = new Point((int)(pWidth / 2 + pWidth * x / 2 - jWidth / 2), (int)(pHeight / 2 + pHeight * y / 2 - jHeight / 2));
         }
 
         private void ConnectTimer_Tick(object sender, EventArgs e)
         {
             var data = _decoder.WaitForData();
+            //_decoder.IsAutoRefreshEnabled = true;
             if (data.HasValue)
             {
                 StickLabel.Text = data.Value.Stick ? "True" : "False";
@@ -159,6 +162,12 @@ namespace ControllerInterface
             //    LastMillisLabel.Text = $"{DeviceConnetionService.Instance.RightControllerPort.LastMilis}ms";
             //}
             //else ControllerTypeLabel.Text = "Disconnected";
+        }
+
+        private void CalibrateButton_Click(object sender, EventArgs e)
+        {
+            _decoder.RightStick.CalibrateZero();
+            _decoder.RightStick.CalibrateRanges();
         }
     }
 }

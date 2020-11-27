@@ -6,16 +6,16 @@ using System.Text;
 using System.Threading.Tasks;
 using PCToArduinoCommunication.Protocol;
 
-namespace ControllerInterface
+namespace ControllerInterface.Data
 {
     public class DataDecodedEventArgs
     {
-        public DataDecodedEventArgs(Data data)
+        public DataDecodedEventArgs(ArduinoData data)
         {
             Data = data;
         }
 
-        public Data Data
+        public ArduinoData Data
         {
             get;
         }
@@ -31,7 +31,7 @@ namespace ControllerInterface
 
         byte[] _buffer;
 
-        public bool Enabled
+        public bool IsAutoRefreshEnabled
         {
             get;
             set;
@@ -41,7 +41,8 @@ namespace ControllerInterface
         private int _writePosition;
 
         private bool _isReady;
-        public Data LastDecodedData
+        private bool _requestSent;
+        public ArduinoData LastDecodedData
         {
             get => _lastDecodedData;
             private set
@@ -51,9 +52,12 @@ namespace ControllerInterface
             }
         }
 
-        public JoyStick RightStick { get; private set; }
+        public JoyStick RightStick
+        {
+            get; private set;
+        }
 
-        private Data _lastDecodedData;
+        private ArduinoData _lastDecodedData;
 
         public DataDecoder(SerialPort port)
         {
@@ -65,7 +69,7 @@ namespace ControllerInterface
 
         private byte[] GetBuffer(int offset)
         {
-            byte[] buffer = new byte[_buffer.Length];
+            var buffer = new byte[_buffer.Length];
             for (int i = 0, ii = offset; i < _buffer.Length; i++, ii = (ii + 1) % _buffer.Length)
             {
                 buffer[i] = _buffer[ii];
@@ -73,23 +77,23 @@ namespace ControllerInterface
             return buffer;
         }
 
-        public Data? WaitForData()
+        public ArduinoData? WaitForData()
         {
             var st = DateTime.Now;
-            if (!Enabled)
+            if (!IsAutoRefreshEnabled || !_requestSent)
             {
-                SendRequest();
+                //SendRequest();
             }
             while ((DateTime.Now - st).TotalMilliseconds <= 100) if (_isReady) return LastDecodedData;
-            Enabled = false;
+            _requestSent = false;
             return null;
         }
 
         public bool Allign()
         {
-            for (int i = 0; i < _buffer.Length; i++)
+            for (var i = 0; i < _buffer.Length; i++)
             {
-                var data = new Data(GetBuffer(i));
+                var data = new ArduinoData(GetBuffer(i));
                 if (430 < data.StickX && data.StickX < 470 && 430 < data.StickY && data.StickY < 470)
                 {
                     _bufferOffset = i;
@@ -111,10 +115,11 @@ namespace ControllerInterface
 
         private void OnDataRecieved()
         {
-            LastDecodedData = new Data(GetBuffer(_bufferOffset));
+            LastDecodedData = new ArduinoData(GetBuffer(_bufferOffset));
             _isReady = true;
+            _requestSent = false;
             DataDecoded?.Invoke(this, new DataDecodedEventArgs(LastDecodedData));
-            if (Enabled) WaitForData();
+            if (IsAutoRefreshEnabled) WaitForData();
         }
 
         public void SendRequest()
@@ -122,15 +127,21 @@ namespace ControllerInterface
             if (!_port.IsOpen) _port.Open();
             _isReady = false;
             _port.Write(new[] { (byte)1 }, 0, 1);
+            _requestSent = true;
         }
 
         private void _port_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             if (_port.BytesToRead > _buffer.Length)
             {
-                System.Threading.Thread.Sleep(1);
-
-                while (_port.BytesToRead > _buffer.Length) _port.ReadByte();
+                var i = 0;
+                while (_port.BytesToRead > _buffer.Length)
+                {
+                    var b = _port.ReadByte();
+                    if (b == 255) i++;
+                    else i = 0;
+                    if (i >= 4) break;
+                }
                 _port.Read(_buffer, 0, _buffer.Length);
                 OnDataRecieved();
                 _port.DiscardInBuffer();
@@ -147,7 +158,7 @@ namespace ControllerInterface
                     SetByte((byte)b);
                 }
             }
-            
+
             //var s = _port.ReadLine();
             //DataDecoded.Invoke(this, new DataDecodedEventArgs(s));
             //_port.DiscardInBuffer();
