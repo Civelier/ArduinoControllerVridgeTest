@@ -6,5 +6,6 @@
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Addresses.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ErrorCodes.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utilities.h" />
   </ItemGroup>
 </Project>
