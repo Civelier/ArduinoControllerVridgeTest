@@ -75,9 +75,9 @@ void Print()
 	Serial.print(d->y);
 	Serial.print("\t");
 	Serial.println((int)(d->btns));
-	for (size_t i = 0; i < sizeof(Data); i++)
+	for (size_t i = 0; i < TOTAL_BUFFER_SIZE; i++)
 	{
-		Serial.print(rArduinoBuffer[i]);
+		Serial.print(totalBuffer[i]);
 		Serial.print("\t");
 	}
 	Serial.println();
@@ -118,6 +118,7 @@ const byte sig[5] =
 #if PRINT_METHOD == PRINT_METHOD_DATA || PRINT_METHOD == PRINT_METHOD_FAST_DATA
 void serialEvent()
 {
+	delay(500);
 	int b = Serial.read();
 #if PRINT_METHOD == PRINT_METHOD_DATA
 	if (b == 1) Serial.write(buffer, CTRL_BUFFER_SIZE);
@@ -126,19 +127,35 @@ void serialEvent()
 #if PRINT_METHOD == PRINT_METHOD_FAST_DATA
 	if (b == 1)
 	{
-		rMPU.CalibrateAccel();
-		rMPU.CalibrateGyro();
+		
 	}
+	rMPU.CalibrateAccel();
+	rMPU.CalibrateGyro();
 #endif
 	while (Serial.available()) Serial.read();
 }
 #endif
+
+#define PrintSizeof(type) Serial.print(#type);\
+Serial.print(": ");\
+Serial.println(sizeof(type))
+
+//Data: 5
+//MPUData: 16
+//QuaternionData : 16
+//DataPacket : 47
+
 
 // the setup function runs once when you press reset or power the board
 void setup()
 {
 	Serial.begin(115200);
 	Serial.println("Hello");
+	PrintSizeof(Data);
+	PrintSizeof(MPUData);
+	PrintSizeof(QuaternionData);
+	PrintSizeof(DataPacket);
+	delay(2000);
 	Wire.begin();
 	Wire.setClock(400000);
 	//Wire.onReceive(requestEvent);
@@ -159,7 +176,7 @@ void setup()
 		data->error = ERR_RIGHT | ERR_MPU_DMP_CONFIG;
 		return;
 	}
-
+	rMPU.setDMPEnabled(true);
 	delay(100);
 }
 
@@ -180,10 +197,6 @@ void loop()
 		writeIndex++;
 		if (writeIndex >= CTRL_BUFFER_SIZE)
 		{
-#if PRINT_METHOD == PRINT_METHOD_READABLE
-			Print();
-			delay(100);
-#endif
 			data->rightArduino = (*(Data*)rArduinoBuffer);
 			TransmitDone = true;
 			writeIndex = 0;
@@ -200,10 +213,15 @@ void loop()
 		data->rightMPU.quat.z = q.z;
 	}
 
+	totalBuffer = (byte*)data;
 #if PRINT_METHOD == PRINT_METHOD_FAST_DATA
-	while (Serial.available()) Serial.read();
-	Serial.write((byte*)data, TOTAL_BUFFER_SIZE);
-	while (Serial.available()) Serial.read();
+	//while (Serial.available()) Serial.read();
+	Serial.write(totalBuffer, TOTAL_BUFFER_SIZE);
+	//while (Serial.available()) Serial.read();
 #endif
-	while (Wire.available() > 0) Wire.read();
+#if PRINT_METHOD == PRINT_METHOD_READABLE
+	Print();
+	delay(100);
+#endif
+	//while (Wire.available() > 0) Wire.read();
 }

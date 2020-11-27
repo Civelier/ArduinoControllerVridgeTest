@@ -31,6 +31,9 @@
             this.components = new System.ComponentModel.Container();
             this.ControllerPort = new System.IO.Ports.SerialPort(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
+            this.CalibrateButton = new System.Windows.Forms.Button();
+            this.StickLabel = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
             this.StickPanel = new System.Windows.Forms.Panel();
             this.StickCross = new System.Windows.Forms.PictureBox();
             this.RawLabel = new System.Windows.Forms.Label();
@@ -57,9 +60,15 @@
             this.label1 = new System.Windows.Forms.Label();
             this.PingButton = new System.Windows.Forms.Button();
             this.ConnectTimer = new System.Windows.Forms.Timer(this.components);
-            this.label10 = new System.Windows.Forms.Label();
-            this.StickLabel = new System.Windows.Forms.Label();
-            this.CalibrateButton = new System.Windows.Forms.Button();
+            this.QuatWLabel = new System.Windows.Forms.Label();
+            this.QuatZLabel = new System.Windows.Forms.Label();
+            this.QuatYLabel = new System.Windows.Forms.Label();
+            this.QuatXLabel = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
+            this.label17 = new System.Windows.Forms.Label();
+            this.label18 = new System.Windows.Forms.Label();
+            this.InitMPUButton = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.StickPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.StickCross)).BeginInit();
@@ -73,6 +82,15 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.panel1.Controls.Add(this.InitMPUButton);
+            this.panel1.Controls.Add(this.QuatWLabel);
+            this.panel1.Controls.Add(this.QuatZLabel);
+            this.panel1.Controls.Add(this.QuatYLabel);
+            this.panel1.Controls.Add(this.QuatXLabel);
+            this.panel1.Controls.Add(this.label15);
+            this.panel1.Controls.Add(this.label16);
+            this.panel1.Controls.Add(this.label17);
+            this.panel1.Controls.Add(this.label18);
             this.panel1.Controls.Add(this.CalibrateButton);
             this.panel1.Controls.Add(this.StickLabel);
             this.panel1.Controls.Add(this.label10);
@@ -104,6 +122,34 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(799, 452);
             this.panel1.TabIndex = 0;
+            // 
+            // CalibrateButton
+            // 
+            this.CalibrateButton.Location = new System.Drawing.Point(156, 317);
+            this.CalibrateButton.Name = "CalibrateButton";
+            this.CalibrateButton.Size = new System.Drawing.Size(75, 23);
+            this.CalibrateButton.TabIndex = 26;
+            this.CalibrateButton.Text = "Calibrate";
+            this.CalibrateButton.UseVisualStyleBackColor = true;
+            this.CalibrateButton.Click += new System.EventHandler(this.CalibrateButton_Click);
+            // 
+            // StickLabel
+            // 
+            this.StickLabel.AutoSize = true;
+            this.StickLabel.Location = new System.Drawing.Point(97, 125);
+            this.StickLabel.Name = "StickLabel";
+            this.StickLabel.Size = new System.Drawing.Size(32, 13);
+            this.StickLabel.TabIndex = 25;
+            this.StickLabel.Text = "False";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(71, 125);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(31, 13);
+            this.label10.TabIndex = 24;
+            this.label10.Text = "Stick";
             // 
             // StickPanel
             // 
@@ -340,36 +386,90 @@
             // ConnectTimer
             // 
             this.ConnectTimer.Enabled = true;
-            this.ConnectTimer.Interval = 1;
+            this.ConnectTimer.Interval = 20;
             this.ConnectTimer.Tick += new System.EventHandler(this.ConnectTimer_Tick);
             // 
-            // label10
+            // QuatWLabel
             // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(71, 125);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(31, 13);
-            this.label10.TabIndex = 24;
-            this.label10.Text = "Stick";
+            this.QuatWLabel.AutoSize = true;
+            this.QuatWLabel.Location = new System.Drawing.Point(209, 177);
+            this.QuatWLabel.Name = "QuatWLabel";
+            this.QuatWLabel.Size = new System.Drawing.Size(32, 13);
+            this.QuatWLabel.TabIndex = 34;
+            this.QuatWLabel.Text = "False";
             // 
-            // StickLabel
+            // QuatZLabel
             // 
-            this.StickLabel.AutoSize = true;
-            this.StickLabel.Location = new System.Drawing.Point(97, 125);
-            this.StickLabel.Name = "StickLabel";
-            this.StickLabel.Size = new System.Drawing.Size(32, 13);
-            this.StickLabel.TabIndex = 25;
-            this.StickLabel.Text = "False";
+            this.QuatZLabel.AutoSize = true;
+            this.QuatZLabel.Location = new System.Drawing.Point(209, 164);
+            this.QuatZLabel.Name = "QuatZLabel";
+            this.QuatZLabel.Size = new System.Drawing.Size(32, 13);
+            this.QuatZLabel.TabIndex = 33;
+            this.QuatZLabel.Text = "False";
             // 
-            // CalibrateButton
+            // QuatYLabel
             // 
-            this.CalibrateButton.Location = new System.Drawing.Point(156, 317);
-            this.CalibrateButton.Name = "CalibrateButton";
-            this.CalibrateButton.Size = new System.Drawing.Size(75, 23);
-            this.CalibrateButton.TabIndex = 26;
-            this.CalibrateButton.Text = "Calibrate";
-            this.CalibrateButton.UseVisualStyleBackColor = true;
-            this.CalibrateButton.Click += new System.EventHandler(this.CalibrateButton_Click);
+            this.QuatYLabel.AutoSize = true;
+            this.QuatYLabel.Location = new System.Drawing.Point(209, 151);
+            this.QuatYLabel.Name = "QuatYLabel";
+            this.QuatYLabel.Size = new System.Drawing.Size(32, 13);
+            this.QuatYLabel.TabIndex = 32;
+            this.QuatYLabel.Text = "False";
+            // 
+            // QuatXLabel
+            // 
+            this.QuatXLabel.AutoSize = true;
+            this.QuatXLabel.Location = new System.Drawing.Point(209, 138);
+            this.QuatXLabel.Name = "QuatXLabel";
+            this.QuatXLabel.Size = new System.Drawing.Size(32, 13);
+            this.QuatXLabel.TabIndex = 31;
+            this.QuatXLabel.Text = "False";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(183, 177);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(18, 13);
+            this.label15.TabIndex = 30;
+            this.label15.Text = "W";
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(183, 164);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(14, 13);
+            this.label16.TabIndex = 29;
+            this.label16.Text = "Z";
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(183, 151);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(14, 13);
+            this.label17.TabIndex = 28;
+            this.label17.Text = "Y";
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(183, 138);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(14, 13);
+            this.label18.TabIndex = 27;
+            this.label18.Text = "X";
+            // 
+            // InitMPUButton
+            // 
+            this.InitMPUButton.Location = new System.Drawing.Point(184, 112);
+            this.InitMPUButton.Name = "InitMPUButton";
+            this.InitMPUButton.Size = new System.Drawing.Size(75, 23);
+            this.InitMPUButton.TabIndex = 35;
+            this.InitMPUButton.Text = "Init";
+            this.InitMPUButton.UseVisualStyleBackColor = true;
+            this.InitMPUButton.Click += new System.EventHandler(this.InitMPUButton_Click);
             // 
             // Form1
             // 
@@ -421,6 +521,15 @@
         private System.Windows.Forms.Label StickLabel;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Button CalibrateButton;
+        private System.Windows.Forms.Label QuatWLabel;
+        private System.Windows.Forms.Label QuatZLabel;
+        private System.Windows.Forms.Label QuatYLabel;
+        private System.Windows.Forms.Label QuatXLabel;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Button InitMPUButton;
     }
 }
 

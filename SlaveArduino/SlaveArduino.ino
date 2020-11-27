@@ -52,10 +52,10 @@ void requestEvent()
 void setup()
 {
     Wire.begin(RIGHT_SLAVE_ADDRESS);
-    Serial.begin(115200);
+    //Serial.begin(115200);
     Wire.onRequest(requestEvent);
-    PrintSizeof(Data);
-    PrintSizeof(float);
+    //PrintSizeof(Data);
+    //PrintSizeof(float);
     //PrintSizeof(int16_t);
     //PrintSizeof(int32_t);
     //PrintSizeof(int64_t);
@@ -88,7 +88,7 @@ void Print()
 // the loop function runs over and over again until power down or reset
 void loop()
 {
-    //Update();
-    //Print();
-    //delay(100);
+    /*Update();
+    Print();
+    delay(100);*/
 }

@@ -29,7 +29,7 @@ namespace ControllerInterface.Data
         public static byte[] GetRange(this byte[] buffer, int start, int count)
         {
             int i = 0, ii = start + count;
-
+            if (buffer == null) return null;
             var query = from b in buffer
                         where i++ >= start && i <= ii
                         select b;

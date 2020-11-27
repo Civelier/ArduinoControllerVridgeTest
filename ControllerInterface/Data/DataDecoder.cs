@@ -10,12 +10,12 @@ namespace ControllerInterface.Data
 {
     public class DataDecodedEventArgs
     {
-        public DataDecodedEventArgs(ArduinoData data)
+        public DataDecodedEventArgs(DataPacket data)
         {
             Data = data;
         }
 
-        public ArduinoData Data
+        public DataPacket Data
         {
             get;
         }
@@ -42,13 +42,13 @@ namespace ControllerInterface.Data
 
         private bool _isReady;
         private bool _requestSent;
-        public ArduinoData LastDecodedData
+        public DataPacket LastDecodedData
         {
             get => _lastDecodedData;
             private set
             {
                 _lastDecodedData = value;
-                RightStick.SetValues(_lastDecodedData.StickX, _lastDecodedData.StickY);
+                RightStick.SetValues(_lastDecodedData.RightArduino.StickX, _lastDecodedData.RightArduino.StickY);
             }
         }
 
@@ -57,11 +57,11 @@ namespace ControllerInterface.Data
             get; private set;
         }
 
-        private ArduinoData _lastDecodedData;
+        private DataPacket _lastDecodedData;
 
         public DataDecoder(SerialPort port)
         {
-            _buffer = new byte[5];
+            _buffer = new byte[1 + 2 * ArduinoData.Size + 2 * MPUData.Size];
             _port = port;
             RightStick = new JoyStick(800, 800);
             _port.DataReceived += _port_DataReceived;
@@ -77,7 +77,7 @@ namespace ControllerInterface.Data
             return buffer;
         }
 
-        public ArduinoData? WaitForData()
+        public DataPacket? WaitForData()
         {
             var st = DateTime.Now;
             if (!IsAutoRefreshEnabled || !_requestSent)
@@ -87,20 +87,6 @@ namespace ControllerInterface.Data
             while ((DateTime.Now - st).TotalMilliseconds <= 100) if (_isReady) return LastDecodedData;
             _requestSent = false;
             return null;
-        }
-
-        public bool Allign()
-        {
-            for (var i = 0; i < _buffer.Length; i++)
-            {
-                var data = new ArduinoData(GetBuffer(i));
-                if (430 < data.StickX && data.StickX < 470 && 430 < data.StickY && data.StickY < 470)
-                {
-                    _bufferOffset = i;
-                    return true;
-                }
-            }
-            return false;
         }
 
         private void SetByte(byte b)
@@ -115,7 +101,7 @@ namespace ControllerInterface.Data
 
         private void OnDataRecieved()
         {
-            LastDecodedData = new ArduinoData(GetBuffer(_bufferOffset));
+            LastDecodedData = new DataPacket(_buffer);
             _isReady = true;
             _requestSent = false;
             DataDecoded?.Invoke(this, new DataDecodedEventArgs(LastDecodedData));
@@ -132,32 +118,46 @@ namespace ControllerInterface.Data
 
         private void _port_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            if (_port.BytesToRead > _buffer.Length)
+            if (_port.BytesToRead > _buffer.Length + 4)
             {
                 var i = 0;
-                while (_port.BytesToRead > _buffer.Length)
+                bool success = false;
+                while (_port.BytesToRead > _buffer.Length + 4)
                 {
                     var b = _port.ReadByte();
-                    if (b == 255) i++;
-                    else i = 0;
-                    if (i >= 4) break;
+                    if (b == 255) 
+                        i++;
+                    else 
+                        i = 0;
+                    if (i >= 4)
+                    {
+                        var eb = _port.ReadByte();
+                        if (eb != 255)
+                        {
+                            _buffer[0] = (byte)eb;
+                            success = true;
+                            break;
+                        }
+                        else i = 0;
+                    }
                 }
-                _port.Read(_buffer, 0, _buffer.Length);
+                if (!success) return;
+                _port.Read(_buffer, 1, _buffer.Length - 1);
                 OnDataRecieved();
                 _port.DiscardInBuffer();
             }
-            else
-            {
-                while (_port.BytesToRead > 0)
-                {
-                    var b = _port.ReadByte();
-                    if (b != -1)
-                    {
-                        break;
-                    }
-                    SetByte((byte)b);
-                }
-            }
+            //else
+            //{
+            //    while (_port.BytesToRead > 0)
+            //    {
+            //        var b = _port.ReadByte();
+            //        if (b != -1)
+            //        {
+            //            break;
+            //        }
+            //        SetByte((byte)b);
+            //    }
+            //}
 
             //var s = _port.ReadLine();
             //DataDecoded.Invoke(this, new DataDecodedEventArgs(s));

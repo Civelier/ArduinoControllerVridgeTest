@@ -52,7 +52,7 @@ namespace ControllerInterface
 
         private void _decoder_DataDecoded(DataDecoder sender, DataDecodedEventArgs args)
         {
-            ArduinoData data = args.Data;
+            ArduinoData data = args.Data.RightArduino;
             
             //_mainThreadActionQueue.Clear();
             SetActionOnMainThread(() => {
@@ -142,17 +142,22 @@ namespace ControllerInterface
 
         private void ConnectTimer_Tick(object sender, EventArgs e)
         {
-            var data = _decoder.WaitForData();
+            var data = _decoder.LastDecodedData;
+
             //_decoder.IsAutoRefreshEnabled = true;
-            if (data.HasValue)
+            if (data.ContainsData)
             {
-                StickLabel.Text = data.Value.Stick ? "True" : "False";
-                B1Label.Text = data.Value.Button1 ? "True" : "False";
-                B2Label.Text = data.Value.Button2 ? "True" : "False";
-                B3Label.Text = data.Value.Button3 ? "True" : "False";
-                B4Label.Text = data.Value.Button4 ? "True" : "False";
-                XLabel.Text = data.Value.StickX.ToString();
-                YLabel.Text = data.Value.StickY.ToString();
+                StickLabel.Text = data.RightArduino.Stick ? "True" : "False";
+                B1Label.Text = data.RightArduino.Button1 ? "True" : "False";
+                B2Label.Text = data.RightArduino.Button2 ? "True" : "False";
+                B3Label.Text = data.RightArduino.Button3 ? "True" : "False";
+                B4Label.Text = data.RightArduino.Button4 ? "True" : "False";
+                XLabel.Text = data.RightArduino.StickX.ToString();
+                YLabel.Text = data.RightArduino.StickY.ToString();
+                QuatXLabel.Text = data.RightMPU.Quaternion.X.ToString();
+                QuatYLabel.Text = data.RightMPU.Quaternion.Y.ToString();
+                QuatZLabel.Text = data.RightMPU.Quaternion.Z.ToString();
+                QuatWLabel.Text = data.RightMPU.Quaternion.W.ToString();
                 SetJoyStickPosition(_decoder.RightStick.X, _decoder.RightStick.Y);
             }
             //_connectService.MoveNext();
@@ -168,6 +173,11 @@ namespace ControllerInterface
         {
             _decoder.RightStick.CalibrateZero();
             _decoder.RightStick.CalibrateRanges();
+        }
+
+        private void InitMPUButton_Click(object sender, EventArgs e)
+        {
+            ControllerPort.Write(new byte[] { 1 }, 0, 1);
         }
     }
 }
