@@ -11,6 +11,7 @@ using PCToArduinoCommunication.Protocol.SendCommands;
 using PCToArduinoCommunication.Protocol;
 using PCToArduinoCommunication.Devices;
 using ControllerInterface.Data;
+using System.Runtime.InteropServices;
 
 namespace ControllerInterface
 {
@@ -19,6 +20,15 @@ namespace ControllerInterface
         private static Queue<Action> _mainThreadActionQueue = new Queue<Action>();
         private static Action _singleAction;
         private DataDecoder _decoder;
+        private bool _errorWindow = false;
+        private string _errorMsg;
+
+        private const uint GW_HWNDFIRST = 0;
+        private const int WM_CLOSE = 0x0010;
+        [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
+        static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+        [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto)]
+        static extern IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, IntPtr wParam, IntPtr lParam);
 
         public static void QueueActionOnMainThread(Action action)
         {
@@ -74,62 +84,6 @@ namespace ControllerInterface
             });
         }
 
-        private void PingButton_Click(object sender, EventArgs e)
-        {
-            var ping = new Ping();
-            ping.Replied += Ping_Replied;
-            //RightProtocol.Send(ping);
-        }
-
-        private void Ping_Replied(object sender, PingRepliedEventArgs e)
-        {
-            var ping = (Ping)sender;
-            ping.Replied -= Ping_Replied;
-            QueueActionOnMainThread(() => LastMillisLabel.Text = $"{e.Milliseconds}ms");
-        }
-
-        private void HandshakeButton_Click(object sender, EventArgs e)
-        {
-            var handshake = new HandshakeCommand();
-            handshake.Replied += Handshake_Replied;
-            //RightProtocol.Send(handshake);
-        }
-
-        private void Handshake_Replied(object sender, HandshakeRepliedEventArgs e)
-        {
-            var h = (HandshakeCommand)sender;
-            h.Replied -= Handshake_Replied;
-            switch (e.Type)
-            {
-                case DeviceType.LeftController:
-                    QueueActionOnMainThread(() => ControllerTypeLabel.Text = "Left");
-                    break;
-                case DeviceType.RightController:
-                    QueueActionOnMainThread(() => ControllerTypeLabel.Text = "Right");
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        private void OpenButton_Click(object sender, EventArgs e)
-        {
-            if (!ControllerPort.IsOpen) ControllerPort.Open();
-        }
-
-        private void RefreshButton_Click(object sender, EventArgs e)
-        {
-            PortList.Items.Clear();
-            PortList.Items.AddRange(System.IO.Ports.SerialPort.GetPortNames());
-        }
-
-        private void PortList_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (ControllerPort.IsOpen) ControllerPort.Close();
-            ControllerPort.PortName = System.IO.Ports.SerialPort.GetPortNames()[PortList.SelectedIndex];
-            if (!ControllerPort.IsOpen) ControllerPort.Open();
-        }
-
         private void MainThreadDispatcher_Tick(object sender, EventArgs e)
         {
             lock (_mainThreadActionQueue)
@@ -154,6 +108,24 @@ namespace ControllerInterface
             var data = _decoder.LastDecodedData;
 
             //_decoder.IsAutoRefreshEnabled = true;
+            if (_errorWindow && data.Error == DataPacketError.None)
+            {
+                IntPtr mbWnd = FindWindow(null, "Error with devices");
+                if (mbWnd != IntPtr.Zero)
+                {
+                    SendMessage(mbWnd, WM_CLOSE, IntPtr.Zero, IntPtr.Zero);
+                }
+            }
+            if (data.Error != DataPacketError.None)
+            {
+                if (!_errorWindow)
+                {
+                    _errorWindow = true;
+                    _errorMsg = new ErrorFoundEventArgs(data.Error).ToString();
+                    MessageBox.Show(_errorMsg, "Error with devices");
+                    _errorWindow = false;
+                }
+            }
             if (data.ContainsData)
             {
                 StickLabel.Text = data.RightArduino.Stick ? "True" : "False";

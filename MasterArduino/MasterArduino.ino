@@ -19,7 +19,7 @@
 #define PRINT_METHOD_FAST_DATA 2 //Print bytes continuously
 
 // Selected printing method
-#define PRINT_METHOD PRINT_METHOD_READABLE
+#define PRINT_METHOD PRINT_METHOD_FAST_DATA
 
 // Run mode
 #define RUN_MODE_NORMAL 0 //Normal execution (release version)
@@ -256,7 +256,20 @@ bool TryInitializeMPU()
 
 bool TestRArduinoConnection()
 {
+	rTransmitError = Wire.requestFrom((byte)RIGHT_SLAVE_ADDRESS, CTRL_BUFFER_SIZE);
 
+#if PRINT_METHOD == PRINT_METHOD_READABLE
+	Serial.print("Right Arduino report: ");
+	Serial.println(rTransmitError);
+#endif
+
+	if (rTransmitError == 0)
+	{
+		data.error = ERR_RIGHT | ERR_ARDUINO | ERR_ADDRESS_NACK;
+		return false;
+	}
+	if ((data.error & (ERR_RIGHT | ERR_ARDUINO)) == (ERR_RIGHT | ERR_ARDUINO)) data.error = ERR_NONE;
+	return true;
 }
 
 // the setup function runs once when you press reset or power the board
@@ -294,40 +307,32 @@ void loop()
 	//while (!TransmitDone) delay(5);
 	//TransmitDone = false;
 	sender = RIGHT_SLAVE_ADDRESS;
-	rTransmitError = Wire.requestFrom((byte)RIGHT_SLAVE_ADDRESS, CTRL_BUFFER_SIZE);
-
-#if !defined(TEST_TYPE) || defined(TEST_TYPE) && TEST_TYPE == TEST_TYPE_1
-	if (rTransmitError == 1) data.error = ERR_RIGHT | ERR_ARDUINO | ERR_ADDRESS_NACK;
-	if (rTransmitError == 2) data.error = ERR_RIGHT | ERR_ARDUINO | ERR_REG_NACK;
-#endif
-#if defined(TEST_TYPE) && TEST_TYPE == TEST_TYPE_2
-	if (rTransmitError == 1) data->error = ERR_RIGHT | ERR_ARDUINO | ERR_ADDRESS_NACK;
-	if (rTransmitError == 2) data->error = ERR_RIGHT | ERR_ARDUINO | ERR_REG_NACK;
-#endif
-
-	//TestMemory(); //querry 2
-	while (Wire.available() > 0)
+	if (TestRArduinoConnection())
 	{
-		int b = Wire.read();
-		if (b == -1)
+		//TestMemory(); //querry 2
+		while (Wire.available() > 0)
 		{
-			data.error = ERR_RIGHT | ERR_ARDUINO | ERR_STREAM_ENDED;
-			break;
-		}
-		rArduinoBuffer[writeIndex] = (byte)b;
-		writeIndex++;
-		if (writeIndex >= CTRL_BUFFER_SIZE)
-		{
-#if !defined(TEST_TYPE) || defined(TEST_TYPE) && TEST_TYPE == TEST_TYPE_1
-			data.rightArduino = (*(Data*)rArduinoBuffer);
-#endif
-#if defined(TEST_TYPE) && TEST_TYPE == TEST_TYPE_2
-			data->rightArduino = (*(Data*)rArduinoBuffer);
-#endif
-			TransmitDone = true;
-			writeIndex = 0;
-			//TestMemory(); //querry 3
-			break;
+			int b = Wire.read();
+			if (b == -1)
+			{
+				data.error = ERR_RIGHT | ERR_ARDUINO | ERR_STREAM_ENDED;
+				break;
+			}
+			rArduinoBuffer[writeIndex] = (byte)b;
+			writeIndex++;
+			if (writeIndex >= CTRL_BUFFER_SIZE)
+			{
+	#if !defined(TEST_TYPE) || defined(TEST_TYPE) && TEST_TYPE == TEST_TYPE_1
+				data.rightArduino = (*(Data*)rArduinoBuffer);
+	#endif
+	#if defined(TEST_TYPE) && TEST_TYPE == TEST_TYPE_2
+				data->rightArduino = (*(Data*)rArduinoBuffer);
+	#endif
+				TransmitDone = true;
+				writeIndex = 0;
+				//TestMemory(); //querry 3
+				break;
+			}
 		}
 	}
 
