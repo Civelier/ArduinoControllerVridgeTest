@@ -21,13 +21,64 @@ namespace ControllerInterface.Data
         }
     }
 
-    public delegate void DataDecodeEventHandler(DataDecoder sender, DataDecodedEventArgs args);
+    public delegate void DataDecodedEventHandler(DataDecoder sender, DataDecodedEventArgs args);
+
+    public delegate void ErrorFoundEventHandler(DataDecoder sender, ErrorFoundEventArgs args);
+
+    public class ErrorFoundEventArgs
+    {
+        public DataPacketError Error { get; }
+
+        public bool IsMaster => AreDown(0b00110000);
+        public bool IsSlave => AreUp(0b00010000);
+        public bool IsMPU => AreUp(0b00100000);
+        public bool IsLeft => AreUp(0b10000000);
+        public bool IsRight => AreUp(0b01000000);
+        public bool IsTransmission => AreUp(0b00001000);
+
+        public ErrorFoundEventArgs(DataPacketError error)
+        {
+            Error = error;
+        }
+
+        private bool AreUp(byte v)
+        {
+            return ((byte)Error & v) == v;
+        }
+
+        private bool AreDown(byte v)
+        {
+            return ((byte)Error & v) == 0;
+        }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            if (IsLeft) sb.Append("Left ");
+            if (IsRight) sb.Append("Right ");
+            if (IsSlave) sb.Append("Arduino ");
+            if (IsMPU) sb.Append("MPU ");
+            if (IsMaster) sb.Append("Master ");
+            if (Error == DataPacketError.MPUInitMemLoad) sb.Append("falied initial memory load!");
+            if (Error == DataPacketError.MPUDMPConf) sb.Append("couldn't load DMP configuration!");
+            if (IsTransmission)
+            {
+                if (((byte)Error & 0b00000111) == 0b00000000) sb.Append("did not ack (possible incorrect address or device not connected)!");
+                if (((byte)Error & 0b00000111) == 0b00000001) sb.Append("registry did not ack (potential incorrect address or incorrect version)!");
+                if (((byte)Error & 0b00000111) == 0b00000010) sb.Append("stream closed (potential bad connection)!");
+            }
+            if (Error == DataPacketError.MasterMemGain) sb.Append("Master gained memory (memory leak)!");
+            return sb.ToString();
+        }
+    }
 
     public class DataDecoder
     {
         SerialPort _port;
 
-        public event DataDecodeEventHandler DataDecoded;
+        public event DataDecodedEventHandler DataDecoded;
+
+        public event ErrorFoundEventHandler ErrorFound;
 
         byte[] _buffer;
 
@@ -63,7 +114,7 @@ namespace ControllerInterface.Data
         {
             _buffer = new byte[1 + 2 * ArduinoData.Size + 2 * MPUData.Size];
             _port = port;
-            RightStick = new JoyStick(800, 800);
+            RightStick = new JoyStick(1023, 1023);
             _port.DataReceived += _port_DataReceived;
         }
 
@@ -136,6 +187,7 @@ namespace ControllerInterface.Data
                         {
                             _buffer[0] = (byte)eb;
                             success = true;
+                            if (eb != 0) ErrorFound?.Invoke(this, new ErrorFoundEventArgs((DataPacketError)eb));
                             break;
                         }
                         else i = 0;

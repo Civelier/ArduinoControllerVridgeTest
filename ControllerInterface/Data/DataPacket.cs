@@ -12,13 +12,15 @@ namespace ControllerInterface.Data
         None = 0b00000000,
         Left = 0b10000000,
         Right = 0b01000000,
-        MPU = 0b00100000,
+        //MPU = 0b00100000,
         MPUInitMemLoad = 0b00100000,
         MPUDMPConf = 0b00100001,
-        Arduino = 0b00010000,
-        Transmission = 0b00001000,
+        //Arduino = 0b00010000,
+        //Transmission = 0b00001000,
         TransmissionAddressNACK = 0b00001000,
         TransmissionRegNACK = 0b00001001,
+        TransmissionStreamEnded = 0b00001010,
+        MasterMemGain = 0b00000001,
     }
 
     public struct DataPacket

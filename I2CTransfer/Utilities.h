@@ -3,6 +3,8 @@
 #ifndef _UTILITIES_h
 #define _UTILITIES_h
 
+#include <Arduino.h>
+
 #ifdef __arm__
 // should use uinstd.h to define sbrk but Due causes a conflict
 extern "C" char* sbrk(int incr);
@@ -134,6 +136,50 @@ if (true)\
         Serial.print(del - start);\
         Serial.println(" bytes deleted");\
     }\
+}
+
+void TestMemory(bool newCycle = false)
+{
+    static int starttotalmem = freeMemory();
+    static int startcyclemem = starttotalmem;
+    static int startquerrymem = starttotalmem;
+    static int lastcyclemem = -1;
+    static int lastquerrymem = 0;
+
+    static int cycle = 0;
+    static int querry = 0;
+
+    int currentmem = freeMemory();
+
+    lastquerrymem = startquerrymem;
+    startquerrymem = currentmem;
+
+    if (newCycle)
+    {
+        querry = 0;
+        cycle++;
+        lastcyclemem = startcyclemem;
+        startcyclemem = currentmem;
+        Serial.println(cycle);
+    }
+    querry++;
+
+    Serial.print("-");
+    Serial.println(querry);
+    
+    Serial.print("\tTotal memory delta: ");
+    Serial.println(currentmem - starttotalmem);
+
+    if (newCycle)
+    {
+        Serial.print("Total memory: ");
+        Serial.println(currentmem);
+        Serial.print("\tCycle memory delta: ");
+        Serial.println(startcyclemem - lastcyclemem);
+    }
+
+    Serial.print("\tQuerry memory delta: ");
+    Serial.println(startquerrymem - lastquerrymem);
 }
 
 #endif

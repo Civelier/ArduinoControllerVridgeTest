@@ -45,9 +45,18 @@ namespace ControllerInterface
             //_decoder.DataDecoded += _decoder_DataDecoded;
             ControllerPort.Open();
             _decoder.IsAutoRefreshEnabled = true;
+            _decoder.ErrorFound += _decoder_ErrorFound;
             //DeviceConnetionService.Instance.Begin(ProtocolInfo.Devices[0], ProtocolInfo.Devices[1]);
             
             //_connectService = DeviceConnetionService.Instance.Connect();
+        }
+
+        private void _decoder_ErrorFound(DataDecoder sender, ErrorFoundEventArgs args)
+        {
+            QueueActionOnMainThread(() => 
+            {
+                MessageBox.Show(args.ToString(), "Error with devices");
+            });
         }
 
         private void _decoder_DataDecoded(DataDecoder sender, DataDecodedEventArgs args)
