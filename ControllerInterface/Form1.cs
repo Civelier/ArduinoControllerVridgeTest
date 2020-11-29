@@ -7,9 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using PCToArduinoCommunication.Protocol.SendCommands;
-using PCToArduinoCommunication.Protocol;
-using PCToArduinoCommunication.Devices;
 using ControllerInterface.Data;
 using System.Runtime.InteropServices;
 
@@ -97,10 +94,16 @@ namespace ControllerInterface
             }
         }
 
-        private void SetJoyStickPosition(float x, float y)
+        private void SetRightJoyStickPosition(float x, float y)
         {
             int pWidth = StickPanel.Width, pHeight = StickPanel.Height, jWidth = StickCross.Width, jHeight = StickCross.Height;
             StickCross.Location = new Point((int)(pWidth / 2 + pWidth * x / 2 - jWidth / 2), (int)(pHeight / 2 + pHeight * y / 2 - jHeight / 2));
+        }
+
+        private void SetLeftJoyStickPosition(float x, float y)
+        {
+            int pWidth = LeftStickPanel.Width, pHeight = LeftStickPanel.Height, jWidth = LeftStickCross.Width, jHeight = LeftStickCross.Height;
+            LeftStickCross.Location = new Point((int)(pWidth / 2 + pWidth * x / 2 - jWidth / 2), (int)(pHeight / 2 + pHeight * y / 2 - jHeight / 2));
         }
 
         private void ConnectTimer_Tick(object sender, EventArgs e)
@@ -139,7 +142,19 @@ namespace ControllerInterface
                 QuatYLabel.Text = data.RightMPU.Quaternion.Y.ToString();
                 QuatZLabel.Text = data.RightMPU.Quaternion.Z.ToString();
                 QuatWLabel.Text = data.RightMPU.Quaternion.W.ToString();
-                SetJoyStickPosition(_decoder.RightStick.X, _decoder.RightStick.Y);
+                LStickLabel.Text = data.LeftArduino.Stick ? "True" : "False";
+                LB1Label.Text = data.LeftArduino.Button1 ? "True" : "False";
+                LB2Label.Text = data.LeftArduino.Button2 ? "True" : "False";
+                LB3Label.Text = data.LeftArduino.Button3 ? "True" : "False";
+                LB4Label.Text = data.LeftArduino.Button4 ? "True" : "False";
+                LXLabel.Text = data.LeftArduino.StickX.ToString();
+                LYLabel.Text = data.LeftArduino.StickY.ToString();
+                LQuatXLabel.Text = data.LeftMPU.Quaternion.X.ToString();
+                LQuatYLabel.Text = data.LeftMPU.Quaternion.Y.ToString();
+                LQuatZLabel.Text = data.LeftMPU.Quaternion.Z.ToString();
+                LQuatWLabel.Text = data.LeftMPU.Quaternion.W.ToString();
+                SetRightJoyStickPosition(_decoder.RightStick.X, _decoder.RightStick.Y);
+                SetLeftJoyStickPosition(_decoder.LeftStick.X, _decoder.LeftStick.Y);
             }
             //_connectService.MoveNext();
             //if (DeviceConnetionService.Instance.RightControllerPort.IsConnected)
@@ -154,6 +169,8 @@ namespace ControllerInterface
         {
             _decoder.RightStick.CalibrateZero();
             _decoder.RightStick.CalibrateRanges();
+            _decoder.LeftStick.CalibrateZero();
+            _decoder.LeftStick.CalibrateRanges();
         }
 
         private void InitMPUButton_Click(object sender, EventArgs e)

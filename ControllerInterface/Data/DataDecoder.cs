@@ -4,7 +4,6 @@ using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using PCToArduinoCommunication.Protocol;
 
 namespace ControllerInterface.Data
 {
@@ -100,10 +99,16 @@ namespace ControllerInterface.Data
             {
                 _lastDecodedData = value;
                 RightStick.SetValues(_lastDecodedData.RightArduino.StickX, _lastDecodedData.RightArduino.StickY);
+                LeftStick.SetValues(_lastDecodedData.LeftArduino.StickX, _lastDecodedData.LeftArduino.StickY);
             }
         }
 
         public JoyStick RightStick
+        {
+            get; private set;
+        }
+
+        public JoyStick LeftStick
         {
             get; private set;
         }
@@ -115,6 +120,7 @@ namespace ControllerInterface.Data
             _buffer = new byte[1 + 2 * ArduinoData.Size + 2 * MPUData.Size];
             _port = port;
             RightStick = new JoyStick(1023, 1023);
+            LeftStick = new JoyStick(1023, 1023);
             _port.DataReceived += _port_DataReceived;
         }
 

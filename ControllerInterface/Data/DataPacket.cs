@@ -27,7 +27,7 @@ namespace ControllerInterface.Data
     {
         private byte[] _buffer;
         public bool ContainsData => _buffer != null;
-        public DataPacketError Error => (DataPacketError)_buffer[0];
+        public DataPacketError Error => _buffer == null ? DataPacketError.None : (DataPacketError)_buffer[0];
         public ArduinoData RightArduino => new ArduinoData(_buffer.GetRange(1, ArduinoData.Size));
         public ArduinoData LeftArduino => new ArduinoData(_buffer.GetRange(1 + ArduinoData.Size, ArduinoData.Size));
         public MPUData RightMPU => new MPUData(_buffer.GetRange(1 + 2 * ArduinoData.Size, MPUData.Size));

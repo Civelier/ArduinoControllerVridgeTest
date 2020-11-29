@@ -53,10 +53,9 @@ struct DataPacket
 	byte error = ERR_NONE;
 	Data rightArduino;
 	Data leftArduino;
-	MPUData rightMPU;
-	MPUData leftMPU;
+	QuaternionData rightMPU;
+	QuaternionData leftMPU;
 };
-
 
 
 #define TOTAL_BUFFER_SIZE sizeof(DataPacket)
@@ -71,18 +70,20 @@ DataPacket data = DataPacket();
 DataPacket* data = new DataPacket();
 #endif
 byte* rArduinoBuffer = new byte[CTRL_BUFFER_SIZE];
+byte* lArduinoBuffer = new byte[CTRL_BUFFER_SIZE];
 byte* rMPUBuffer = new byte[64];
+byte* lMPUBuffer = new byte[64];
 byte* totalBuffer = new byte[TOTAL_BUFFER_SIZE];
-bool TransmitDone = true;
 uint8_t rMPUStatus;
-uint8_t rTransmitError;
+uint8_t lMPUStatus;
+uint8_t transmitError;
 
-uint16_t packetSize;    // expected DMP packet size (default is 42 bytes)
-uint16_t fifoCount;     // count of all bytes currently in FIFO
-uint8_t fifoBuffer[64]; // FIFO storage buffer
+uint8_t rfifoBuffer[64]; // FIFO storage buffer
+uint8_t lfifoBuffer[64]; // FIFO storage buffer
 
 // orientation/motion vars
-Quaternion q;           // [w, x, y, z]         quaternion container
+Quaternion qr;           // [w, x, y, z]         quaternion container
+Quaternion ql;           // [w, x, y, z]         quaternion container
 //VectorInt16 aa;         // [x, y, z]            accel sensor measurements
 //VectorInt16 gy;         // [x, y, z]            gyro sensor measurements
 //VectorInt16 aaReal;     // [x, y, z]            gravity-free accel sensor measurements
@@ -92,7 +93,8 @@ Quaternion q;           // [w, x, y, z]         quaternion container
 //float ypr[3];           // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
 
 
-MPU6050 rMPU = MPU6050();
+MPU6050 rMPU = MPU6050(MPU6050_ADDRESS_AD0_LOW);
+MPU6050 lMPU = MPU6050(MPU6050_ADDRESS_AD0_HIGH);
 
 void AlertMemoryGain()
 {
@@ -115,7 +117,29 @@ void Print()
 	Serial.print("\t");
 	Serial.print(d->y);
 	Serial.print("\t");
+	Serial.print("X: ");
+	Serial.print(qr.x);
+	Serial.print(" Y: ");
+	Serial.print(qr.y);
+	Serial.print(" Z: ");
+	Serial.print(qr.z);
+	Serial.print(" W: ");
+	Serial.print(qr.w);
 	Serial.println((int)(d->btns));
+	Data* dl = (Data*)lArduinoBuffer;
+	Serial.print(dl->x);
+	Serial.print("\t");
+	Serial.print(dl->y);
+	Serial.print("\t");
+	Serial.print("X: ");
+	Serial.print(ql.x);
+	Serial.print(" Y: ");
+	Serial.print(ql.y);
+	Serial.print(" Z: ");
+	Serial.print(ql.z);
+	Serial.print(" W: ");
+	Serial.print(ql.w);
+	Serial.println((int)(dl->btns));
 	for (size_t i = 0; i < TOTAL_BUFFER_SIZE; i++)
 	{
 		Serial.print(totalBuffer[i]);
@@ -158,8 +182,10 @@ const byte sig[5] =
 
 void CalibrateDMP()
 {
-	rMPU.CalibrateAccel();
+	//rMPU.CalibrateAccel();
 	rMPU.CalibrateGyro();
+	//lMPU.CalibrateAccel();
+	lMPU.CalibrateGyro();
 }
 
 #if PRINT_METHOD == PRINT_METHOD_DATA || PRINT_METHOD == PRINT_METHOD_FAST_DATA
@@ -194,12 +220,20 @@ Serial.println(sizeof(type))
 //DataPacket : 47
 
 bool rMPUInitialized = false;
+bool lMPUInitialized = false;
 
-bool TryInitializeMPU()
+bool TestConnection(uint8_t address)
+{
+	Wire.beginTransmission(address);
+	uint8_t error = Wire.endTransmission();
+	return error == 0;
+}
+
+bool TryInitializeRMPU()
 {
 	if (rMPUInitialized && (data.error & (ERR_RIGHT | ERR_MPU)) != (ERR_RIGHT | ERR_MPU))
 	{
-		if (rMPU.testConnection())
+		if (TestConnection(MPU6050_ADDRESS_AD0_LOW))
 		{
 #if PRINT_METHOD == PRINT_METHOD_READABLE
 			Serial.println("MPU connected");
@@ -213,7 +247,7 @@ bool TryInitializeMPU()
 			return false;
 		}
 	}
-	if (!rMPU.testConnection())
+	if (!TestConnection(MPU6050_ADDRESS_AD0_LOW))
 	{
 #if !defined(TEST_TYPE) || defined(TEST_TYPE) && TEST_TYPE == TEST_TYPE_1
 		data.error = ERR_RIGHT | ERR_MPU | ERR_ADDRESS_NACK;
@@ -254,21 +288,86 @@ bool TryInitializeMPU()
 	return true;
 }
 
-bool TestRArduinoConnection()
+bool TryInitializeLMPU()
 {
-	rTransmitError = Wire.requestFrom((byte)RIGHT_SLAVE_ADDRESS, CTRL_BUFFER_SIZE);
-
-#if PRINT_METHOD == PRINT_METHOD_READABLE
-	Serial.print("Right Arduino report: ");
-	Serial.println(rTransmitError);
-#endif
-
-	if (rTransmitError == 0)
+	if (lMPUInitialized && (data.error & (ERR_LEFT | ERR_MPU)) != (ERR_LEFT | ERR_MPU))
 	{
-		data.error = ERR_RIGHT | ERR_ARDUINO | ERR_ADDRESS_NACK;
+		if (TestConnection(MPU6050_ADDRESS_AD0_HIGH))
+		{
+#if PRINT_METHOD == PRINT_METHOD_READABLE
+			Serial.println("MPU connected");
+#endif
+			return true;
+		}
+		else
+		{
+			lMPUInitialized = false;
+			data.error = ERR_LEFT | ERR_MPU | ERR_ADDRESS_NACK;
+			return false;
+		}
+	}
+	if (!TestConnection(MPU6050_ADDRESS_AD0_HIGH))
+	{
+#if !defined(TEST_TYPE) || defined(TEST_TYPE) && TEST_TYPE == TEST_TYPE_1
+		data.error = ERR_LEFT | ERR_MPU | ERR_ADDRESS_NACK;
+#endif
+#if defined(TEST_TYPE) && TEST_TYPE == TEST_TYPE_2
+		data->error = ERR_LEFT | ERR_MPU | ERR_ADDRESS_NACK;
+#endif
+		lMPUInitialized = false;
 		return false;
 	}
-	if ((data.error & (ERR_RIGHT | ERR_ARDUINO)) == (ERR_RIGHT | ERR_ARDUINO)) data.error = ERR_NONE;
+	lMPUStatus = lMPU.dmpInitialize();
+	if (lMPUStatus == 1)
+	{
+#if !defined(TEST_TYPE) || defined(TEST_TYPE) && TEST_TYPE == TEST_TYPE_1
+		data.error = ERR_LEFT | ERR_MPU_INIT_MEM_LOAD_FAIL;
+#endif
+#if defined(TEST_TYPE) && TEST_TYPE == TEST_TYPE_2
+		data->error = ERR_LEFT | ERR_MPU_INIT_MEM_LOAD_FAIL;
+#endif
+		lMPUInitialized = false;
+		return false;
+	}
+	if (lMPUStatus == 2)
+	{
+#if !defined(TEST_TYPE) || defined(TEST_TYPE) && TEST_TYPE == TEST_TYPE_1
+		data.error = ERR_LEFT | ERR_MPU_DMP_CONFIG;
+#endif
+#if defined(TEST_TYPE) && TEST_TYPE == TEST_TYPE_2
+		data->error = ERR_LEFT | ERR_MPU_DMP_CONFIG;
+#endif
+		lMPUInitialized = false;
+		return false;
+	}
+	lMPU.setIntDMPEnabled(false);
+	lMPU.setDMPEnabled(true);
+	if ((data.error & (ERR_LEFT | ERR_MPU)) == (ERR_LEFT | ERR_MPU)) data.error = 0;
+	lMPUInitialized = true;
+	return true;
+}
+
+bool TestArduinoConnection(uint8_t dev)
+{
+	transmitError = Wire.requestFrom(dev, CTRL_BUFFER_SIZE);
+
+#if PRINT_METHOD == PRINT_METHOD_READABLE
+	if (dev == RIGHT_SLAVE_ADDRESS) Serial.print("Right");
+	if (dev == LEFT_SLAVE_ADDRESS) Serial.print("Left");
+	Serial.print(" Arduino report: ");
+	Serial.println(transmitError);
+#endif
+
+	byte err;
+	if (dev == RIGHT_SLAVE_ADDRESS) err = ERR_RIGHT;
+	if (dev == LEFT_SLAVE_ADDRESS) err = ERR_LEFT;
+
+	if (transmitError == 0)
+	{
+		data.error = err | ERR_ARDUINO | ERR_ADDRESS_NACK;
+		return false;
+	}
+	if ((data.error & (err | ERR_ARDUINO)) == (err | ERR_ARDUINO)) data.error = ERR_NONE;
 	return true;
 }
 
@@ -284,8 +383,44 @@ void setup()
 	delay(2000);
 	Wire.begin();
 	Wire.setClock(400000);
-	//Wire.onReceive(requestEvent);
 	rMPU.initialize();
+	lMPU.initialize();
+
+	while (!TryInitializeRMPU())
+	{
+		totalBuffer = reinterpret_cast<byte*>(&data);
+		//totalBuffer = (byte*)data;
+		//TestMemory(); //querry 5
+#if PRINT_METHOD == PRINT_METHOD_FAST_DATA
+	//while (Serial.available()) Serial.read();
+		Serial.write(totalBuffer, TOTAL_BUFFER_SIZE);
+		//while (Serial.available()) Serial.read();
+#endif
+#if PRINT_METHOD == PRINT_METHOD_READABLE
+		Print();
+		//TestMemory(); //querry 6
+		delay(200);
+#endif
+	}
+	while (!TryInitializeLMPU())
+	{
+		totalBuffer = reinterpret_cast<byte*>(&data);
+		//totalBuffer = (byte*)data;
+		//TestMemory(); //querry 5
+#if PRINT_METHOD == PRINT_METHOD_FAST_DATA
+	//while (Serial.available()) Serial.read();
+		Serial.write(totalBuffer, TOTAL_BUFFER_SIZE);
+		//while (Serial.available()) Serial.read();
+#endif
+#if PRINT_METHOD == PRINT_METHOD_READABLE
+		Print();
+		//TestMemory(); //querry 6
+		delay(200);
+#endif
+	}
+	//Wire.onReceive(requestEvent);
+	totalBuffer = reinterpret_cast<byte*>(&data);
+
 	delay(100);
 }
 
@@ -307,7 +442,7 @@ void loop()
 	//while (!TransmitDone) delay(5);
 	//TransmitDone = false;
 	sender = RIGHT_SLAVE_ADDRESS;
-	if (TestRArduinoConnection())
+	if (TestArduinoConnection(RIGHT_SLAVE_ADDRESS))
 	{
 		//TestMemory(); //querry 2
 		while (Wire.available() > 0)
@@ -322,13 +457,8 @@ void loop()
 			writeIndex++;
 			if (writeIndex >= CTRL_BUFFER_SIZE)
 			{
-	#if !defined(TEST_TYPE) || defined(TEST_TYPE) && TEST_TYPE == TEST_TYPE_1
 				data.rightArduino = (*(Data*)rArduinoBuffer);
-	#endif
-	#if defined(TEST_TYPE) && TEST_TYPE == TEST_TYPE_2
-				data->rightArduino = (*(Data*)rArduinoBuffer);
-	#endif
-				TransmitDone = true;
+				//TransmitDone = true;
 				writeIndex = 0;
 				//TestMemory(); //querry 3
 				break;
@@ -336,35 +466,90 @@ void loop()
 		}
 	}
 
-	if (TryInitializeMPU())
+	if (TryInitializeRMPU())
 	{
-		rTransmitError = rMPU.dmpGetCurrentFIFOPacket(fifoBuffer);
-		if (rTransmitError)
+		while (rMPU.getFIFOCount() <= 64);
+		transmitError = rMPU.dmpGetCurrentFIFOPacket(rfifoBuffer);
+		if (transmitError)
 		{
-			rMPU.dmpGetQuaternion(&q, fifoBuffer);
+			rMPU.dmpGetQuaternion(&qr, rfifoBuffer);
 #if !defined(TEST_TYPE) || defined(TEST_TYPE) && TEST_TYPE == TEST_TYPE_1
-			data.rightMPU.quat.w = q.w;
-			data.rightMPU.quat.x = q.x;
-			data.rightMPU.quat.y = q.y;
-			data.rightMPU.quat.z = q.z;
+			data.rightMPU.w = qr.w;
+			data.rightMPU.x = qr.x;
+			data.rightMPU.y = qr.y;
+			data.rightMPU.z = qr.z;
 #endif
 #if defined(TEST_TYPE) && TEST_TYPE == TEST_TYPE_2
-			data->rightMPU.quat.w = q.w;
-			data->rightMPU.quat.x = q.x;
-			data->rightMPU.quat.y = q.y;
-			data->rightMPU.quat.z = q.z;
+			data->rightMPU.quat.w = qr.w;
+			data->rightMPU.quat.x = qr.x;
+			data->rightMPU.quat.y = qr.y;
+			data->rightMPU.quat.z = qr.z;
 #endif
 		}
 		else
 		{
-			if (rTransmitError == 1) data.error = ERR_RIGHT | ERR_MPU | ERR_ADDRESS_NACK;
-			if (rTransmitError == 2) data.error = ERR_RIGHT | ERR_MPU | ERR_REG_NACK;
-			while (!TryInitializeMPU());
+			if (transmitError == 1) data.error = ERR_RIGHT | ERR_MPU | ERR_ADDRESS_NACK;
+			if (transmitError == 2) data.error = ERR_RIGHT | ERR_MPU | ERR_REG_NACK;
+			while (!TryInitializeRMPU());
 		}
 		//TestMemory(); //querry 4
 	}
 
-	totalBuffer = reinterpret_cast<byte*>(&data);
+	sender = LEFT_SLAVE_ADDRESS;
+	if (TestArduinoConnection(LEFT_SLAVE_ADDRESS))
+	{
+		//TestMemory(); //querry 2
+		while (Wire.available() > 0)
+		{
+			int b = Wire.read();
+			if (b == -1)
+			{
+				data.error = ERR_LEFT | ERR_ARDUINO | ERR_STREAM_ENDED;
+				break;
+			}
+			lArduinoBuffer[writeIndex] = (byte)b;
+			writeIndex++;
+			if (writeIndex >= CTRL_BUFFER_SIZE)
+			{
+				data.leftArduino = (*(Data*)lArduinoBuffer);
+				//TransmitDone = true;
+				writeIndex = 0;
+				//TestMemory(); //querry 3
+				break;
+			}
+		}
+	}
+
+	if (TryInitializeLMPU())
+	{
+		while (lMPU.getFIFOCount() <= 64);
+		transmitError = lMPU.dmpGetCurrentFIFOPacket(lfifoBuffer);
+		if (transmitError)
+		{
+			lMPU.dmpGetQuaternion(&ql, lfifoBuffer);
+#if !defined(TEST_TYPE) || defined(TEST_TYPE) && TEST_TYPE == TEST_TYPE_1
+			data.leftMPU.w = ql.w;
+			data.leftMPU.x = ql.x;
+			data.leftMPU.y = ql.y;
+			data.leftMPU.z = ql.z;
+#endif
+#if defined(TEST_TYPE) && TEST_TYPE == TEST_TYPE_2
+			data->leftMPU.quat.w = ql.w;
+			data->leftMPU.quat.x = ql.x;
+			data->leftMPU.quat.y = ql.y;
+			data->leftMPU.quat.z = ql.z;
+#endif
+		}
+		else
+		{
+			if (transmitError == 1) data.error = ERR_LEFT | ERR_MPU | ERR_ADDRESS_NACK;
+			if (transmitError == 2) data.error = ERR_LEFT | ERR_MPU | ERR_REG_NACK;
+			while (!TryInitializeLMPU());
+		}
+		//TestMemory(); //querry 4
+	}
+
+	//totalBuffer = reinterpret_cast<byte*>(&data);
 	//totalBuffer = (byte*)data;
 	//TestMemory(); //querry 5
 #if PRINT_METHOD == PRINT_METHOD_FAST_DATA
