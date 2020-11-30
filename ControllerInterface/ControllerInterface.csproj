@@ -78,7 +78,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="VRidge\Controller.cs" />
-    <Compile Include="VRidge\ControllerProxy.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -105,6 +104,10 @@
     <ProjectReference Include="..\PCToArduinoCommunication\PCToArduinoCommunication.csproj">
       <Project>{00a09fa8-ffb3-4e4f-b325-4630b97e94b0}</Project>
       <Name>PCToArduinoCommunication</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VRE.Vridge.API.Client\VRE.Vridge.API.Client.csproj">
+      <Project>{7ec1bfce-2819-447c-9560-fc43957527eb}</Project>
+      <Name>VRE.Vridge.API.Client</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

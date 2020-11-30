@@ -12,7 +12,15 @@ namespace ControllerInterface.Data
         public static int Size = 16;
         private byte[] _buffer;
 
-        public Quaternion Quaternion => _buffer.ToQuaternion();
+        public Quaternion Quaternion
+        {
+            get
+            {
+                return _buffer.ToQuaternion();
+                //q.Y = -q.Y;
+                //return q;
+            }
+        }
 
         public MPUData(byte[] buffer)
         {

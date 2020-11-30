@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ControllerInterface.Data;
 using System.Runtime.InteropServices;
+using VRidgeAPI = VRE.Vridge.API.Client;
+using ControllerInterface.VRidge;
+using VRE.Vridge.API.Client.Remotes;
 
 namespace ControllerInterface
 {
@@ -19,6 +22,8 @@ namespace ControllerInterface
         private DataDecoder _decoder;
         private bool _errorWindow = false;
         private string _errorMsg;
+        private VridgeRemote _remote;
+        private Controller _rightController;
 
         private const uint GW_HWNDFIRST = 0;
         private const int WM_CLOSE = 0x0010;
@@ -54,7 +59,10 @@ namespace ControllerInterface
             _decoder.IsAutoRefreshEnabled = true;
             _decoder.ErrorFound += _decoder_ErrorFound;
             //DeviceConnetionService.Instance.Begin(ProtocolInfo.Devices[0], ProtocolInfo.Devices[1]);
-            
+            _remote = new VRidgeAPI.Remotes.VridgeRemote("localhost", "Arduino-interface",
+                VRidgeAPI.Remotes.Capabilities.Controllers | VRidgeAPI.Remotes.Capabilities.HeadTracking);
+            _rightController = new Controller(_remote, VRidgeAPI.Messages.BasicTypes.HandType.Right);
+            _decoder.DataDecoded += (sender, args) => _rightController.SetData(args.Data.RightArduino, args.Data.RightMPU);
             //_connectService = DeviceConnetionService.Instance.Connect();
         }
 

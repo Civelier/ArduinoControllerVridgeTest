@@ -468,7 +468,7 @@ void loop()
 
 	if (TryInitializeRMPU())
 	{
-		while (rMPU.getFIFOCount() <= 64);
+		//while (rMPU.getFIFOCount() <= 64);
 		transmitError = rMPU.dmpGetCurrentFIFOPacket(rfifoBuffer);
 		if (transmitError)
 		{
@@ -522,7 +522,7 @@ void loop()
 
 	if (TryInitializeLMPU())
 	{
-		while (lMPU.getFIFOCount() <= 64);
+		//while (lMPU.getFIFOCount() <= 64);
 		transmitError = lMPU.dmpGetCurrentFIFOPacket(lfifoBuffer);
 		if (transmitError)
 		{
