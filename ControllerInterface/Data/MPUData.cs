@@ -4,6 +4,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using VRE.Vridge.API.Client.Helpers;
 
 namespace ControllerInterface.Data
 {
@@ -12,13 +13,17 @@ namespace ControllerInterface.Data
         public static int Size = 16;
         private byte[] _buffer;
 
+        static Quaternion _rot = Quaternion.CreateFromRotationMatrix(Matrix4x4.CreateFromAxisAngle(Vector3.UnitY, (float)MathHelpers.DegToRad(90)));
+
         public Quaternion Quaternion
         {
             get
             {
-                return _buffer.ToQuaternion();
-                //q.Y = -q.Y;
-                //return q;
+                var q = _buffer.ToQuaternion();
+                var z = q.Z;
+                q.Z = -q.Y;
+                q.Y = z;
+                return q;
             }
         }
 

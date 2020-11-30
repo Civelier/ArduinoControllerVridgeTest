@@ -31,6 +31,18 @@
             this.components = new System.ComponentModel.Container();
             this.ControllerPort = new System.IO.Ports.SerialPort(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
+            this.LPosZLabel = new System.Windows.Forms.Label();
+            this.LPosYLabel = new System.Windows.Forms.Label();
+            this.LPosXLabel = new System.Windows.Forms.Label();
+            this.label29 = new System.Windows.Forms.Label();
+            this.label30 = new System.Windows.Forms.Label();
+            this.label37 = new System.Windows.Forms.Label();
+            this.RPosZLabel = new System.Windows.Forms.Label();
+            this.RPosYLabel = new System.Windows.Forms.Label();
+            this.RPosXLabel = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label21 = new System.Windows.Forms.Label();
+            this.label25 = new System.Windows.Forms.Label();
             this.LQuatWLabel = new System.Windows.Forms.Label();
             this.LQuatZLabel = new System.Windows.Forms.Label();
             this.LQuatYLabel = new System.Windows.Forms.Label();
@@ -101,6 +113,18 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.panel1.Controls.Add(this.LPosZLabel);
+            this.panel1.Controls.Add(this.LPosYLabel);
+            this.panel1.Controls.Add(this.LPosXLabel);
+            this.panel1.Controls.Add(this.label29);
+            this.panel1.Controls.Add(this.label30);
+            this.panel1.Controls.Add(this.label37);
+            this.panel1.Controls.Add(this.RPosZLabel);
+            this.panel1.Controls.Add(this.RPosYLabel);
+            this.panel1.Controls.Add(this.RPosXLabel);
+            this.panel1.Controls.Add(this.label12);
+            this.panel1.Controls.Add(this.label21);
+            this.panel1.Controls.Add(this.label25);
             this.panel1.Controls.Add(this.LQuatWLabel);
             this.panel1.Controls.Add(this.LQuatZLabel);
             this.panel1.Controls.Add(this.LQuatYLabel);
@@ -157,6 +181,114 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(799, 452);
             this.panel1.TabIndex = 0;
+            // 
+            // LPosZLabel
+            // 
+            this.LPosZLabel.AutoSize = true;
+            this.LPosZLabel.Location = new System.Drawing.Point(198, 174);
+            this.LPosZLabel.Name = "LPosZLabel";
+            this.LPosZLabel.Size = new System.Drawing.Size(32, 13);
+            this.LPosZLabel.TabIndex = 72;
+            this.LPosZLabel.Text = "False";
+            // 
+            // LPosYLabel
+            // 
+            this.LPosYLabel.AutoSize = true;
+            this.LPosYLabel.Location = new System.Drawing.Point(198, 161);
+            this.LPosYLabel.Name = "LPosYLabel";
+            this.LPosYLabel.Size = new System.Drawing.Size(32, 13);
+            this.LPosYLabel.TabIndex = 71;
+            this.LPosYLabel.Text = "False";
+            // 
+            // LPosXLabel
+            // 
+            this.LPosXLabel.AutoSize = true;
+            this.LPosXLabel.Location = new System.Drawing.Point(198, 148);
+            this.LPosXLabel.Name = "LPosXLabel";
+            this.LPosXLabel.Size = new System.Drawing.Size(32, 13);
+            this.LPosXLabel.TabIndex = 70;
+            this.LPosXLabel.Text = "False";
+            // 
+            // label29
+            // 
+            this.label29.AutoSize = true;
+            this.label29.Location = new System.Drawing.Point(172, 174);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(14, 13);
+            this.label29.TabIndex = 69;
+            this.label29.Text = "Z";
+            // 
+            // label30
+            // 
+            this.label30.AutoSize = true;
+            this.label30.Location = new System.Drawing.Point(172, 161);
+            this.label30.Name = "label30";
+            this.label30.Size = new System.Drawing.Size(14, 13);
+            this.label30.TabIndex = 68;
+            this.label30.Text = "Y";
+            // 
+            // label37
+            // 
+            this.label37.AutoSize = true;
+            this.label37.Location = new System.Drawing.Point(172, 148);
+            this.label37.Name = "label37";
+            this.label37.Size = new System.Drawing.Size(14, 13);
+            this.label37.TabIndex = 67;
+            this.label37.Text = "X";
+            // 
+            // RPosZLabel
+            // 
+            this.RPosZLabel.AutoSize = true;
+            this.RPosZLabel.Location = new System.Drawing.Point(498, 174);
+            this.RPosZLabel.Name = "RPosZLabel";
+            this.RPosZLabel.Size = new System.Drawing.Size(32, 13);
+            this.RPosZLabel.TabIndex = 66;
+            this.RPosZLabel.Text = "False";
+            // 
+            // RPosYLabel
+            // 
+            this.RPosYLabel.AutoSize = true;
+            this.RPosYLabel.Location = new System.Drawing.Point(498, 161);
+            this.RPosYLabel.Name = "RPosYLabel";
+            this.RPosYLabel.Size = new System.Drawing.Size(32, 13);
+            this.RPosYLabel.TabIndex = 65;
+            this.RPosYLabel.Text = "False";
+            // 
+            // RPosXLabel
+            // 
+            this.RPosXLabel.AutoSize = true;
+            this.RPosXLabel.Location = new System.Drawing.Point(498, 148);
+            this.RPosXLabel.Name = "RPosXLabel";
+            this.RPosXLabel.Size = new System.Drawing.Size(32, 13);
+            this.RPosXLabel.TabIndex = 64;
+            this.RPosXLabel.Text = "False";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(472, 174);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(14, 13);
+            this.label12.TabIndex = 63;
+            this.label12.Text = "Z";
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(472, 161);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(14, 13);
+            this.label21.TabIndex = 62;
+            this.label21.Text = "Y";
+            // 
+            // label25
+            // 
+            this.label25.AutoSize = true;
+            this.label25.Location = new System.Drawing.Point(472, 148);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(14, 13);
+            this.label25.TabIndex = 61;
+            this.label25.Text = "X";
             // 
             // LQuatWLabel
             // 
@@ -662,6 +794,7 @@
             this.Controls.Add(this.panel1);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.LeftStickPanel.ResumeLayout(false);
@@ -733,6 +866,18 @@
         private System.Windows.Forms.Label label34;
         private System.Windows.Forms.Label label35;
         private System.Windows.Forms.Label label36;
+        private System.Windows.Forms.Label RPosZLabel;
+        private System.Windows.Forms.Label RPosYLabel;
+        private System.Windows.Forms.Label RPosXLabel;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.Label label25;
+        private System.Windows.Forms.Label LPosZLabel;
+        private System.Windows.Forms.Label LPosYLabel;
+        private System.Windows.Forms.Label LPosXLabel;
+        private System.Windows.Forms.Label label29;
+        private System.Windows.Forms.Label label30;
+        private System.Windows.Forms.Label label37;
     }
 }
 

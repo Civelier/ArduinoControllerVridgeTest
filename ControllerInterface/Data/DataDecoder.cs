@@ -181,6 +181,7 @@ namespace ControllerInterface.Data
                 bool success = false;
                 while (_port.BytesToRead > _buffer.Length + 4)
                 {
+                    if (!_port.IsOpen) return;
                     var b = _port.ReadByte();
                     if (b == 255) 
                         i++;
@@ -188,6 +189,7 @@ namespace ControllerInterface.Data
                         i = 0;
                     if (i >= 4)
                     {
+                        if (!_port.IsOpen) return;
                         var eb = _port.ReadByte();
                         if (eb != 255)
                         {
@@ -200,6 +202,7 @@ namespace ControllerInterface.Data
                     }
                 }
                 if (!success) return;
+                if (!_port.IsOpen) return;
                 _port.Read(_buffer, 1, _buffer.Length - 1);
                 OnDataRecieved();
                 _port.DiscardInBuffer();

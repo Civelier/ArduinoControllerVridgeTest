@@ -12,6 +12,7 @@ using System.Runtime.InteropServices;
 using VRidgeAPI = VRE.Vridge.API.Client;
 using ControllerInterface.VRidge;
 using VRE.Vridge.API.Client.Remotes;
+using ControllerInterface.Kinect;
 
 namespace ControllerInterface
 {
@@ -24,6 +25,7 @@ namespace ControllerInterface
         private string _errorMsg;
         private VridgeRemote _remote;
         private Controller _rightController;
+        private KinectDevice _kinect;
 
         private const uint GW_HWNDFIRST = 0;
         private const int WM_CLOSE = 0x0010;
@@ -62,8 +64,20 @@ namespace ControllerInterface
             _remote = new VRidgeAPI.Remotes.VridgeRemote("localhost", "Arduino-interface",
                 VRidgeAPI.Remotes.Capabilities.Controllers | VRidgeAPI.Remotes.Capabilities.HeadTracking);
             _rightController = new Controller(_remote, VRidgeAPI.Messages.BasicTypes.HandType.Right);
-            _decoder.DataDecoded += (sender, args) => _rightController.SetData(args.Data.RightArduino, args.Data.RightMPU);
+            _decoder.DataDecoded += _decoder_DataDecoded1;
+            _kinect = new KinectDevice();
+            _kinect.NewSkeletonFrameReady += _kinect_NewSkeletonFrameReady;
             //_connectService = DeviceConnetionService.Instance.Connect();
+        }
+
+        private void _kinect_NewSkeletonFrameReady(KinectDevice sender, KinectNewSkeletonFrameReadyEventArgs args)
+        {
+            _rightController.SetData(args?.RightHand ?? new Microsoft.Kinect.SkeletonPoint());
+        }
+
+        private void _decoder_DataDecoded1(DataDecoder sender, DataDecodedEventArgs args)
+        {
+            _rightController.SetData(args.Data.RightArduino, args.Data.RightMPU);
         }
 
         private void _decoder_ErrorFound(DataDecoder sender, ErrorFoundEventArgs args)
@@ -164,6 +178,12 @@ namespace ControllerInterface
                 SetRightJoyStickPosition(_decoder.RightStick.X, _decoder.RightStick.Y);
                 SetLeftJoyStickPosition(_decoder.LeftStick.X, _decoder.LeftStick.Y);
             }
+            RPosXLabel.Text = _kinect?.RightHand.X.ToString();
+            RPosYLabel.Text = _kinect?.RightHand.Y.ToString();
+            RPosZLabel.Text = _kinect?.RightHand.Z.ToString();
+            LPosXLabel.Text = _kinect?.LeftHand.X.ToString();
+            LPosYLabel.Text = _kinect?.LeftHand.Y.ToString();
+            LPosZLabel.Text = _kinect?.LeftHand.Z.ToString();
             //_connectService.MoveNext();
             //if (DeviceConnetionService.Instance.RightControllerPort.IsConnected)
             //{
@@ -184,6 +204,11 @@ namespace ControllerInterface
         private void InitMPUButton_Click(object sender, EventArgs e)
         {
             ControllerPort.Write(new byte[] { 1 }, 0, 1);
+        }
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _kinect.Stop();
         }
     }
 }
