@@ -25,6 +25,8 @@ namespace ControllerInterface
         private string _errorMsg;
         private VridgeRemote _remote;
         private Controller _rightController;
+        private Controller _leftController;
+        private HeadTracking _head;
         private KinectDevice _kinect;
 
         private const uint GW_HWNDFIRST = 0;
@@ -64,6 +66,8 @@ namespace ControllerInterface
             _remote = new VRidgeAPI.Remotes.VridgeRemote("localhost", "Arduino-interface",
                 VRidgeAPI.Remotes.Capabilities.Controllers | VRidgeAPI.Remotes.Capabilities.HeadTracking);
             _rightController = new Controller(_remote, VRidgeAPI.Messages.BasicTypes.HandType.Right);
+            _leftController = new Controller(_remote, VRidgeAPI.Messages.BasicTypes.HandType.Left);
+            _head = new HeadTracking(_remote);
             _decoder.DataDecoded += _decoder_DataDecoded1;
             _kinect = new KinectDevice();
             _kinect.NewSkeletonFrameReady += _kinect_NewSkeletonFrameReady;
@@ -73,11 +77,14 @@ namespace ControllerInterface
         private void _kinect_NewSkeletonFrameReady(KinectDevice sender, KinectNewSkeletonFrameReadyEventArgs args)
         {
             _rightController.SetData(args?.RightHand ?? new Microsoft.Kinect.SkeletonPoint());
+            _leftController.SetData(args?.LeftHand ?? new Microsoft.Kinect.SkeletonPoint());
+            _head.SetData(args?.Head ?? new Microsoft.Kinect.SkeletonPoint());
         }
 
         private void _decoder_DataDecoded1(DataDecoder sender, DataDecodedEventArgs args)
         {
             _rightController.SetData(args.Data.RightArduino, args.Data.RightMPU);
+            _leftController.SetData(args.Data.LeftArduino, args.Data.LeftMPU);
         }
 
         private void _decoder_ErrorFound(DataDecoder sender, ErrorFoundEventArgs args)

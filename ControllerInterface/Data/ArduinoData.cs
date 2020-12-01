@@ -20,15 +20,15 @@ namespace ControllerInterface.Data
         public static int Size = 5;
         private byte[] _buffer;
 
-        public Buttons Buttons => (Buttons)_buffer[0];
+        public Buttons Buttons => _buffer != null ? (Buttons)_buffer[0] : 0;
         public bool Button1 => ButtonEqual(Buttons.Button1);
         public bool Button2 => ButtonEqual(Buttons.Button2);
         public bool Button3 => ButtonEqual(Buttons.Button3);
         public bool Button4 => ButtonEqual(Buttons.Button4);
         public bool Stick => !ButtonEqual(Buttons.Stick);
 
-        public short StickX => BitConverter.ToInt16(_buffer, 1);
-        public short StickY => BitConverter.ToInt16(_buffer, 3);
+        public short StickX => _buffer != null ? BitConverter.ToInt16(_buffer, 1) : (short)0;
+        public short StickY => _buffer != null ? BitConverter.ToInt16(_buffer, 3) : (short)0;
 
         public ArduinoData(byte[] buffer)
         {

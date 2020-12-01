@@ -19,6 +19,7 @@ namespace ControllerInterface.Data
         {
             get
             {
+                if (_buffer == null) return new Quaternion();
                 var q = _buffer.ToQuaternion();
                 var z = q.Z;
                 q.Z = -q.Y;
