@@ -22,9 +22,12 @@ uint8_t wireStatus;
 void ToByte()
 {
     data->btns = 0;
-    for (int i = 0; i < 8; ++i)
-        if (digitalRead(BUTTONS_START + i))
+    if (digitalRead(12)) data->btns |= 1 << 0;
+    for (int i = 0; i < 6; ++i)
+    {
+        if (digitalRead(BUTTONS_START + i + 1))
             data->btns |= 1 << i;
+    }
 }
 
 #define PrintSizeof(type) Serial.print(#type);\
@@ -51,7 +54,7 @@ void requestEvent()
 // the setup function runs once when you press reset or power the board
 void setup()
 {
-    Wire.begin(RIGHT_SLAVE_ADDRESS);
+    Wire.begin(ADDRESS);
     //Serial.begin(115200);
     Wire.onRequest(requestEvent);
     //PrintSizeof(Data);
@@ -61,10 +64,11 @@ void setup()
     //PrintSizeof(int64_t);
     delay(1000);
 
-    for (size_t i = 0; i < 5; i++)
+    for (size_t i = 0; i < 6; i++)
     {
         pinMode(BUTTONS_START + i, INPUT);
     }
+    pinMode(12, INPUT);
     pinMode(X_AXIS_PIN, INPUT);
     pinMode(Y_AXIS_PIN, INPUT);
 }

@@ -113,7 +113,7 @@ namespace ControllerInterface.Kinect
         public void Stop()
         {
             _isInitialized = false;
-            _kinect.Stop();
+            _kinect?.Stop();
         }
     }
 }
