@@ -98,6 +98,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.ConnectTimer = new System.Windows.Forms.Timer(this.components);
+            this.CalibrateOffsets = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.LeftStickPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.LeftStickCross)).BeginInit();
@@ -113,6 +114,7 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.panel1.Controls.Add(this.CalibrateOffsets);
             this.panel1.Controls.Add(this.LPosZLabel);
             this.panel1.Controls.Add(this.LPosYLabel);
             this.panel1.Controls.Add(this.LPosXLabel);
@@ -786,6 +788,16 @@
             this.ConnectTimer.Interval = 20;
             this.ConnectTimer.Tick += new System.EventHandler(this.ConnectTimer_Tick);
             // 
+            // CalibrateOffsets
+            // 
+            this.CalibrateOffsets.Location = new System.Drawing.Point(263, 47);
+            this.CalibrateOffsets.Name = "CalibrateOffsets";
+            this.CalibrateOffsets.Size = new System.Drawing.Size(75, 23);
+            this.CalibrateOffsets.TabIndex = 73;
+            this.CalibrateOffsets.Text = "Calibrate";
+            this.CalibrateOffsets.UseVisualStyleBackColor = true;
+            this.CalibrateOffsets.Click += new System.EventHandler(this.CalibrateOffsets_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -878,6 +890,7 @@
         private System.Windows.Forms.Label label29;
         private System.Windows.Forms.Label label30;
         private System.Windows.Forms.Label label37;
+        private System.Windows.Forms.Button CalibrateOffsets;
     }
 }
 

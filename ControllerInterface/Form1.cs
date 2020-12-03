@@ -167,10 +167,10 @@ namespace ControllerInterface
                 B4Label.Text = data.RightArduino.Button4 ? "True" : "False";
                 XLabel.Text = data.RightArduino.StickX.ToString();
                 YLabel.Text = data.RightArduino.StickY.ToString();
-                QuatXLabel.Text = data.RightMPU.Quaternion.X.ToString();
-                QuatYLabel.Text = data.RightMPU.Quaternion.Y.ToString();
-                QuatZLabel.Text = data.RightMPU.Quaternion.Z.ToString();
-                QuatWLabel.Text = data.RightMPU.Quaternion.W.ToString();
+                QuatXLabel.Text = data.RightMPU.YawPitchRoll.X.ToString();
+                QuatYLabel.Text = data.RightMPU.YawPitchRoll.Y.ToString();
+                QuatZLabel.Text = data.RightMPU.YawPitchRoll.Z.ToString();
+                //QuatWLabel.Text = data.RightMPU.Quaternion.W.ToString();
                 LStickLabel.Text = data.LeftArduino.Stick ? "True" : "False";
                 LB1Label.Text = data.LeftArduino.Button1 ? "True" : "False";
                 LB2Label.Text = data.LeftArduino.Button2 ? "True" : "False";
@@ -178,10 +178,10 @@ namespace ControllerInterface
                 LB4Label.Text = data.LeftArduino.Button4 ? "True" : "False";
                 LXLabel.Text = data.LeftArduino.StickX.ToString();
                 LYLabel.Text = data.LeftArduino.StickY.ToString();
-                LQuatXLabel.Text = data.LeftMPU.Quaternion.X.ToString();
-                LQuatYLabel.Text = data.LeftMPU.Quaternion.Y.ToString();
-                LQuatZLabel.Text = data.LeftMPU.Quaternion.Z.ToString();
-                LQuatWLabel.Text = data.LeftMPU.Quaternion.W.ToString();
+                LQuatXLabel.Text = data.LeftMPU.YawPitchRoll.X.ToString();
+                LQuatYLabel.Text = data.LeftMPU.YawPitchRoll.Y.ToString();
+                LQuatZLabel.Text = data.LeftMPU.YawPitchRoll.Z.ToString();
+                //LQuatWLabel.Text = data.LeftMPU.Quaternion.W.ToString();
                 SetRightJoyStickPosition(_decoder.RightStick.X, _decoder.RightStick.Y);
                 SetLeftJoyStickPosition(_decoder.LeftStick.X, _decoder.LeftStick.Y);
             }
@@ -215,7 +215,13 @@ namespace ControllerInterface
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
-            _kinect.Stop();
+            _kinect?.Dispose();
+            _remote?.Dispose();
+        }
+
+        private void CalibrateOffsets_Click(object sender, EventArgs e)
+        {
+            ControllerPort.Write(new byte[] { 2 }, 0, 1);
         }
     }
 }

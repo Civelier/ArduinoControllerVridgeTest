@@ -42,9 +42,14 @@ struct QuaternionData
 	float w, x, y, z;
 };
 
+struct VectorData
+{
+	float yaw, pitch, roll;
+};
+
 struct MPUData
 {
-	QuaternionData quat;
+	VectorData yawPitchRoll;
 };
 
 struct DataPacket
@@ -53,8 +58,8 @@ struct DataPacket
 	byte error = ERR_NONE;
 	Data rightArduino;
 	Data leftArduino;
-	QuaternionData rightMPU;
-	QuaternionData leftMPU;
+	VectorData rightMPU;
+	VectorData leftMPU;
 };
 
 
@@ -88,10 +93,14 @@ Quaternion ql;           // [w, x, y, z]         quaternion container
 //VectorInt16 gy;         // [x, y, z]            gyro sensor measurements
 //VectorInt16 aaReal;     // [x, y, z]            gravity-free accel sensor measurements
 //VectorInt16 aaWorld;    // [x, y, z]            world-frame accel sensor measurements
-//VectorFloat gravity;    // [x, y, z]            gravity vector
+VectorFloat gravityr;    // [x, y, z]            gravity vector
+VectorFloat gravityl;    // [x, y, z]            gravity vector
 //float euler[3];         // [psi, theta, phi]    Euler angle container
 //float ypr[3];           // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
-
+float yprr[3];
+float yawOffsetr;
+float yprl[3];
+float yawOffsetl;
 
 MPU6050 rMPU = MPU6050(MPU6050_ADDRESS_AD0_LOW);
 MPU6050 lMPU = MPU6050(MPU6050_ADDRESS_AD0_HIGH);
@@ -182,9 +191,9 @@ const byte sig[5] =
 
 void CalibrateDMP()
 {
-	//rMPU.CalibrateAccel();
+	rMPU.CalibrateAccel();
 	rMPU.CalibrateGyro();
-	//lMPU.CalibrateAccel();
+	lMPU.CalibrateAccel();
 	lMPU.CalibrateGyro();
 }
 
@@ -424,6 +433,12 @@ void setup()
 	delay(100);
 }
 
+void CalibrateOffsets()
+{
+	yawOffsetr = yprr[0];
+	yawOffsetl = yprl[0];
+}
+
 // the loop function runs over and over again until power down or reset
 void loop()
 {
@@ -435,8 +450,10 @@ void loop()
 		byte b = Serial.read();
 #if PRINT_METHOD == PRINT_METHOD_READABLE
 		if (b == '1') CalibrateDMP();
+		if (b == '2') CalibrateOffsets();
 #else
 		if (b == 1) CalibrateDMP();
+		if (b == 2) CalibrateOffsets();
 #endif
 	}
 	//while (!TransmitDone) delay(5);
@@ -472,12 +489,14 @@ void loop()
 		transmitError = rMPU.dmpGetCurrentFIFOPacket(rfifoBuffer);
 		if (transmitError)
 		{
+			//rMPU.dmpGetQuaternion(&qr, rfifoBuffer);
 			rMPU.dmpGetQuaternion(&qr, rfifoBuffer);
+			rMPU.dmpGetGravity(&gravityr, &qr);
+			rMPU.dmpGetYawPitchRoll(yprr, &qr, &gravityr);
 #if !defined(TEST_TYPE) || defined(TEST_TYPE) && TEST_TYPE == TEST_TYPE_1
-			data.rightMPU.w = qr.w;
-			data.rightMPU.x = qr.x;
-			data.rightMPU.y = qr.y;
-			data.rightMPU.z = qr.z;
+			data.rightMPU.yaw = yprr[0] - yawOffsetr;
+			data.rightMPU.pitch = yprr[1];
+			data.rightMPU.roll = yprr[2];
 #endif
 #if defined(TEST_TYPE) && TEST_TYPE == TEST_TYPE_2
 			data->rightMPU.quat.w = qr.w;
@@ -526,12 +545,14 @@ void loop()
 		transmitError = lMPU.dmpGetCurrentFIFOPacket(lfifoBuffer);
 		if (transmitError)
 		{
+			//lMPU.dmpGetQuaternion(&ql, lfifoBuffer);
 			lMPU.dmpGetQuaternion(&ql, lfifoBuffer);
+			lMPU.dmpGetGravity(&gravityl, &ql);
+			lMPU.dmpGetYawPitchRoll(yprl, &ql, &gravityl);
 #if !defined(TEST_TYPE) || defined(TEST_TYPE) && TEST_TYPE == TEST_TYPE_1
-			data.leftMPU.w = ql.w;
-			data.leftMPU.x = ql.x;
-			data.leftMPU.y = ql.y;
-			data.leftMPU.z = ql.z;
+			data.leftMPU.yaw = yprl[0] - yawOffsetl;
+			data.leftMPU.pitch = yprl[1];
+			data.leftMPU.roll = yprl[2];
 #endif
 #if defined(TEST_TYPE) && TEST_TYPE == TEST_TYPE_2
 			data->leftMPU.quat.w = ql.w;

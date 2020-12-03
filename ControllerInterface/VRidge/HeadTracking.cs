@@ -11,7 +11,7 @@ namespace ControllerInterface.VRidge
 {
     public class HeadTracking
     {
-        VRidgeRemotes.VridgeRemote _remote;
+        VRidgeRemotes.HeadRemote _head;
         public SkeletonPoint Point
         {
             get;
@@ -20,7 +20,7 @@ namespace ControllerInterface.VRidge
 
         public HeadTracking(VRidgeRemotes.VridgeRemote remote)
         {
-            _remote = remote;
+            _head = remote.Head;
         }
 
         public void SetData(SkeletonPoint point)
@@ -31,7 +31,7 @@ namespace ControllerInterface.VRidge
 
         public void Update()
         {
-            _remote.Head?.SetPosition(Point.X, Point.Y, Point.Z);
+            if (!_head.IsDisposed) _head?.SetPosition(Point.X, Point.Y, Point.Z);
         }
     }
 }

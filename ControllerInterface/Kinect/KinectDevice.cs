@@ -32,7 +32,7 @@ namespace ControllerInterface.Kinect
 
     public delegate void KinectNewSkeletonFrameReadyEventHandler(KinectDevice sender, KinectNewSkeletonFrameReadyEventArgs args);
 
-    public class KinectDevice
+    public class KinectDevice : IDisposable
     {
         KinectSensor _kinect;
         private bool _isInitialized;
@@ -114,6 +114,13 @@ namespace ControllerInterface.Kinect
         {
             _isInitialized = false;
             _kinect?.Stop();
+        }
+
+        public void Dispose()
+        {
+            _kinect?.SkeletonStream.Disable();
+            if (_kinect?.IsRunning ?? false) Stop();
+            _kinect?.Dispose();
         }
     }
 }

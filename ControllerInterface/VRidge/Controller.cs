@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using ControllerInterface.Data;
@@ -13,11 +14,11 @@ namespace ControllerInterface.VRidge
 {
     public class Controller
     {
-        VRidgeRemotes.VridgeRemote _remote;
+        VRidgeRemotes.ControllerRemote _controller;
         public VRidgeMessages.BasicTypes.HandType Hand { get; }
         public Controller(VRidgeRemotes.VridgeRemote remote, VRidgeMessages.BasicTypes.HandType hand)
         {
-            _remote = remote;
+            _controller = remote.Controller;
             Hand = hand;
         }
 
@@ -41,15 +42,16 @@ namespace ControllerInterface.VRidge
 
         public void Update()
         {
-            _remote.Controller?.SetControllerState(Hand == VRidgeMessages.BasicTypes.HandType.Right ? 0 : 1,
-                VRidgeMessages.v3.Controller.HeadRelation.Unrelated, Hand,
-                OrientationData.Quaternion, new System.Numerics.Vector3(Point.X, Point.Y, Point.Z),
-                ControlsData.StickX, ControlsData.StickY,
-                ControlsData.Button1 && !(ControlsData.Button2 || ControlsData.Button3 || ControlsData.Button4) ? 1 : 0,
-                false, false,
-                ControlsData.Button1 && !(ControlsData.Button2 || ControlsData.Button3 || ControlsData.Button4),
-                ControlsData.Button2 && ControlsData.Button3 && ControlsData.Button4,
-                ControlsData.Stick, ControlsData.Stick);
+            if (!_controller?.IsDisposed ?? false)
+                _controller?.SetControllerState(Hand == VRidgeMessages.BasicTypes.HandType.Right ? 0 : 1,
+                    VRidgeMessages.v3.Controller.HeadRelation.Unrelated, Hand,
+                    OrientationData.Quaternion, new System.Numerics.Vector3(Point.X, Point.Y, Point.Z),
+                    ControlsData.StickX, ControlsData.StickY,
+                    ControlsData.Button1 && !(ControlsData.Button2 || ControlsData.Button3 || ControlsData.Button4) ? 1 : 0,
+                    false, false,
+                    ControlsData.Button1 && !(ControlsData.Button2 || ControlsData.Button3 || ControlsData.Button4),
+                    ControlsData.Button2 && ControlsData.Button3 && ControlsData.Button4,
+                    ControlsData.Stick, ControlsData.Stick);
         }
     }
 }
