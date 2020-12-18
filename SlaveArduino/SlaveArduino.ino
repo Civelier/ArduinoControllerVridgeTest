@@ -7,7 +7,7 @@
 #include <Wire.h>
 #include "Addresses.h"
 
-#define ADDRESS RIGHT_SLAVE_ADDRESS
+#define ADDRESS LEFT_SLAVE_ADDRESS
 
 #define BUTTONS_START 2
 #define X_AXIS_PIN A0
@@ -62,7 +62,6 @@ void setup()
     //PrintSizeof(int16_t);
     //PrintSizeof(int32_t);
     //PrintSizeof(int64_t);
-    delay(1000);
 
     for (size_t i = 0; i < 6; i++)
     {

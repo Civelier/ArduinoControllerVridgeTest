@@ -14,6 +14,8 @@ using ControllerInterface.VRidge;
 using VRE.Vridge.API.Client.Remotes;
 using ControllerInterface.Kinect;
 using Ara3D;
+using ControllerInterface.ConnectionServices;
+using ControllerInterface.DataTypes;
 
 namespace ControllerInterface
 {
@@ -29,6 +31,8 @@ namespace ControllerInterface
         private Controller _leftController;
         private HeadTracking _head;
         private KinectDevice _kinect;
+        private ControllersConnectionService _controllersConnection;
+        private StatusData _status = new StatusData();
 
         private const uint GW_HWNDFIRST = 0;
         private const int WM_CLOSE = 0x0010;
@@ -60,9 +64,12 @@ namespace ControllerInterface
             //_decoder.ErrorFound += _decoder_ErrorFound;
             //_decoder.DataDecoded += _decoder_DataDecoded1;
 
+            _controllersConnection = new ControllersConnectionService();
+            _controllersConnection.StartService();
             _kinect = new KinectDevice();
             _kinect.StartKinectProcess();
             _kinect.NewSkeletonFrameReady += _kinect_NewSkeletonFrameReady;
+            StatusPropertyGrid.SelectedObject = _status;
         }
 
         private void _kinect_NewSkeletonFrameReady(KinectDevice sender, KinectNewSkeletonFrameReadyEventArgs args)
@@ -72,19 +79,19 @@ namespace ControllerInterface
             _head?.SetData(args?.Head ?? new Vector3());
         }
 
-        private void _decoder_DataDecoded1(DataDecoder sender, DataDecodedEventArgs args)
-        {
-            _rightController?.SetData(args.Data.RightArduino, args.Data.RightMPU);
-            _leftController?.SetData(args.Data.LeftArduino, args.Data.LeftMPU);
-        }
+        //private void _decoder_DataDecoded1(DataDecoder sender, DataDecodedEventArgs args)
+        //{
+        //    _rightController?.SetData(args.Data.RightArduino, args.Data.RightMPU);
+        //    _leftController?.SetData(args.Data.LeftArduino, args.Data.LeftMPU);
+        //}
 
-        private void _decoder_ErrorFound(DataDecoder sender, ErrorFoundEventArgs args)
-        {
-            QueueActionOnMainThread(() => 
-            {
-                MessageBox.Show(args.ToString(), "Error with devices");
-            });
-        }
+        //private void _decoder_ErrorFound(DataDecoder sender, ErrorFoundEventArgs args)
+        //{
+        //    QueueActionOnMainThread(() => 
+        //    {
+        //        MessageBox.Show(args.ToString(), "Error with devices");
+        //    });
+        //}
 
         //private void _decoder_DataDecoded(DataDecoder sender, DataDecodedEventArgs args)
         //{
@@ -128,7 +135,10 @@ namespace ControllerInterface
 
         private void RefreshTimer_Tick(object sender, EventArgs e)
         {
-            var data = new Data.DataPacket();
+            var data = _controllersConnection.LastDecodedData;
+            _status.ControllersStatus = _controllersConnection.Status;
+            StatusPropertyGrid.Refresh();
+            _controllersConnection.UpdateStatus();
 
             if (_remote == null)
             {
@@ -181,9 +191,9 @@ namespace ControllerInterface
                 LQuatYLabel.Text = data.LeftMPU.YawPitchRoll.Y.ToString();
                 LQuatZLabel.Text = data.LeftMPU.YawPitchRoll.Z.ToString();
 
-                //SetRightJoyStickPosition(_decoder.RightStick.X, _decoder.RightStick.Y);
-                //SetLeftJoyStickPosition(_decoder.LeftStick.X, _decoder.LeftStick.Y);
-                
+                SetRightJoyStickPosition(_controllersConnection.RightStick.X, _controllersConnection.RightStick.Y);
+                SetLeftJoyStickPosition(_controllersConnection.LeftStick.X, _controllersConnection.LeftStick.Y);
+
             }
             RPosXLabel.Text = _kinect?.RightHand.X.ToString();
             RPosYLabel.Text = _kinect?.RightHand.Y.ToString();
@@ -205,26 +215,27 @@ namespace ControllerInterface
 
         private void CalibrateButton_Click(object sender, EventArgs e)
         {
-            //_decoder.RightStick.CalibrateZero();
-            //_decoder.RightStick.CalibrateRanges();
-            //_decoder.LeftStick.CalibrateZero();
-            //_decoder.LeftStick.CalibrateRanges();
+            _controllersConnection.RightStick.CalibrateZero();
+            _controllersConnection.RightStick.CalibrateRanges();
+            _controllersConnection.LeftStick.CalibrateZero();
+            _controllersConnection.LeftStick.CalibrateRanges();
         }
 
         private void InitMPUButton_Click(object sender, EventArgs e)
         {
-            //ControllerPort.Write(new byte[] { 1 }, 0, 1);
+            _controllersConnection.CalibrateMPU();
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
+            _controllersConnection?.Dispose();
             _kinect?.Dispose();
             _remote?.Dispose();
         }
 
         private void CalibrateOffsets_Click(object sender, EventArgs e)
         {
-            //ControllerPort.Write(new byte[] { 2 }, 0, 1);
+            _controllersConnection.CalibrateOffsets();
         }
 
         private void SetForwardBtn_Click(object sender, EventArgs e)

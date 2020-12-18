@@ -9,6 +9,7 @@ using ControllerInterface.Data;
 namespace ControllerInterface.DataTypes
 {
     [Serializable]
+    [TypeConverter(typeof(ControllersConnectionStatusTypeConverter))]
     public struct ControllersConnectionStatus
     {
         [ReadOnly(true)]
@@ -30,6 +31,19 @@ namespace ControllerInterface.DataTypes
         {
             get;
             set;
+        }
+    }
+
+    public class ControllersConnectionStatusTypeConverter : TypeConverter
+    {
+        public override bool GetPropertiesSupported(ITypeDescriptorContext context)
+        {
+            return true;
+        }
+
+        public override PropertyDescriptorCollection GetProperties(ITypeDescriptorContext context, object value, Attribute[] attributes)
+        {
+            return TypeDescriptor.GetProperties(typeof(ControllersConnectionStatus));
         }
     }
 }

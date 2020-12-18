@@ -22,4 +22,6 @@ namespace ControllerInterface.DataTypes
         [ReadOnly(true)]
         public ControllersConnectionStatus ControllersStatus { get; set; }
     }
+
+    
 }

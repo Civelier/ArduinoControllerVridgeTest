@@ -101,8 +101,8 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.Refresh = new System.Windows.Forms.Timer(this.components);
-            this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
+            this.StatusPropertyGrid = new System.Windows.Forms.PropertyGrid();
+            this.RefreshTimer = new System.Windows.Forms.Timer(this.components);
             OrientationTrackBar = new System.Windows.Forms.TrackBar();
             ((System.ComponentModel.ISupportInitialize)(OrientationTrackBar)).BeginInit();
             this.panel1.SuspendLayout();
@@ -126,7 +126,6 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.panel1.Controls.Add(this.propertyGrid1);
             this.panel1.Controls.Add(this.OrientationLabel);
             this.panel1.Controls.Add(OrientationTrackBar);
             this.panel1.Controls.Add(this.KinectElevation);
@@ -198,7 +197,7 @@
             this.panel1.Controls.Add(this.label2);
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(799, 452);
+            this.panel1.Size = new System.Drawing.Size(763, 452);
             this.panel1.TabIndex = 0;
             // 
             // OrientationLabel
@@ -212,7 +211,7 @@
             // 
             // KinectElevation
             // 
-            this.KinectElevation.Location = new System.Drawing.Point(651, 109);
+            this.KinectElevation.Location = new System.Drawing.Point(626, 109);
             this.KinectElevation.Name = "KinectElevation";
             this.KinectElevation.Size = new System.Drawing.Size(120, 20);
             this.KinectElevation.TabIndex = 75;
@@ -836,24 +835,27 @@
             this.label2.TabIndex = 9;
             this.label2.Text = "B1";
             // 
-            // Refresh
+            // StatusPropertyGrid
             // 
-            this.Refresh.Enabled = true;
-            this.Refresh.Interval = 50;
-            this.Refresh.Tick += new System.EventHandler(this.RefreshTimer_Tick);
+            this.StatusPropertyGrid.HelpVisible = false;
+            this.StatusPropertyGrid.Location = new System.Drawing.Point(769, 0);
+            this.StatusPropertyGrid.Name = "StatusPropertyGrid";
+            this.StatusPropertyGrid.PropertySort = System.Windows.Forms.PropertySort.NoSort;
+            this.StatusPropertyGrid.Size = new System.Drawing.Size(355, 452);
+            this.StatusPropertyGrid.TabIndex = 78;
             // 
-            // propertyGrid1
+            // RefreshTimer
             // 
-            this.propertyGrid1.Location = new System.Drawing.Point(620, 214);
-            this.propertyGrid1.Name = "propertyGrid1";
-            this.propertyGrid1.Size = new System.Drawing.Size(130, 130);
-            this.propertyGrid1.TabIndex = 78;
+            this.RefreshTimer.Enabled = true;
+            this.RefreshTimer.Interval = 50;
+            this.RefreshTimer.Tick += new System.EventHandler(this.RefreshTimer_Tick);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(1126, 450);
+            this.Controls.Add(this.StatusPropertyGrid);
             this.Controls.Add(this.panel1);
             this.Name = "Form1";
             this.Text = "Form1";
@@ -874,7 +876,7 @@
 
         #endregion
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Timer Refresh;
+        private System.Windows.Forms.Timer RefreshTimer;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label6;
@@ -945,7 +947,7 @@
         private System.Windows.Forms.Button SetForwardBtn;
         private System.Windows.Forms.NumericUpDown KinectElevation;
         private System.Windows.Forms.Label OrientationLabel;
-        private System.Windows.Forms.PropertyGrid propertyGrid1;
+        private System.Windows.Forms.PropertyGrid StatusPropertyGrid;
     }
 }
 

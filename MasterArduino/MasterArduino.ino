@@ -384,12 +384,12 @@ bool TestArduinoConnection(uint8_t dev)
 void setup()
 {
 	Serial.begin(115200);
-	Serial.println("Hello");
+	/*Serial.println("Hello");
 	PrintSizeof(Data);
 	PrintSizeof(MPUData);
 	PrintSizeof(QuaternionData);
-	PrintSizeof(DataPacket);
-	delay(2000);
+	PrintSizeof(DataPacket);*/
+	Ping();
 	Wire.begin();
 	Wire.setClock(400000);
 	rMPU.initialize();

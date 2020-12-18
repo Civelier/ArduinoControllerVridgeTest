@@ -119,109 +119,12 @@ namespace ControllerInterface.ConnectionServices
 
         bool _lastSigMatched;
 
-        public ControllersConnectionStatus ControllersStatus
-        {
-            get;
-            private set;
-        }
-        private string portName
-        {
-            get => _activePort?.PortName;
-            set
-            {
-                if (_activePort == null)
-                {
-                    InitializePort();
-                }
-                else
-                {
-                    if (_activePort.IsOpen) _activePort.Close();
-                    _activePort.PortName = value;
-                    if (!_activePort.IsOpen) _activePort.Open();
-                }
-            }
-        }
-
-        private void InitializePort()
-        {
-            var ports = SerialPort.GetPortNames();
-            if (ports.Length > 0)
-            {
-                _activePort = new SerialPort(ports[0], 115200);
-                _activePort.DataReceived += _activePort_DataReceived;
-                _activePort.Open();
-            }
-        }
-
-        public ControllersConnectionService()
-        {
-            _process = new Thread(MainProcess);
-            _buffer = new byte[1 + 2 * ArduinoData.Size + 2 * MPUData.Size];
-            InitializePort();
-            RightStick = new JoyStick(1023, 1023);
-            LeftStick = new JoyStick(1023, 1023);
-        }
-
-        void MainProcess()
-        {
-            while (_process.ThreadState != ThreadState.AbortRequested)
-            {
-                switch (_command)
-                {
-                    case CommandQueue.CalibrateDMP:
-                        _command = CommandQueue.None;
-                        break;
-                    case CommandQueue.CalibrateOffsets:
-                        _command = CommandQueue.None;
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-
-        void PingPorts()
-        {
-        
-        }
-
-        bool Send(byte[] buffer)
-        {
-            if (_activePort == null) return false;
-            if (!_activePort.IsOpen) return false;
-            _activePort.Write(buffer, 0, buffer.Length);
-            return true;
-        }
-
-        public PortPingResult Ping(string port)
-        {
-            try
-            {
-                if (port == null) return PortPingResult.PortNull;
-                portName = port;
-                if (_activePort.IsOpen) return PortPingResult.PortAlreadyOpen;
-                _activePort.Write(_ping, 0, 1);
-                Thread.Sleep(5);
-                _activePort.DiscardInBuffer();
-                _command = CommandQueue.Ping;
-                while (_command == CommandQueue.Ping)
-                {
-                    Thread.Sleep(10);
-                }
-                if (_lastSigMatched) return PortPingResult.Sucess;
-                else return PortPingResult.IncorrectDevice;
-            }
-            catch (InvalidOperationException)
-            {
-                return PortPingResult.IOException;
-            }
-        }
-
         public event DataDecodedEventHandler DataDecoded;
 
         public event ErrorFoundEventHandler ErrorFound;
 
         byte[] _buffer;
+        bool _isConnected;
 
         public bool IsAutoRefreshEnabled
         {
@@ -229,7 +132,7 @@ namespace ControllerInterface.ConnectionServices
             set;
         }
 
-        int _bufferOffset;
+        int _bufferOffset = 0;
         private int _writePosition;
 
         private bool _isReady;
@@ -255,7 +158,162 @@ namespace ControllerInterface.ConnectionServices
             get; private set;
         }
 
+        public ControllersConnectionStatus Status
+        {
+            get; private set;
+        }
+
         private DataPacket _lastDecodedData;
+
+        private string portName
+        {
+            get => _activePort?.PortName;
+            set
+            {
+                if (value == null)
+                {
+                    _activePort.Dispose();
+                    return;
+                }
+                if (_activePort?.IsOpen ?? false)
+                {
+                    _activePort.Close();
+                }
+                InitializePort(value);
+            }
+        }
+
+        private void InitializePort(string port = null)
+        {
+            if (port == null)
+            {
+                var ports = SerialPort.GetPortNames();
+                if (ports.Length == 0) return;
+                port = ports[0];
+            }
+            _activePort = new SerialPort(port, 115200);
+            _activePort.DataReceived += _activePort_DataReceived;
+            _activePort.Disposed += _activePort_Disposed;
+            _activePort.DtrEnable = true;
+            _activePort.Open();
+        }
+
+        public void UpdateStatus()
+        {
+            Status = new ControllersConnectionStatus()
+            {
+                CurrentPort = portName ?? "Closed",
+                DataPacketError = LastDecodedData.Error,
+                IsConnected = _isConnected
+            };
+        }
+
+        private void _activePort_Disposed(object sender, EventArgs e)
+        {
+            _activePort.DataReceived -= _activePort_DataReceived;
+            _activePort.Disposed -= _activePort_Disposed;
+            _activePort = null;
+            _isConnected = false;
+        }
+
+        public ControllersConnectionService()
+        {
+            _process = new Thread(MainProcess);
+            _buffer = new byte[1 + 2 * ArduinoData.Size + 2 * MPUData.Size];
+            //InitializePort();
+            RightStick = new JoyStick(1023, 1023);
+            LeftStick = new JoyStick(1023, 1023);
+        }
+
+        void MainProcess()
+        {
+            while (_process.ThreadState != ThreadState.AbortRequested)
+            {
+                switch (_command)
+                {
+                    case CommandQueue.CalibrateDMP:
+                        _command = CommandQueue.None;
+                        Send(_calibrateDMP);
+                        break;
+                    case CommandQueue.CalibrateOffsets:
+                        _command = CommandQueue.None;
+                        Send(_calibrateOffsets);
+                        break;
+                    default:
+                        break;
+                }
+
+
+                if (!ConnectionTest())
+                {
+                    PingPorts();
+                }
+                else Thread.Sleep(500);
+            }
+        }
+
+        bool ConnectionTest()
+        {
+            if (!WaitForData().HasValue)
+            {
+                _isConnected = false;
+                UpdateStatus();
+                return false;
+            }
+            _isConnected = true;
+            UpdateStatus();
+            return true;
+        }
+
+        void PingPorts()
+        {
+            var ports = SerialPort.GetPortNames();
+            foreach (var port in ports)
+            {
+                var result = Ping(port);
+                switch (result)
+                {
+                    case PortPingResult.Sucess:
+                        return;
+                    case PortPingResult.PortDisposed:
+                    case PortPingResult.IOException:
+                    case PortPingResult.PortAlreadyOpen:
+                    case PortPingResult.IncorrectDevice:
+                        portName = null;
+                        break;
+                    case PortPingResult.PortNull:
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        bool Send(byte[] buffer)
+        {
+            if (_activePort == null) return false;
+            if (!_activePort.IsOpen) return false;
+            _activePort.Write(buffer, 0, buffer.Length);
+            return true;
+        }
+
+        public PortPingResult Ping(string port)
+        {
+            try
+            {
+                portName = port;
+                Thread.Sleep(5);
+                _activePort.DiscardInBuffer();
+                _command = CommandQueue.Ping;
+                if (WaitForPingAnswer())
+                    if (_lastSigMatched) return PortPingResult.Sucess;
+                return PortPingResult.IncorrectDevice;
+            }
+            catch (InvalidOperationException)
+            {
+                return PortPingResult.IOException;
+            }
+        }
 
         private byte[] GetBuffer(int offset)
         {
@@ -267,16 +325,46 @@ namespace ControllerInterface.ConnectionServices
             return buffer;
         }
 
-        public DataPacket? WaitForData()
+        public DataPacket? WaitForData(int millisTimeout = 100)
         {
             var st = DateTime.Now;
-            if (!IsAutoRefreshEnabled || !_requestSent)
+            while ((DateTime.Now - st).TotalMilliseconds <= millisTimeout)
             {
-                //SendRequest();
+                if (_isReady)
+                {
+                    _isReady = false;
+                    return LastDecodedData;
+                }
+                Thread.Sleep(5);
             }
-            while ((DateTime.Now - st).TotalMilliseconds <= 100) if (_isReady) return LastDecodedData;
             _requestSent = false;
             return null;
+        }
+
+        bool WaitForPingAnswer()
+        {
+            var st = DateTime.Now;
+            while ((DateTime.Now - st).TotalMilliseconds <= 2000)
+            {
+                if (_isReady)
+                {
+                    _isReady = false;
+                    return true;
+                }
+                Thread.Sleep(5);
+            }
+            _requestSent = false;
+            return false;
+        }
+
+        public void CalibrateMPU()
+        {
+            _command = CommandQueue.CalibrateDMP;
+        }
+
+        public void CalibrateOffsets()
+        {
+            _command = CommandQueue.CalibrateOffsets;
         }
 
         private void SetByte(byte b)
@@ -298,25 +386,50 @@ namespace ControllerInterface.ConnectionServices
             if (IsAutoRefreshEnabled) WaitForData();
         }
 
-        public void SendRequest()
+        //public void SendRequest()
+        //{
+        //    if (!_activePort.IsOpen) _activePort.Open();
+        //    _isReady = false;
+        //    _activePort.Write(new[] { (byte)1 }, 0, 1);
+        //    _requestSent = true;
+        //}
+
+        public void StartService()
         {
-            if (!_activePort.IsOpen) _activePort.Open();
-            _isReady = false;
-            _activePort.Write(new[] { (byte)1 }, 0, 1);
-            _requestSent = true;
+            if (!_process.IsAlive) _process.Start();
+        }
+
+        public void StopService()
+        {
+            if (_process.IsAlive) _process.Abort();
         }
 
         private void _activePort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             try
             {
-                if (_activePort.BytesToRead > _buffer.Length + 4)
+                if (_command == CommandQueue.Ping && _activePort.BytesToRead >= 5)
+                {
+                    byte[] sig = new byte[5];
+                    _lastSigMatched = false;
+                    _activePort.Read(sig, 0, 5);
+                    for (int i = 0; i < 5; i++)
+                    {
+                        if (sig[i] != _sig[i]) goto end;
+                    }
+
+                    _lastSigMatched = true;
+
+                    end:
+                    _command = CommandQueue.None;
+                    return;
+                }
+                if (_command != CommandQueue.Ping && _activePort.BytesToRead > _buffer.Length + 4)
                 {
                     var i = 0;
                     bool success = false;
                     while (_activePort.BytesToRead > _buffer.Length + 4)
                     {
-                        if (!_activePort.IsOpen) return;
                         var b = _activePort.ReadByte();
                         if (b == 255)
                             i++;
@@ -324,20 +437,24 @@ namespace ControllerInterface.ConnectionServices
                             i = 0;
                         if (i >= 4)
                         {
-                            if (!_activePort.IsOpen) return;
                             var eb = _activePort.ReadByte();
                             if (eb != 255)
                             {
                                 _buffer[0] = (byte)eb;
                                 success = true;
-                                if (eb != 0) ErrorFound?.Invoke(this, new ErrorFoundEventArgs((DataPacketError)eb));
+                                if (eb != 0)
+                                {
+                                    var err = (DataPacketError)eb;
+                                    LastDecodedData = new DataPacket(LastDecodedData, err);
+                                    UpdateStatus();
+                                    ErrorFound?.Invoke(this, new ErrorFoundEventArgs(err));
+                                }
                                 break;
                             }
                             else i = 0;
                         }
                     }
                     if (!success) return;
-                    if (!_activePort.IsOpen) return;
                     _activePort.Read(_buffer, 1, _buffer.Length - 1);
                     OnDataRecieved();
                     _activePort.DiscardInBuffer();
