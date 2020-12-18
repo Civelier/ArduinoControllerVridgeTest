@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Ara3D.Math3D.Standard, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ara3D.Math3D.1.0.0\lib\netstandard2.0\Ara3D.Math3D.Standard.dll</HintPath>
+    </Reference>
     <Reference Include="AsyncIO, Version=0.1.61.0, Culture=neutral, PublicKeyToken=44a94435bd6f33f8, processorArchitecture=MSIL">
       <HintPath>..\packages\AsyncIO.0.1.61\lib\net40\AsyncIO.dll</HintPath>
     </Reference>
@@ -62,6 +65,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConnectionServices\ControllersConnectionService.cs" />
+    <Compile Include="ConnectionServices\IConnectionService.cs" />
+    <Compile Include="DataTypes\ControllersConnectionStatus.cs" />
+    <Compile Include="DataTypes\StatusData.cs" />
     <Compile Include="Data\ArduinoData.cs" />
     <Compile Include="Data\DataConverterExtensions.cs" />
     <Compile Include="Data\DataDecoder.cs" />
@@ -126,4 +133,8 @@
     <None Include="Resources\Cross.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
 </Project>

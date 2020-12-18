@@ -439,6 +439,12 @@ void CalibrateOffsets()
 	yawOffsetl = yprl[0];
 }
 
+void Ping()
+{
+	delay(10);
+	Serial.write(sig, 5);
+}
+
 // the loop function runs over and over again until power down or reset
 void loop()
 {
@@ -451,9 +457,11 @@ void loop()
 #if PRINT_METHOD == PRINT_METHOD_READABLE
 		if (b == '1') CalibrateDMP();
 		if (b == '2') CalibrateOffsets();
+		if (b == '3') Ping();
 #else
 		if (b == 1) CalibrateDMP();
 		if (b == 2) CalibrateOffsets();
+		if (b == 3) Ping();
 #endif
 	}
 	//while (!TransmitDone) delay(5);

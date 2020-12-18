@@ -7,7 +7,7 @@
 #include <Wire.h>
 #include "Addresses.h"
 
-#define ADDRESS LEFT_SLAVE_ADDRESS
+#define ADDRESS RIGHT_SLAVE_ADDRESS
 
 #define BUTTONS_START 2
 #define X_AXIS_PIN A0

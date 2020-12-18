@@ -129,7 +129,7 @@
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties arduino.upload.port="COM4" config.Debug.customdebug_nano_atmega328_debugger_type="universal" custom_nano_atmega328_vm.programmer_name="arduinoasisp" custom_nano_atmega328_vm.upload.useprogrammer="1" />
+      <UserProperties arduino.upload.port="COM11" config.Debug.customdebug_nano_atmega328_debugger_type="universal" custom_nano_atmega328_vm.programmer_name="arduinoasisp" custom_nano_atmega328_vm.upload.useprogrammer="1" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

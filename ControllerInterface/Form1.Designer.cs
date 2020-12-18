@@ -29,8 +29,12 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.ControllerPort = new System.IO.Ports.SerialPort(this.components);
+            System.Windows.Forms.TrackBar OrientationTrackBar;
             this.panel1 = new System.Windows.Forms.Panel();
+            this.OrientationLabel = new System.Windows.Forms.Label();
+            this.KinectElevation = new System.Windows.Forms.NumericUpDown();
+            this.SetForwardBtn = new System.Windows.Forms.Button();
+            this.CalibrateOffsets = new System.Windows.Forms.Button();
             this.LPosZLabel = new System.Windows.Forms.Label();
             this.LPosYLabel = new System.Windows.Forms.Label();
             this.LPosXLabel = new System.Windows.Forms.Label();
@@ -97,23 +101,36 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.ConnectTimer = new System.Windows.Forms.Timer(this.components);
-            this.CalibrateOffsets = new System.Windows.Forms.Button();
+            this.Refresh = new System.Windows.Forms.Timer(this.components);
+            this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
+            OrientationTrackBar = new System.Windows.Forms.TrackBar();
+            ((System.ComponentModel.ISupportInitialize)(OrientationTrackBar)).BeginInit();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.KinectElevation)).BeginInit();
             this.LeftStickPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.LeftStickCross)).BeginInit();
             this.StickPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.StickCross)).BeginInit();
             this.SuspendLayout();
             // 
-            // ControllerPort
+            // OrientationTrackBar
             // 
-            this.ControllerPort.BaudRate = 115200;
-            this.ControllerPort.PortName = "COM7";
+            OrientationTrackBar.Location = new System.Drawing.Point(59, 383);
+            OrientationTrackBar.Maximum = 360;
+            OrientationTrackBar.Name = "OrientationTrackBar";
+            OrientationTrackBar.Size = new System.Drawing.Size(667, 45);
+            OrientationTrackBar.TabIndex = 76;
+            OrientationTrackBar.Value = 180;
+            OrientationTrackBar.Scroll += new System.EventHandler(this.OrientationTrackBar_Scroll);
             // 
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.panel1.Controls.Add(this.propertyGrid1);
+            this.panel1.Controls.Add(this.OrientationLabel);
+            this.panel1.Controls.Add(OrientationTrackBar);
+            this.panel1.Controls.Add(this.KinectElevation);
+            this.panel1.Controls.Add(this.SetForwardBtn);
             this.panel1.Controls.Add(this.CalibrateOffsets);
             this.panel1.Controls.Add(this.LPosZLabel);
             this.panel1.Controls.Add(this.LPosYLabel);
@@ -183,6 +200,43 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(799, 452);
             this.panel1.TabIndex = 0;
+            // 
+            // OrientationLabel
+            // 
+            this.OrientationLabel.AutoSize = true;
+            this.OrientationLabel.Location = new System.Drawing.Point(733, 383);
+            this.OrientationLabel.Name = "OrientationLabel";
+            this.OrientationLabel.Size = new System.Drawing.Size(13, 13);
+            this.OrientationLabel.TabIndex = 77;
+            this.OrientationLabel.Text = "0";
+            // 
+            // KinectElevation
+            // 
+            this.KinectElevation.Location = new System.Drawing.Point(651, 109);
+            this.KinectElevation.Name = "KinectElevation";
+            this.KinectElevation.Size = new System.Drawing.Size(120, 20);
+            this.KinectElevation.TabIndex = 75;
+            this.KinectElevation.ValueChanged += new System.EventHandler(this.KinectElevation_ValueChanged);
+            // 
+            // SetForwardBtn
+            // 
+            this.SetForwardBtn.Location = new System.Drawing.Point(651, 23);
+            this.SetForwardBtn.Name = "SetForwardBtn";
+            this.SetForwardBtn.Size = new System.Drawing.Size(75, 23);
+            this.SetForwardBtn.TabIndex = 74;
+            this.SetForwardBtn.Text = "Set forward";
+            this.SetForwardBtn.UseVisualStyleBackColor = true;
+            this.SetForwardBtn.Click += new System.EventHandler(this.SetForwardBtn_Click);
+            // 
+            // CalibrateOffsets
+            // 
+            this.CalibrateOffsets.Location = new System.Drawing.Point(263, 47);
+            this.CalibrateOffsets.Name = "CalibrateOffsets";
+            this.CalibrateOffsets.Size = new System.Drawing.Size(75, 23);
+            this.CalibrateOffsets.TabIndex = 73;
+            this.CalibrateOffsets.Text = "Calibrate";
+            this.CalibrateOffsets.UseVisualStyleBackColor = true;
+            this.CalibrateOffsets.Click += new System.EventHandler(this.CalibrateOffsets_Click);
             // 
             // LPosZLabel
             // 
@@ -782,21 +836,18 @@
             this.label2.TabIndex = 9;
             this.label2.Text = "B1";
             // 
-            // ConnectTimer
+            // Refresh
             // 
-            this.ConnectTimer.Enabled = true;
-            this.ConnectTimer.Interval = 20;
-            this.ConnectTimer.Tick += new System.EventHandler(this.ConnectTimer_Tick);
+            this.Refresh.Enabled = true;
+            this.Refresh.Interval = 50;
+            this.Refresh.Tick += new System.EventHandler(this.RefreshTimer_Tick);
             // 
-            // CalibrateOffsets
+            // propertyGrid1
             // 
-            this.CalibrateOffsets.Location = new System.Drawing.Point(263, 47);
-            this.CalibrateOffsets.Name = "CalibrateOffsets";
-            this.CalibrateOffsets.Size = new System.Drawing.Size(75, 23);
-            this.CalibrateOffsets.TabIndex = 73;
-            this.CalibrateOffsets.Text = "Calibrate";
-            this.CalibrateOffsets.UseVisualStyleBackColor = true;
-            this.CalibrateOffsets.Click += new System.EventHandler(this.CalibrateOffsets_Click);
+            this.propertyGrid1.Location = new System.Drawing.Point(620, 214);
+            this.propertyGrid1.Name = "propertyGrid1";
+            this.propertyGrid1.Size = new System.Drawing.Size(130, 130);
+            this.propertyGrid1.TabIndex = 78;
             // 
             // Form1
             // 
@@ -807,8 +858,10 @@
             this.Name = "Form1";
             this.Text = "Form1";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
+            ((System.ComponentModel.ISupportInitialize)(OrientationTrackBar)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.KinectElevation)).EndInit();
             this.LeftStickPanel.ResumeLayout(false);
             this.LeftStickPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.LeftStickCross)).EndInit();
@@ -820,10 +873,8 @@
         }
 
         #endregion
-
-        private System.IO.Ports.SerialPort ControllerPort;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Timer ConnectTimer;
+        private System.Windows.Forms.Timer Refresh;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label6;
@@ -891,6 +942,10 @@
         private System.Windows.Forms.Label label30;
         private System.Windows.Forms.Label label37;
         private System.Windows.Forms.Button CalibrateOffsets;
+        private System.Windows.Forms.Button SetForwardBtn;
+        private System.Windows.Forms.NumericUpDown KinectElevation;
+        private System.Windows.Forms.Label OrientationLabel;
+        private System.Windows.Forms.PropertyGrid propertyGrid1;
     }
 }
 

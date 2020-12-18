@@ -3,10 +3,22 @@ using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
+using ControllerInterface.Data;
+using ControllerInterface.DataTypes;
 
-namespace ControllerInterface.Data
+namespace ControllerInterface.ConnectionServices
 {
+    public enum PortPingResult
+    {
+        Sucess,
+        PortDisposed,
+        IOException,
+        PortAlreadyOpen,
+        IncorrectDevice,
+        PortNull,
+    }
+
     public class DataDecodedEventArgs
     {
         public DataDecodedEventArgs(DataPacket data)
@@ -20,13 +32,16 @@ namespace ControllerInterface.Data
         }
     }
 
-    public delegate void DataDecodedEventHandler(DataDecoder sender, DataDecodedEventArgs args);
+    public delegate void DataDecodedEventHandler(ControllersConnectionService sender, DataDecodedEventArgs args);
 
-    public delegate void ErrorFoundEventHandler(DataDecoder sender, ErrorFoundEventArgs args);
+    public delegate void ErrorFoundEventHandler(ControllersConnectionService sender, ErrorFoundEventArgs args);
 
     public class ErrorFoundEventArgs
     {
-        public DataPacketError Error { get; }
+        public DataPacketError Error
+        {
+            get;
+        }
 
         public bool IsMaster => AreDown(0b00110000);
         public bool IsSlave => AreUp(0b00010000);
@@ -71,9 +86,136 @@ namespace ControllerInterface.Data
         }
     }
 
-    public class DataDecoder
+    public class ControllersConnectionService : IDisposable
     {
-        SerialPort _port;
+        Thread _process;
+        SerialPort _activePort;
+        byte[] _calibrateDMP = { 1 };
+        byte[] _calibrateOffsets = { 2 };
+        byte[] _ping = { 3 };
+
+        private enum CommandQueue
+        {
+            None,
+            CalibrateDMP,
+            CalibrateOffsets,
+            Ping,
+        }
+
+        private CommandQueue _command
+        {
+            get;
+            set;
+        }
+
+        byte[] _sig =
+        {
+            12,
+            35,
+            253,
+            95,
+            129,
+        };
+
+        bool _lastSigMatched;
+
+        public ControllersConnectionStatus ControllersStatus
+        {
+            get;
+            private set;
+        }
+        private string portName
+        {
+            get => _activePort?.PortName;
+            set
+            {
+                if (_activePort == null)
+                {
+                    InitializePort();
+                }
+                else
+                {
+                    if (_activePort.IsOpen) _activePort.Close();
+                    _activePort.PortName = value;
+                    if (!_activePort.IsOpen) _activePort.Open();
+                }
+            }
+        }
+
+        private void InitializePort()
+        {
+            var ports = SerialPort.GetPortNames();
+            if (ports.Length > 0)
+            {
+                _activePort = new SerialPort(ports[0], 115200);
+                _activePort.DataReceived += _activePort_DataReceived;
+                _activePort.Open();
+            }
+        }
+
+        public ControllersConnectionService()
+        {
+            _process = new Thread(MainProcess);
+            _buffer = new byte[1 + 2 * ArduinoData.Size + 2 * MPUData.Size];
+            InitializePort();
+            RightStick = new JoyStick(1023, 1023);
+            LeftStick = new JoyStick(1023, 1023);
+        }
+
+        void MainProcess()
+        {
+            while (_process.ThreadState != ThreadState.AbortRequested)
+            {
+                switch (_command)
+                {
+                    case CommandQueue.CalibrateDMP:
+                        _command = CommandQueue.None;
+                        break;
+                    case CommandQueue.CalibrateOffsets:
+                        _command = CommandQueue.None;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        void PingPorts()
+        {
+        
+        }
+
+        bool Send(byte[] buffer)
+        {
+            if (_activePort == null) return false;
+            if (!_activePort.IsOpen) return false;
+            _activePort.Write(buffer, 0, buffer.Length);
+            return true;
+        }
+
+        public PortPingResult Ping(string port)
+        {
+            try
+            {
+                if (port == null) return PortPingResult.PortNull;
+                portName = port;
+                if (_activePort.IsOpen) return PortPingResult.PortAlreadyOpen;
+                _activePort.Write(_ping, 0, 1);
+                Thread.Sleep(5);
+                _activePort.DiscardInBuffer();
+                _command = CommandQueue.Ping;
+                while (_command == CommandQueue.Ping)
+                {
+                    Thread.Sleep(10);
+                }
+                if (_lastSigMatched) return PortPingResult.Sucess;
+                else return PortPingResult.IncorrectDevice;
+            }
+            catch (InvalidOperationException)
+            {
+                return PortPingResult.IOException;
+            }
+        }
 
         public event DataDecodedEventHandler DataDecoded;
 
@@ -114,15 +256,6 @@ namespace ControllerInterface.Data
         }
 
         private DataPacket _lastDecodedData;
-
-        public DataDecoder(SerialPort port)
-        {
-            _buffer = new byte[1 + 2 * ArduinoData.Size + 2 * MPUData.Size];
-            _port = port;
-            RightStick = new JoyStick(1023, 1023);
-            LeftStick = new JoyStick(1023, 1023);
-            _port.DataReceived += _port_DataReceived;
-        }
 
         private byte[] GetBuffer(int offset)
         {
@@ -167,32 +300,32 @@ namespace ControllerInterface.Data
 
         public void SendRequest()
         {
-            if (!_port.IsOpen) _port.Open();
+            if (!_activePort.IsOpen) _activePort.Open();
             _isReady = false;
-            _port.Write(new[] { (byte)1 }, 0, 1);
+            _activePort.Write(new[] { (byte)1 }, 0, 1);
             _requestSent = true;
         }
 
-        private void _port_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        private void _activePort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             try
             {
-                if (_port.BytesToRead > _buffer.Length + 4)
+                if (_activePort.BytesToRead > _buffer.Length + 4)
                 {
                     var i = 0;
                     bool success = false;
-                    while (_port.BytesToRead > _buffer.Length + 4)
+                    while (_activePort.BytesToRead > _buffer.Length + 4)
                     {
-                        if (!_port.IsOpen) return;
-                        var b = _port.ReadByte();
-                        if (b == 255) 
+                        if (!_activePort.IsOpen) return;
+                        var b = _activePort.ReadByte();
+                        if (b == 255)
                             i++;
-                        else 
+                        else
                             i = 0;
                         if (i >= 4)
                         {
-                            if (!_port.IsOpen) return;
-                            var eb = _port.ReadByte();
+                            if (!_activePort.IsOpen) return;
+                            var eb = _activePort.ReadByte();
                             if (eb != 255)
                             {
                                 _buffer[0] = (byte)eb;
@@ -204,21 +337,21 @@ namespace ControllerInterface.Data
                         }
                     }
                     if (!success) return;
-                    if (!_port.IsOpen) return;
-                    _port.Read(_buffer, 1, _buffer.Length - 1);
+                    if (!_activePort.IsOpen) return;
+                    _activePort.Read(_buffer, 1, _buffer.Length - 1);
                     OnDataRecieved();
-                    _port.DiscardInBuffer();
+                    _activePort.DiscardInBuffer();
                 }
             }
             catch (InvalidOperationException)
             {
-            
+
             }
             //else
             //{
-            //    while (_port.BytesToRead > 0)
+            //    while (_activePort.BytesToRead > 0)
             //    {
-            //        var b = _port.ReadByte();
+            //        var b = _activePort.ReadByte();
             //        if (b != -1)
             //        {
             //            break;
@@ -227,9 +360,15 @@ namespace ControllerInterface.Data
             //    }
             //}
 
-            //var s = _port.ReadLine();
+            //var s = _activePort.ReadLine();
             //DataDecoded.Invoke(this, new DataDecodedEventArgs(s));
-            //_port.DiscardInBuffer();
+            //_activePort.DiscardInBuffer();
+        }
+
+        public void Dispose()
+        {
+            _process.Abort();
+            _activePort?.Dispose();
         }
     }
 }

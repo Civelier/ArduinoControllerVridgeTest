@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using Ara3D;
 using ControllerInterface.Data;
 using Microsoft.Kinect;
 using VRidgeAPI = VRE.Vridge.API.Client;
@@ -24,7 +24,7 @@ namespace ControllerInterface.VRidge
 
         public ArduinoData ControlsData { get; private set; }
         public MPUData OrientationData { get; private set; }
-        public SkeletonPoint Point { get; private set; }
+        public Vector3 Point { get; private set; }
 
 
         public void SetData(ArduinoData ad, MPUData mpud)
@@ -34,7 +34,7 @@ namespace ControllerInterface.VRidge
             Update();
         }
 
-        public void SetData(SkeletonPoint point)
+        public void SetData(Vector3 point)
         {
             Point = point;
             Update();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Ara3D;
 using Microsoft.Kinect;
 using VRidgeMessages = VRE.Vridge.API.Client.Messages;
 using VRidgeRemotes = VRE.Vridge.API.Client.Remotes;
@@ -12,7 +13,7 @@ namespace ControllerInterface.VRidge
     public class HeadTracking
     {
         VRidgeRemotes.HeadRemote _head;
-        public SkeletonPoint Point
+        public Vector3 Point
         {
             get;
             private set;
@@ -23,7 +24,7 @@ namespace ControllerInterface.VRidge
             _head = remote.Head;
         }
 
-        public void SetData(SkeletonPoint point)
+        public void SetData(Vector3 point)
         {
             Point = point;
             Update();
@@ -31,7 +32,12 @@ namespace ControllerInterface.VRidge
 
         public void Update()
         {
-            if (!_head.IsDisposed) _head?.SetPosition(Point.X, Point.Y, Point.Z);
+            if (!_head?.IsDisposed ?? false) _head?.SetPosition(Point.X, Point.Y, Point.Z);
+        }
+
+        public void Recenter()
+        {
+            if (!_head?.IsDisposed ?? false) _head.Recenter();
         }
     }
 }
