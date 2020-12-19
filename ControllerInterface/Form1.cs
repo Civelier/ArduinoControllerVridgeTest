@@ -62,9 +62,9 @@ namespace ControllerInterface
             InitializeComponent();
             //_decoder.IsAutoRefreshEnabled = true;
             //_decoder.ErrorFound += _decoder_ErrorFound;
-            //_decoder.DataDecoded += _decoder_DataDecoded1;
 
             _controllersConnection = new ControllersConnectionService();
+            _controllersConnection.DataDecoded += _controllersConnection_DataDecoded1;
             _controllersConnection.StartService();
             _kinect = new KinectDevice();
             _kinect.StartKinectProcess();
@@ -79,11 +79,11 @@ namespace ControllerInterface
             _head?.SetData(args?.Head ?? new Vector3());
         }
 
-        //private void _decoder_DataDecoded1(DataDecoder sender, DataDecodedEventArgs args)
-        //{
-        //    _rightController?.SetData(args.Data.RightArduino, args.Data.RightMPU);
-        //    _leftController?.SetData(args.Data.LeftArduino, args.Data.LeftMPU);
-        //}
+        private void _controllersConnection_DataDecoded1(ControllersConnectionService sender, DataDecodedEventArgs args)
+        {
+            _rightController?.SetData(args.Data.RightArduino, args.Data.RightMPU);
+            _leftController?.SetData(args.Data.LeftArduino, args.Data.LeftMPU);
+        }
 
         //private void _decoder_ErrorFound(DataDecoder sender, ErrorFoundEventArgs args)
         //{
@@ -96,7 +96,7 @@ namespace ControllerInterface
         //private void _decoder_DataDecoded(DataDecoder sender, DataDecodedEventArgs args)
         //{
         //    ArduinoData data = args.Data.RightArduino;
-            
+
         //    //_mainThreadActionQueue.Clear();
         //    SetActionOnMainThread(() => {
         //        B1Label.Text = data.Button1 ? "True" : "False";
@@ -140,8 +140,9 @@ namespace ControllerInterface
             StatusPropertyGrid.Refresh();
             _controllersConnection.UpdateStatus();
 
-            if (_remote == null)
+            if (_remote == null || (_leftController?.IsDisposed ?? true) || (_rightController?.IsDisposed ?? true) || (_head?.IsDisposed ?? true))
             {
+                _remote?.Dispose();
                 _remote = new VRidgeAPI.Remotes.VridgeRemote("localhost", "Arduino-interface",
                 VRidgeAPI.Remotes.Capabilities.Controllers | VRidgeAPI.Remotes.Capabilities.HeadTracking);
                 _leftController = new Controller(_remote, VRidgeAPI.Messages.BasicTypes.HandType.Left);

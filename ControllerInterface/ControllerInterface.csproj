@@ -134,7 +134,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>xcopy C:\Users\civel\source\repos\ArduinoControllerVridgeTest\ControllerInterface\bin V:\civel\source\repos\ArduinoControllerVridgeTest\ControllerInterface\bin /e /y</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
 </Project>

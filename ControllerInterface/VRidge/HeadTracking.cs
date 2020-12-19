@@ -13,6 +13,9 @@ namespace ControllerInterface.VRidge
     public class HeadTracking
     {
         VRidgeRemotes.HeadRemote _head;
+
+        public bool IsDisposed => _head?.IsDisposed ?? true;
+
         public Vector3 Point
         {
             get;

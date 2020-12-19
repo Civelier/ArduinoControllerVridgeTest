@@ -56,7 +56,7 @@ namespace ControllerInterface.Data
 
         internal DataPacket(DataPacket last, DataPacketError error) : this(last._buffer)
         {
-            _buffer[0] = (byte)error;
+            if (_buffer != null) _buffer[0] = (byte)error;
         }
     }
 }

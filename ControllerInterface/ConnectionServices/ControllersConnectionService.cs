@@ -229,26 +229,34 @@ namespace ControllerInterface.ConnectionServices
         {
             while (_process.ThreadState != ThreadState.AbortRequested)
             {
-                switch (_command)
+                try
                 {
-                    case CommandQueue.CalibrateDMP:
-                        _command = CommandQueue.None;
-                        Send(_calibrateDMP);
-                        break;
-                    case CommandQueue.CalibrateOffsets:
-                        _command = CommandQueue.None;
-                        Send(_calibrateOffsets);
-                        break;
-                    default:
-                        break;
-                }
+                    switch (_command)
+                    {
+                        case CommandQueue.CalibrateDMP:
+                            _command = CommandQueue.None;
+                            Send(_calibrateDMP);
+                            break;
+                        case CommandQueue.CalibrateOffsets:
+                            _command = CommandQueue.None;
+                            Send(_calibrateOffsets);
+                            break;
+                        default:
+                            break;
+                    }
 
 
-                if (!ConnectionTest())
-                {
-                    PingPorts();
+                    if (!ConnectionTest())
+                    {
+                        PingPorts();
+                    }
+                    else Thread.Sleep(500);
                 }
-                else Thread.Sleep(500);
+                catch (InvalidOperationException)
+                {
+                    _isConnected = false;
+                    if (_activePort?.IsOpen ?? false) _activePort.Dispose();
+                }
             }
         }
 
@@ -270,21 +278,27 @@ namespace ControllerInterface.ConnectionServices
             var ports = SerialPort.GetPortNames();
             foreach (var port in ports)
             {
-                var result = Ping(port);
-                switch (result)
+                try
                 {
-                    case PortPingResult.Sucess:
-                        return;
-                    case PortPingResult.PortDisposed:
-                    case PortPingResult.IOException:
-                    case PortPingResult.PortAlreadyOpen:
-                    case PortPingResult.IncorrectDevice:
-                        portName = null;
-                        break;
-                    case PortPingResult.PortNull:
-                        break;
-                    default:
-                        break;
+                    var result = Ping(port);
+                    switch (result)
+                    {
+                        case PortPingResult.Sucess:
+                            return;
+                        case PortPingResult.PortDisposed:
+                        case PortPingResult.IOException:
+                        case PortPingResult.PortAlreadyOpen:
+                        case PortPingResult.IncorrectDevice:
+                            portName = null;
+                            break;
+                        case PortPingResult.PortNull:
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                catch (InvalidOperationException)
+                {
                 }
             }
         }
@@ -344,7 +358,7 @@ namespace ControllerInterface.ConnectionServices
         bool WaitForPingAnswer()
         {
             var st = DateTime.Now;
-            while ((DateTime.Now - st).TotalMilliseconds <= 2000)
+            while ((DateTime.Now - st).TotalMilliseconds <= 3000)
             {
                 if (_isReady)
                 {

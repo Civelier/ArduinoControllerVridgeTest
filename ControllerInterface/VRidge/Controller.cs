@@ -16,6 +16,7 @@ namespace ControllerInterface.VRidge
     {
         VRidgeRemotes.ControllerRemote _controller;
         public VRidgeMessages.BasicTypes.HandType Hand { get; }
+        public bool IsDisposed => _controller?.IsDisposed ?? true;
         public Controller(VRidgeRemotes.VridgeRemote remote, VRidgeMessages.BasicTypes.HandType hand)
         {
             _controller = remote.Controller;
