@@ -195,7 +195,14 @@ namespace ControllerInterface.ConnectionServices
             _activePort.DataReceived += _activePort_DataReceived;
             _activePort.Disposed += _activePort_Disposed;
             _activePort.DtrEnable = true;
-            _activePort.Open();
+            try
+            {
+                _activePort.Open();
+            }
+            catch (UnauthorizedAccessException)
+            {
+
+            }
         }
 
         public void UpdateStatus()
@@ -257,6 +264,11 @@ namespace ControllerInterface.ConnectionServices
                     _isConnected = false;
                     if (_activePort?.IsOpen ?? false) _activePort.Dispose();
                 }
+                catch (System.IO.IOException)
+                {
+                    _isConnected = false;
+                    if (_activePort?.IsOpen ?? false) _activePort.Dispose();
+                }
             }
         }
 
@@ -300,6 +312,9 @@ namespace ControllerInterface.ConnectionServices
                 catch (InvalidOperationException)
                 {
                 }
+                catch (System.IO.IOException)
+                {
+                }
             }
         }
 
@@ -324,6 +339,10 @@ namespace ControllerInterface.ConnectionServices
                 return PortPingResult.IncorrectDevice;
             }
             catch (InvalidOperationException)
+            {
+                return PortPingResult.IOException;
+            }
+            catch (System.IO.IOException)
             {
                 return PortPingResult.IOException;
             }
