@@ -80,8 +80,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Calibration.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Calibration.Designer.cs">
+      <DependentUpon>Calibration.cs</DependentUpon>
+    </Compile>
     <Compile Include="ConnectionServices\ControllersConnectionService.cs" />
     <Compile Include="ConnectionServices\IConnectionService.cs" />
+    <Compile Include="DataTypes\ConfigurationData.cs" />
     <Compile Include="DataTypes\ControllersConnectionStatus.cs" />
     <Compile Include="DataTypes\StatusData.cs" />
     <Compile Include="Data\ArduinoData.cs" />

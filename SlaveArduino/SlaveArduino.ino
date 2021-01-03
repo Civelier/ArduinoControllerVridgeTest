@@ -25,8 +25,8 @@ void ToByte()
     if (digitalRead(12)) data->btns |= 1 << 0;
     for (int i = 0; i < 6; ++i)
     {
-        if (digitalRead(BUTTONS_START + i + 1))
-            data->btns |= 1 << i;
+        if (digitalRead(BUTTONS_START + i))
+            data->btns |= 1 << i + 1;
     }
 }
 

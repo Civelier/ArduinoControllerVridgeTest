@@ -9,11 +9,13 @@ namespace ControllerInterface.Data
     [Flags]
     public enum Buttons : byte
     {
-        Stick = 0b00000001,
-        Button1 = 0b00000010,
-        Button2 = 0b00000100,
-        Button3 = 0b00001000,
-        Button4 = 0b00010000,
+        Stick   = 0b00000001,
+        Menu    = 0b00000010,
+        System  = 0b00000100,
+        Button1 = 0b00001000,
+        Button2 = 0b00010000,
+        Button3 = 0b00100000,
+        Button4 = 0b01000000,
     }
     public struct ArduinoData
     {
@@ -26,9 +28,11 @@ namespace ControllerInterface.Data
         public bool Button3 => ButtonEqual(Buttons.Button3);
         public bool Button4 => ButtonEqual(Buttons.Button4);
         public bool Stick => !ButtonEqual(Buttons.Stick);
+        public bool Menu => ButtonEqual(Buttons.Menu);
+        public bool System => ButtonEqual(Buttons.System);
 
-        public short StickX => _buffer != null ? BitConverter.ToInt16(_buffer, 1) : (short)0;
-        public short StickY => _buffer != null ? BitConverter.ToInt16(_buffer, 3) : (short)0;
+        public short StickX => _buffer != null ? BitConverter.ToInt16(_buffer, 3) : (short)0;
+        public short StickY => _buffer != null ? BitConverter.ToInt16(_buffer, 1) : (short)0;
 
         public ArduinoData(byte[] buffer)
         {

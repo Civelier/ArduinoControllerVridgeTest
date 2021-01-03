@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Ara3D;
 using ControllerInterface.Data;
+using ControllerInterface.DataTypes;
 using Microsoft.Kinect;
 using VRidgeAPI = VRE.Vridge.API.Client;
 using VRidgeMessages = VRE.Vridge.API.Client.Messages;
@@ -43,16 +44,25 @@ namespace ControllerInterface.VRidge
 
         public void Update()
         {
+
             if (!_controller?.IsDisposed ?? false)
+            {
+                //----------- Only for debugging with non-functionnal left controller -----------
+                bool stick = ControlsData.Stick && Hand == VRidgeMessages.BasicTypes.HandType.Right;
+                //bool stick = ControlsData.Stick;
+
+
+                // Set controller data
                 _controller?.SetControllerState(Hand == VRidgeMessages.BasicTypes.HandType.Right ? 0 : 1,
                     VRidgeMessages.v3.Controller.HeadRelation.Unrelated, Hand,
-                    OrientationData.Quaternion, new System.Numerics.Vector3(Point.X, Point.Y, Point.Z),
+                    OrientationData.Quaternion, new System.Numerics.Vector3(Point.X, Point.Y + ConfigurationData.Instance.Height, Point.Z),
                     ControlsData.StickX, ControlsData.StickY,
                     ControlsData.Button1 && !(ControlsData.Button2 || ControlsData.Button3 || ControlsData.Button4) ? 1 : 0,
-                    false, false,
+                    ControlsData.Menu, ControlsData.System,
                     ControlsData.Button1 && !(ControlsData.Button2 || ControlsData.Button3 || ControlsData.Button4),
                     ControlsData.Button2 && ControlsData.Button3 && ControlsData.Button4,
-                    ControlsData.Stick, ControlsData.Stick);
+                    stick, stick);
+            }
         }
     }
 }

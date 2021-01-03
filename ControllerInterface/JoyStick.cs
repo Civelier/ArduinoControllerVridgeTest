@@ -17,17 +17,31 @@ namespace ControllerInterface
         private Int16 _xAxis;
         private Int16 _xMax;
         private Int16 _xHalf;
-        public float X => Lerp(0, _xHalf, _xMax, _xAxis);
+        public float X => Lerp(0, _xHalf, _xMax, _xAxis) * (ReverseX ? -1 : 1);
 
         private Int16 _yAxis;
         private Int16 _yMax;
         private Int16 _yHalf;
-        public float Y => Lerp(0, _yHalf, _yMax, _yAxis);
+        public float Y => Lerp(0, _yHalf, _yMax, _yAxis) * (ReverseY ? -1 : 1);
 
-        public JoyStick(short xMax, short yMax)
+        public bool ReverseX
+        {
+            get;
+            set;
+        }
+
+        public bool ReverseY
+        {
+            get;
+            set;
+        }
+
+        public JoyStick(short xMax, short yMax, bool reverseX, bool reverseY)
         {
             _xMax = xMax;
             _yMax = yMax;
+            ReverseX = reverseX;
+            ReverseY = reverseY;
         }
 
         internal void SetValues(Int16 x, Int16 y)

@@ -203,6 +203,9 @@ namespace ControllerInterface.ConnectionServices
             {
 
             }
+            catch (System.IO.IOException)
+            {
+            }
         }
 
         public void UpdateStatus()
@@ -228,8 +231,8 @@ namespace ControllerInterface.ConnectionServices
             _process = new Thread(MainProcess);
             _buffer = new byte[1 + 2 * ArduinoData.Size + 2 * MPUData.Size];
             //InitializePort();
-            RightStick = new JoyStick(1023, 1023);
-            LeftStick = new JoyStick(1023, 1023);
+            RightStick = new JoyStick(1023, 1023, true, false);
+            LeftStick = new JoyStick(1023, 1023, true, false);
         }
 
         void MainProcess()
@@ -453,7 +456,7 @@ namespace ControllerInterface.ConnectionServices
 
                     _lastSigMatched = true;
 
-                    end:
+                end:
                     _command = CommandQueue.None;
                     return;
                 }
@@ -495,7 +498,9 @@ namespace ControllerInterface.ConnectionServices
             }
             catch (InvalidOperationException)
             {
-
+            }
+            catch (System.IO.IOException)
+            {
             }
             //else
             //{

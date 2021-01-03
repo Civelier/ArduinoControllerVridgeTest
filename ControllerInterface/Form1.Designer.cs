@@ -103,6 +103,8 @@
             this.label2 = new System.Windows.Forms.Label();
             this.StatusPropertyGrid = new System.Windows.Forms.PropertyGrid();
             this.RefreshTimer = new System.Windows.Forms.Timer(this.components);
+            this.HeightUpDown = new System.Windows.Forms.NumericUpDown();
+            this.label1 = new System.Windows.Forms.Label();
             OrientationTrackBar = new System.Windows.Forms.TrackBar();
             ((System.ComponentModel.ISupportInitialize)(OrientationTrackBar)).BeginInit();
             this.panel1.SuspendLayout();
@@ -111,6 +113,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.LeftStickCross)).BeginInit();
             this.StickPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.StickCross)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.HeightUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // OrientationTrackBar
@@ -126,6 +129,8 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.panel1.Controls.Add(this.label1);
+            this.panel1.Controls.Add(this.HeightUpDown);
             this.panel1.Controls.Add(this.OrientationLabel);
             this.panel1.Controls.Add(OrientationTrackBar);
             this.panel1.Controls.Add(this.KinectElevation);
@@ -850,6 +855,29 @@
             this.RefreshTimer.Interval = 50;
             this.RefreshTimer.Tick += new System.EventHandler(this.RefreshTimer_Tick);
             // 
+            // HeightUpDown
+            // 
+            this.HeightUpDown.DecimalPlaces = 2;
+            this.HeightUpDown.Increment = new decimal(new int[] {
+            5,
+            0,
+            0,
+            131072});
+            this.HeightUpDown.Location = new System.Drawing.Point(584, 249);
+            this.HeightUpDown.Name = "HeightUpDown";
+            this.HeightUpDown.Size = new System.Drawing.Size(120, 20);
+            this.HeightUpDown.TabIndex = 78;
+            this.HeightUpDown.ValueChanged += new System.EventHandler(this.HeightUpDown_ValueChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(540, 251);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(38, 13);
+            this.label1.TabIndex = 79;
+            this.label1.Text = "Height";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -870,6 +898,7 @@
             this.StickPanel.ResumeLayout(false);
             this.StickPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.StickCross)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.HeightUpDown)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -948,6 +977,8 @@
         private System.Windows.Forms.NumericUpDown KinectElevation;
         private System.Windows.Forms.Label OrientationLabel;
         private System.Windows.Forms.PropertyGrid StatusPropertyGrid;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.NumericUpDown HeightUpDown;
     }
 }
 

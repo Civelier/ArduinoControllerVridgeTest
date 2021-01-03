@@ -70,6 +70,7 @@ namespace ControllerInterface
             _kinect.StartKinectProcess();
             _kinect.NewSkeletonFrameReady += _kinect_NewSkeletonFrameReady;
             StatusPropertyGrid.SelectedObject = _status;
+            HeightUpDown.Value = (decimal)ConfigurationData.Instance.Height;
         }
 
         private void _kinect_NewSkeletonFrameReady(KinectDevice sender, KinectNewSkeletonFrameReadyEventArgs args)
@@ -255,6 +256,11 @@ namespace ControllerInterface
             int v = (((TrackBar)sender).Value - 180);
             OrientationLabel.Text = v.ToString();
             _kinect.Rotation = v;
+        }
+
+        private void HeightUpDown_ValueChanged(object sender, EventArgs e)
+        {
+            ConfigurationData.Instance.Height = (float)HeightUpDown.Value;
         }
     }
 }
