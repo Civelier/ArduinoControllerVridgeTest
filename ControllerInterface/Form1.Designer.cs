@@ -29,8 +29,10 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.TrackBar OrientationTrackBar;
+            this.OrientationTrackBar = new System.Windows.Forms.TrackBar();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.HeightUpDown = new System.Windows.Forms.NumericUpDown();
             this.OrientationLabel = new System.Windows.Forms.Label();
             this.KinectElevation = new System.Windows.Forms.NumericUpDown();
             this.SetForwardBtn = new System.Windows.Forms.Button();
@@ -103,28 +105,26 @@
             this.label2 = new System.Windows.Forms.Label();
             this.StatusPropertyGrid = new System.Windows.Forms.PropertyGrid();
             this.RefreshTimer = new System.Windows.Forms.Timer(this.components);
-            this.HeightUpDown = new System.Windows.Forms.NumericUpDown();
-            this.label1 = new System.Windows.Forms.Label();
-            OrientationTrackBar = new System.Windows.Forms.TrackBar();
-            ((System.ComponentModel.ISupportInitialize)(OrientationTrackBar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.OrientationTrackBar)).BeginInit();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.HeightUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.KinectElevation)).BeginInit();
             this.LeftStickPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.LeftStickCross)).BeginInit();
             this.StickPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.StickCross)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.HeightUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // OrientationTrackBar
             // 
-            OrientationTrackBar.Location = new System.Drawing.Point(59, 383);
-            OrientationTrackBar.Maximum = 360;
-            OrientationTrackBar.Name = "OrientationTrackBar";
-            OrientationTrackBar.Size = new System.Drawing.Size(667, 45);
-            OrientationTrackBar.TabIndex = 76;
-            OrientationTrackBar.Value = 180;
-            OrientationTrackBar.Scroll += new System.EventHandler(this.OrientationTrackBar_Scroll);
+            this.OrientationTrackBar.Location = new System.Drawing.Point(59, 383);
+            this.OrientationTrackBar.Maximum = 360;
+            this.OrientationTrackBar.Name = "OrientationTrackBar";
+            this.OrientationTrackBar.Size = new System.Drawing.Size(667, 45);
+            this.OrientationTrackBar.TabIndex = 76;
+            this.OrientationTrackBar.Value = 180;
+            this.OrientationTrackBar.Scroll += new System.EventHandler(this.OrientationTrackBar_Scroll);
+            this.OrientationTrackBar.Leave += new System.EventHandler(this.OrientationTrackBar_Leave);
             // 
             // panel1
             // 
@@ -132,7 +132,7 @@
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.HeightUpDown);
             this.panel1.Controls.Add(this.OrientationLabel);
-            this.panel1.Controls.Add(OrientationTrackBar);
+            this.panel1.Controls.Add(this.OrientationTrackBar);
             this.panel1.Controls.Add(this.KinectElevation);
             this.panel1.Controls.Add(this.SetForwardBtn);
             this.panel1.Controls.Add(this.CalibrateOffsets);
@@ -204,6 +204,30 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(763, 452);
             this.panel1.TabIndex = 0;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(540, 251);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(38, 13);
+            this.label1.TabIndex = 79;
+            this.label1.Text = "Height";
+            // 
+            // HeightUpDown
+            // 
+            this.HeightUpDown.DecimalPlaces = 2;
+            this.HeightUpDown.Increment = new decimal(new int[] {
+            5,
+            0,
+            0,
+            131072});
+            this.HeightUpDown.Location = new System.Drawing.Point(584, 249);
+            this.HeightUpDown.Name = "HeightUpDown";
+            this.HeightUpDown.Size = new System.Drawing.Size(120, 20);
+            this.HeightUpDown.TabIndex = 78;
+            this.HeightUpDown.ValueChanged += new System.EventHandler(this.HeightUpDown_ValueChanged);
+            this.HeightUpDown.Leave += new System.EventHandler(this.HeightUpDown_Leave);
             // 
             // OrientationLabel
             // 
@@ -855,29 +879,6 @@
             this.RefreshTimer.Interval = 50;
             this.RefreshTimer.Tick += new System.EventHandler(this.RefreshTimer_Tick);
             // 
-            // HeightUpDown
-            // 
-            this.HeightUpDown.DecimalPlaces = 2;
-            this.HeightUpDown.Increment = new decimal(new int[] {
-            5,
-            0,
-            0,
-            131072});
-            this.HeightUpDown.Location = new System.Drawing.Point(584, 249);
-            this.HeightUpDown.Name = "HeightUpDown";
-            this.HeightUpDown.Size = new System.Drawing.Size(120, 20);
-            this.HeightUpDown.TabIndex = 78;
-            this.HeightUpDown.ValueChanged += new System.EventHandler(this.HeightUpDown_ValueChanged);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(540, 251);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(38, 13);
-            this.label1.TabIndex = 79;
-            this.label1.Text = "Height";
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -888,9 +889,10 @@
             this.Name = "Form1";
             this.Text = "Form1";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
-            ((System.ComponentModel.ISupportInitialize)(OrientationTrackBar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.OrientationTrackBar)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.HeightUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.KinectElevation)).EndInit();
             this.LeftStickPanel.ResumeLayout(false);
             this.LeftStickPanel.PerformLayout();
@@ -898,7 +900,6 @@
             this.StickPanel.ResumeLayout(false);
             this.StickPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.StickCross)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.HeightUpDown)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -979,6 +980,7 @@
         private System.Windows.Forms.PropertyGrid StatusPropertyGrid;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.NumericUpDown HeightUpDown;
+        private System.Windows.Forms.TrackBar OrientationTrackBar;
     }
 }
 

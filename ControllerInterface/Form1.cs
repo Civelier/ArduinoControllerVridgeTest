@@ -70,7 +70,11 @@ namespace ControllerInterface
             _kinect.StartKinectProcess();
             _kinect.NewSkeletonFrameReady += _kinect_NewSkeletonFrameReady;
             StatusPropertyGrid.SelectedObject = _status;
-            HeightUpDown.Value = (decimal)ConfigurationData.Instance.Height;
+            HeightUpDown.Value = (decimal)PropertiesData.Instance.Height;
+            OrientationTrackBar.Value = PropertiesData.Instance.KinectAngleOffset;
+            int v = OrientationTrackBar.Value - 180;
+            OrientationLabel.Text = v.ToString();
+            _kinect.Rotation = v;
         }
 
         private void _kinect_NewSkeletonFrameReady(KinectDevice sender, KinectNewSkeletonFrameReadyEventArgs args)
@@ -205,7 +209,11 @@ namespace ControllerInterface
             LPosZLabel.Text = _kinect?.LeftHand.Z.ToString();
             KinectElevation.Maximum = _kinect?.MaxAngle ?? -100;
             KinectElevation.Minimum = _kinect?.MinAngle ?? 100;
-            KinectElevation.Value = _kinect?.Angle ?? 0;
+            if (_kinect != null)
+            {
+                KinectElevation.Value = _kinect?.Angle ?? 0;
+            }
+            
             //_connectService.MoveNext();
             //if (DeviceConnetionService.Instance.RightControllerPort.IsConnected)
             //{
@@ -230,6 +238,7 @@ namespace ControllerInterface
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
+            PropertiesData.Save();
             _controllersConnection?.Dispose();
             _kinect?.Dispose();
             _remote?.Dispose();
@@ -248,19 +257,30 @@ namespace ControllerInterface
 
         private void KinectElevation_ValueChanged(object sender, EventArgs e)
         {
-            _kinect.Angle = (int)KinectElevation.Value;
+            PropertiesData.Instance.KinectElevationAngle = _kinect.Angle = (int)KinectElevation.Value;
         }
 
         private void OrientationTrackBar_Scroll(object sender, EventArgs e)
         {
-            int v = (((TrackBar)sender).Value - 180);
+            int v = OrientationTrackBar.Value - 180;
             OrientationLabel.Text = v.ToString();
             _kinect.Rotation = v;
+            PropertiesData.Instance.KinectAngleOffset = OrientationTrackBar.Value;
         }
 
         private void HeightUpDown_ValueChanged(object sender, EventArgs e)
         {
-            ConfigurationData.Instance.Height = (float)HeightUpDown.Value;
+            PropertiesData.Instance.Height = (float)HeightUpDown.Value;
+        }
+
+        private void OrientationTrackBar_Leave(object sender, EventArgs e)
+        {
+            PropertiesData.Save();
+        }
+
+        private void HeightUpDown_Leave(object sender, EventArgs e)
+        {
+            PropertiesData.Save();
         }
     }
 }

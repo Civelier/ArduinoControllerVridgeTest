@@ -50,17 +50,17 @@ namespace ControllerInterface.VRidge
                 //----------- Only for debugging with non-functionnal left controller -----------
                 bool stick = ControlsData.Stick && Hand == VRidgeMessages.BasicTypes.HandType.Right;
                 //bool stick = ControlsData.Stick;
-
+                bool trigger = ControlsData.Button1;
 
                 // Set controller data
                 _controller?.SetControllerState(Hand == VRidgeMessages.BasicTypes.HandType.Right ? 0 : 1,
                     VRidgeMessages.v3.Controller.HeadRelation.Unrelated, Hand,
-                    OrientationData.Quaternion, new System.Numerics.Vector3(Point.X, Point.Y + ConfigurationData.Instance.Height, Point.Z),
+                    OrientationData.Quaternion, new System.Numerics.Vector3(Point.X, Point.Y + PropertiesData.Instance.Height, Point.Z),
                     ControlsData.StickX, ControlsData.StickY,
-                    ControlsData.Button1 && !(ControlsData.Button2 || ControlsData.Button3 || ControlsData.Button4) ? 1 : 0,
+                    trigger ? 1 : 0,
                     ControlsData.Menu, ControlsData.System,
-                    ControlsData.Button1 && !(ControlsData.Button2 || ControlsData.Button3 || ControlsData.Button4),
-                    ControlsData.Button2 && ControlsData.Button3 && ControlsData.Button4,
+                    trigger,
+                    ControlsData.Button2 || ControlsData.Button3 || ControlsData.Button4,
                     stick, stick);
             }
         }

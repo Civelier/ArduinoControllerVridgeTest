@@ -36,7 +36,7 @@ namespace ControllerInterface.VRidge
 
         public void Update()
         {
-            if (!_head?.IsDisposed ?? false) _head?.SetPosition(Point.X, Point.Y + ConfigurationData.Instance.Height, Point.Z);
+            if (!_head?.IsDisposed ?? false) _head?.SetPosition(Point.X, Point.Y + PropertiesData.Instance.Height, Point.Z);
         }
 
         public void Recenter()
