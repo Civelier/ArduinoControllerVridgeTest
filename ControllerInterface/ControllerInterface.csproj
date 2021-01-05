@@ -105,6 +105,7 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="InterProcessCommunication\InterProcessService.cs" />
     <Compile Include="JoyStick.cs" />
     <Compile Include="Data\MPUData.cs" />
     <Compile Include="Kinect\KinectDevice.cs" />

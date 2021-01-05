@@ -16,6 +16,7 @@ using ControllerInterface.Kinect;
 using Ara3D;
 using ControllerInterface.ConnectionServices;
 using ControllerInterface.DataTypes;
+using ControllerInterface.InterProcessCommunication;
 
 namespace ControllerInterface
 {
@@ -33,6 +34,7 @@ namespace ControllerInterface
         private KinectDevice _kinect;
         private ControllersConnectionService _controllersConnection;
         private StatusData _status = new StatusData();
+        private InterProcessService _interProcessService;
 
         private const uint GW_HWNDFIRST = 0;
         private const int WM_CLOSE = 0x0010;
@@ -75,6 +77,8 @@ namespace ControllerInterface
             int v = OrientationTrackBar.Value - 180;
             OrientationLabel.Text = v.ToString();
             _kinect.Rotation = v;
+            _interProcessService = new InterProcessService();
+            _interProcessService.Start();
         }
 
         private void _kinect_NewSkeletonFrameReady(KinectDevice sender, KinectNewSkeletonFrameReadyEventArgs args)
@@ -242,6 +246,7 @@ namespace ControllerInterface
             _controllersConnection?.Dispose();
             _kinect?.Dispose();
             _remote?.Dispose();
+            _interProcessService?.Dispose();
         }
 
         private void CalibrateOffsets_Click(object sender, EventArgs e)
