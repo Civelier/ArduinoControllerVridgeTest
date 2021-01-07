@@ -17,6 +17,7 @@ using Ara3D;
 using ControllerInterface.ConnectionServices;
 using ControllerInterface.DataTypes;
 using ControllerInterface.InterProcessCommunication;
+using System.Threading;
 
 namespace ControllerInterface
 {
@@ -35,7 +36,8 @@ namespace ControllerInterface
         private ControllersConnectionService _controllersConnection;
         private StatusData _status = new StatusData();
         private InterProcessService _interProcessService;
-
+        private bool _newPacket;
+        private InterProcessPacket _lastInterProcessPacket;
         private const uint GW_HWNDFIRST = 0;
         private const int WM_CLOSE = 0x0010;
         [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
@@ -79,6 +81,14 @@ namespace ControllerInterface
             _kinect.Rotation = v;
             _interProcessService = new InterProcessService();
             _interProcessService.Start();
+            _interProcessService.PacketRecieved += _interProcessService_PacketRecieved;
+            _interProcessService.Request(new SendRequest(new InterProcessPacket((float)HeightUpDown.Value, _kinect.Rotation)));
+        }
+
+        private void _interProcessService_PacketRecieved(InterProcessService sender, PacketRecievedEventArgs args)
+        {
+            _newPacket = true;
+            _lastInterProcessPacket = args.Packet;
         }
 
         private void _kinect_NewSkeletonFrameReady(KinectDevice sender, KinectNewSkeletonFrameReadyEventArgs args)
@@ -144,6 +154,21 @@ namespace ControllerInterface
 
         private void RefreshTimer_Tick(object sender, EventArgs e)
         {
+            if (_newPacket)
+            {
+                if (_lastInterProcessPacket.SetForward)
+                {
+                    _controllersConnection.CalibrateOffsets();
+                    _kinect?.QueueKinectSetForward();
+                    _head?.Recenter();
+                }
+                else
+                {
+                    HeightUpDown.Value = (decimal)_lastInterProcessPacket.Height;
+                    OrientationTrackBar.Value = (int)_lastInterProcessPacket.RotationOffset;
+                }
+                _newPacket = false;
+            }
             var data = _controllersConnection.LastDecodedData;
             _status.ControllersStatus = _controllersConnection.Status;
             StatusPropertyGrid.Refresh();
@@ -271,11 +296,13 @@ namespace ControllerInterface
             OrientationLabel.Text = v.ToString();
             _kinect.Rotation = v;
             PropertiesData.Instance.KinectAngleOffset = OrientationTrackBar.Value;
+            _interProcessService?.Request(new SendRequest(new InterProcessPacket((float)HeightUpDown.Value, _kinect.Rotation)));
         }
 
         private void HeightUpDown_ValueChanged(object sender, EventArgs e)
         {
             PropertiesData.Instance.Height = (float)HeightUpDown.Value;
+            _interProcessService?.Request(new SendRequest(new InterProcessPacket((float)HeightUpDown.Value, _kinect.Rotation)));
         }
 
         private void OrientationTrackBar_Leave(object sender, EventArgs e)

@@ -105,7 +105,12 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="InterProcessCommunication\IInterProcessRequest.cs" />
+    <Compile Include="InterProcessCommunication\InterProcessExtensions.cs" />
+    <Compile Include="InterProcessCommunication\InterProcessPacket.cs" />
     <Compile Include="InterProcessCommunication\InterProcessService.cs" />
+    <Compile Include="InterProcessCommunication\SendRequest.cs" />
+    <Compile Include="InterProcessCommunication\ValueUpdateManager.cs" />
     <Compile Include="JoyStick.cs" />
     <Compile Include="Data\MPUData.cs" />
     <Compile Include="Kinect\KinectDevice.cs" />
