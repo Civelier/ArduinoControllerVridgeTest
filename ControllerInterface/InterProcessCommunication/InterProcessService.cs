@@ -6,6 +6,7 @@ using System.Threading;
 using System.IO.Pipes;
 using System.IO;
 using Newtonsoft.Json;
+using System.Diagnostics;
 
 namespace ControllerInterface.InterProcessCommunication
 {
@@ -88,8 +89,9 @@ namespace ControllerInterface.InterProcessCommunication
                             }
                         }
                     }
-                    catch (IOException)
+                    catch (IOException e)
                     {
+                        Debug.WriteLine("InterProcessService process threw an IOException: " + e.Message);
                     }
                 }
             }
@@ -100,19 +102,30 @@ namespace ControllerInterface.InterProcessCommunication
                 //    var pipe = (NamedPipeServerStream)res.AsyncState;
                 //    pipe.EndWaitForConnection(res);
                 //}
-                using (var pipe = new NamedPipeServerStream("ArduinoVRidgePropertiesOut", PipeDirection.Out, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous))
+                try
                 {
-                    var t = DateTime.Now;
-                    pipe.WaitForConnectionEx(1000);
-                    using (var text = new StreamWriter(pipe, Encoding.Default, 1024, true))
+                    using (var pipe = new NamedPipeServerStream("ArduinoVRidgePropertiesOut", PipeDirection.Out, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous))
                     {
-                        using (var writer = new JsonTextWriter(text))
+                        var t = DateTime.Now;
+                        pipe.WaitForConnectionEx(1000);
+                        if (pipe.IsConnected)
                         {
-                            JsonSerializer serializer = new JsonSerializer();
-                            serializer.Serialize(writer, new InterProcessPacket() { Close = true });
+                            using (var text = new StreamWriter(pipe, Encoding.Default, 1024, true))
+                            {
+                                using (var writer = new JsonTextWriter(text))
+                                {
+                                    JsonSerializer serializer = new JsonSerializer();
+                                    serializer.Serialize(writer, new InterProcessPacket() { Close = true });
+                                }
+                            }
                         }
                     }
                 }
+                catch (IOException e)
+                {
+                    Debug.WriteLine("Closing unity app message threw an IOException: " + e.Message);
+                }
+                Debug.WriteLine("InterProcessService thread was aborted");
             }
         }
 
@@ -131,8 +144,9 @@ namespace ControllerInterface.InterProcessCommunication
                     }
                 }
             }
-            catch (ObjectDisposedException)
+            catch (ObjectDisposedException e)
             {
+                Debug.WriteLine(e.Message);
             }
         }
 

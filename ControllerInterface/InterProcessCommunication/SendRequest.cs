@@ -23,15 +23,18 @@ namespace ControllerInterface.InterProcessCommunication
 
         public void Execute()
         {
-            using (var pipe = new NamedPipeServerStream("ArduinoVRidgePropertiesOut", PipeDirection.Out))
+            using (var pipe = new NamedPipeServerStream("ArduinoVRidgePropertiesOut", PipeDirection.Out, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous))
             {
-                pipe.WaitForConnection();
-                using (var text = new StreamWriter(pipe, Encoding.Default, 1024, true))
+                pipe.WaitForConnectionEx();
+                if (pipe.IsConnected)
                 {
-                    using (var writer = new JsonTextWriter(text))
+                    using (var text = new StreamWriter(pipe, Encoding.Default, 1024, true))
                     {
-                        JsonSerializer serializer = new JsonSerializer();
-                        serializer.Serialize(writer, Packet);
+                        using (var writer = new JsonTextWriter(text))
+                        {
+                            JsonSerializer serializer = new JsonSerializer();
+                            serializer.Serialize(writer, Packet);
+                        }
                     }
                 }
             }
