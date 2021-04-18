@@ -16,12 +16,15 @@ namespace ControllerInterface.VRidge
     public class Controller
     {
         VRidgeRemotes.ControllerRemote _controller;
+        private JoyStick _joyStick;
+
         public VRidgeMessages.BasicTypes.HandType Hand { get; }
         public bool IsDisposed => _controller?.IsDisposed ?? true;
         public Controller(VRidgeRemotes.VridgeRemote remote, VRidgeMessages.BasicTypes.HandType hand)
         {
             _controller = remote.Controller;
             Hand = hand;
+            _joyStick = new JoyStick(1023, 1023, true, true);
         }
 
         public ArduinoData ControlsData { get; private set; }
@@ -52,13 +55,16 @@ namespace ControllerInterface.VRidge
                 //bool stick = ControlsData.Stick;
                 bool trigger = ControlsData.Button1;
 
+                
+                _joyStick.SetValues(ControlsData.StickX, ControlsData.StickY);
+
                 // Set controller data
                 _controller?.SetControllerState(Hand == VRidgeMessages.BasicTypes.HandType.Right ? 0 : 1,
                     VRidgeMessages.v3.Controller.HeadRelation.Unrelated, Hand,
                     OrientationData.Quaternion, new System.Numerics.Vector3(Point.X, Point.Y + PropertiesData.Instance.Height, Point.Z),
-                    ControlsData.StickX, ControlsData.StickY,
+                    _joyStick.X, _joyStick.Y,
                     trigger ? 1 : 0,
-                    ControlsData.Menu, ControlsData.System,
+                    ControlsData.Menu, false,
                     trigger,
                     ControlsData.Button2 || ControlsData.Button3 || ControlsData.Button4,
                     stick, stick);

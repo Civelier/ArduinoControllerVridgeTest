@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace ControllerInterface.InterProcessCommunication
 {
-    public interface IInterProcessRequest
+    public interface ISingleInstanceInterProcessRequest
     {
-        bool RequireSucess { get; }
+        string ID { get; }
+        bool RequireSuccess { get; }
         bool Execute();
+        bool IsInstance(ISingleInstanceInterProcessRequest other);
     }
 }

@@ -31,6 +31,7 @@ namespace ControllerInterface.InterProcessCommunication
         public event PacketRecievedEventHandler PacketRecieved;
 
         private Queue<IInterProcessRequest> _requests = new Queue<IInterProcessRequest>();
+        private List<ISingleInstanceInterProcessRequest> _singleInstanceRequests = new List<ISingleInstanceInterProcessRequest>();
         private Thread _process;
 
         public InterProcessService()
@@ -45,21 +46,44 @@ namespace ControllerInterface.InterProcessCommunication
 
         public void Request(IInterProcessRequest request)
         {
-            //request.Execute();
             lock (_requests)
             {
                 _requests.Enqueue(request);
             }
         }
 
+        public void Request(ISingleInstanceInterProcessRequest request)
+        {
+            lock (_singleInstanceRequests)
+            {
+                _singleInstanceRequests.RemoveAll((m) => request.IsInstance(m));
+                _singleInstanceRequests.Add(request);
+            }
+        }
+
         private void ProcessRequests()
         {
+            var requests = new Queue<IInterProcessRequest>();
             lock (_requests)
             {
                 while (_requests.Count > 0)
                 {
-                    _requests.Dequeue().Execute();
+                    var r = _requests.Dequeue();
+                    if (!r.Execute() && r.RequireSucess) requests.Enqueue(r);
                 }
+                _requests = requests;
+            }
+
+            var singleInstanceRequests = new List<ISingleInstanceInterProcessRequest>();
+            lock (_singleInstanceRequests)
+            {
+                while (_singleInstanceRequests.Count > 0)
+                {
+                    var r = _singleInstanceRequests.First();
+                    if (!r.Execute() && r.RequireSuccess) singleInstanceRequests.Add(r);
+                    _singleInstanceRequests.Remove(r);
+                }
+                _singleInstanceRequests = singleInstanceRequests;
             }
         }
 

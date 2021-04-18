@@ -82,7 +82,7 @@ namespace ControllerInterface
             _interProcessService = new InterProcessService();
             _interProcessService.Start();
             _interProcessService.PacketRecieved += _interProcessService_PacketRecieved;
-            _interProcessService.Request(new SendRequest(new InterProcessPacket((float)HeightUpDown.Value, _kinect.Rotation)));
+            _interProcessService.Request(new SendValuesRequest((float)HeightUpDown.Value, _kinect.Rotation));
         }
 
         private void _interProcessService_PacketRecieved(InterProcessService sender, PacketRecievedEventArgs args)
@@ -102,6 +102,7 @@ namespace ControllerInterface
         {
             _rightController?.SetData(args.Data.RightArduino, args.Data.RightMPU);
             _leftController?.SetData(args.Data.LeftArduino, args.Data.LeftMPU);
+            if (_rightController.ControlsData.System) _controllersConnection.CalibrateOffsets();
         }
 
         //private void _decoder_ErrorFound(DataDecoder sender, ErrorFoundEventArgs args)
@@ -151,7 +152,7 @@ namespace ControllerInterface
             int pWidth = LeftStickPanel.Width, pHeight = LeftStickPanel.Height, jWidth = LeftStickCross.Width, jHeight = LeftStickCross.Height;
             LeftStickCross.Location = new Point((int)(pWidth / 2 + pWidth * x / 2 - jWidth / 2), (int)(pHeight / 2 + pHeight * y / 2 - jHeight / 2));
         }
-
+        
         private void RefreshTimer_Tick(object sender, EventArgs e)
         {
             if (_newPacket)
@@ -166,6 +167,10 @@ namespace ControllerInterface
                 {
                     HeightUpDown.Value = (decimal)_lastInterProcessPacket.Height;
                     OrientationTrackBar.Value = (int)_lastInterProcessPacket.RotationOffset;
+                    int v = OrientationTrackBar.Value - 180;
+                    OrientationLabel.Text = v.ToString();
+                    _kinect.Rotation = v;
+                    PropertiesData.Instance.KinectAngleOffset = OrientationTrackBar.Value;
                 }
                 _newPacket = false;
             }
@@ -296,13 +301,13 @@ namespace ControllerInterface
             OrientationLabel.Text = v.ToString();
             _kinect.Rotation = v;
             PropertiesData.Instance.KinectAngleOffset = OrientationTrackBar.Value;
-            _interProcessService?.Request(new SendRequest(new InterProcessPacket((float)HeightUpDown.Value, _kinect.Rotation)));
+            _interProcessService?.Request(new SendValuesRequest((float)HeightUpDown.Value, _kinect.Rotation));
         }
 
         private void HeightUpDown_ValueChanged(object sender, EventArgs e)
         {
             PropertiesData.Instance.Height = (float)HeightUpDown.Value;
-            _interProcessService?.Request(new SendRequest(new InterProcessPacket((float)HeightUpDown.Value, _kinect.Rotation)));
+            _interProcessService?.Request(new SendValuesRequest((float)HeightUpDown.Value, _kinect.Rotation));
         }
 
         private void OrientationTrackBar_Leave(object sender, EventArgs e)

@@ -1,27 +1,29 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace ControllerInterface.InterProcessCommunication
 {
-    public class SendRequest : IInterProcessRequest
+    public class SendValuesRequest : ISingleInstanceInterProcessRequest
     {
-        public SendRequest(InterProcessPacket packet)
-        {
-            Packet = packet;
-        }
+        public string ID => "ValuesPacket";
+
+        public bool RequireSuccess => true;
 
         public InterProcessPacket Packet
         {
             get;
         }
 
-        public bool RequireSucess => true;
+        public SendValuesRequest(float height, float rotationOffset)
+        {
+            Packet = new InterProcessPacket(height, rotationOffset);
+        }
 
         public bool Execute()
         {
@@ -42,6 +44,11 @@ namespace ControllerInterface.InterProcessCommunication
                 }
                 else return false;
             }
+        }
+
+        public bool IsInstance(ISingleInstanceInterProcessRequest other)
+        {
+            return ID == other.ID;
         }
     }
 }

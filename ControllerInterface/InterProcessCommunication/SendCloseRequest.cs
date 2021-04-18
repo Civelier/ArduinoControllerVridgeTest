@@ -1,27 +1,19 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace ControllerInterface.InterProcessCommunication
 {
-    public class SendRequest : IInterProcessRequest
+    public class SendCloseRequest : ISingleInstanceInterProcessRequest
     {
-        public SendRequest(InterProcessPacket packet)
-        {
-            Packet = packet;
-        }
+        public string ID => "SendClose";
 
-        public InterProcessPacket Packet
-        {
-            get;
-        }
-
-        public bool RequireSucess => true;
+        public bool RequireSuccess => false;
 
         public bool Execute()
         {
@@ -35,13 +27,18 @@ namespace ControllerInterface.InterProcessCommunication
                         using (var writer = new JsonTextWriter(text))
                         {
                             JsonSerializer serializer = new JsonSerializer();
-                            serializer.Serialize(writer, Packet);
+                            serializer.Serialize(writer, InterProcessPacket.CreateClose());
                         }
                     }
                     return true;
                 }
                 else return false;
             }
+        }
+
+        public bool IsInstance(ISingleInstanceInterProcessRequest other)
+        {
+            throw new NotImplementedException();
         }
     }
 }

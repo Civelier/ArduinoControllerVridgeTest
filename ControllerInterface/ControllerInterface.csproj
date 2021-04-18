@@ -109,7 +109,10 @@
     <Compile Include="InterProcessCommunication\InterProcessExtensions.cs" />
     <Compile Include="InterProcessCommunication\InterProcessPacket.cs" />
     <Compile Include="InterProcessCommunication\InterProcessService.cs" />
+    <Compile Include="InterProcessCommunication\ISingleInstanceInterProcessRequest.cs" />
+    <Compile Include="InterProcessCommunication\SendCloseRequest.cs" />
     <Compile Include="InterProcessCommunication\SendRequest.cs" />
+    <Compile Include="InterProcessCommunication\SendValuesRequest.cs" />
     <Compile Include="InterProcessCommunication\ValueUpdateManager.cs" />
     <Compile Include="JoyStick.cs" />
     <Compile Include="Data\MPUData.cs" />
